@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toy Shop Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* Glassy nav style */
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 50;
+        }
+
+        .nav-link:hover {
+            color: #ff4d6d;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.7);
+        }
+
+        /* Mobile menu - right to left animation */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 320px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            transition: right 0.4s ease-in-out;
+            z-index: 100;
+            overflow-y: auto;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        /* Burger to X */
+        .burger {
+            width: 24px;
+            height: 18px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            z-index: 110;
+        }
+
+        .burger span {
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #ec4899;
+            border-radius: 3px;
+            left: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .burger span:nth-child(1) {
+            top: 0;
+        }
+
+        .burger span:nth-child(2) {
+            top: 7px;
+        }
+
+        .burger span:nth-child(3) {
+            top: 14px;
+        }
+
+        .burger.active span:nth-child(1) {
+            transform: rotate(45deg);
+            top: 7px;
+        }
+
+        .burger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.active span:nth-child(3) {
+            transform: rotate(-45deg);
+            top: 7px;
+        }
+
+        /* Desktop dropdown */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 120%;
+            left: 0;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Mobile dropdown smooth */
+        .mobile-dropdown ul {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .mobile-dropdown.open ul {
+            max-height: 200px;
+        }
+
+        /* Fade Slider */
+        .slider {
+            position: relative;
+            width: 95%;
+            height: 75vh;
+            overflow: hidden;
+            margin: 1rem auto;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Dots */
+        .dots {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.75rem;
+            z-index: 20;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #ff4d6d;
+        }
+
+        .dot .progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: #fff;
+            transition: width linear;
+        }
+
+        /* Overlay for when mobile menu is open */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .slider {
+                width: 92%;
+                height: 50vh;
+                border-radius: 12px;
+            }
+
+            .slide img {
+                border-radius: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slider {
+                width: 90%;
+                height: 40vh;
+                border-radius: 8px;
+                margin: 0.75rem auto;
+            }
+
+            .slide img {
+                border-radius: 8px;
+            }
+        }
+
+        /* Category Cards Styling */
+        .category-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #fce7f3 0%, #dbeafe 100%);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ec4899 0%, #3b82f6 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .category-icon i {
+            font-size: 2rem;
+            color: #ec4899;
+            z-index: 2;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover .category-icon::before {
+            opacity: 1;
+        }
+
+        .category-card:hover .category-icon i {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .category-content {
+            padding: 0 0.5rem;
+        }
+
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-desc {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .grid-cols-5 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-cols-5 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .category-icon {
+                width: 70px;
+                height: 70px;
+            }
+
+            .category-icon i {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-cols-5 {
+                grid-template-columns: 1fr;
+            }
+
+            .category-card {
+                padding: 1.25rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-pink-100 to-blue-100">
+
+    <!-- Top Strip -->
+    <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
+        Minimum Order: ₹499
+    </div>
+
+    <!-- Navbar -->
+    <nav class="nav-glass sticky-nav">
+        <div class="container mx-auto flex items-center justify-between px-4 py-3">
+
+            <!-- Left: Logo -->
+            <div class="flex items-center">
+                <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="h-10 w-10 mr-2">
+                <span class="font-extrabold text-xl text-pink-600">ToyShop</span>
+            </div>
+
+            <!-- Center: Pages -->
+            <ul class="hidden md:flex gap-8 font-medium text-gray-700 relative">
+                <li><a href="#" class="nav-link">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="nav-link">Shop ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500">Toys</a></li>
+                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500">Games</a></li>
+                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500">Gift Items</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="nav-link">About</a></li>
+                <li><a href="#" class="nav-link">Contact</a></li>
+            </ul>
+
+            <!-- Right: Icons -->
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center bg-white/30 rounded-full px-3 py-1">
+                    <i class='bx bx-search text-lg text-white'></i>
+                    <input type="text" placeholder="Search..." class="bg-transparent outline-none px-2 text-sm w-32">
+                </div>
+                <i class='bx bx-user text-2xl cursor-pointer nav-link'></i>
+                <i class='bx bx-heart text-2xl cursor-pointer nav-link'></i>
+                <i class='bx bx-cart text-2xl cursor-pointer nav-link'></i>
+
+                <!-- Mobile Burger -->
+                <div id="menu-btn" class="burger md:hidden">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Overlay for mobile menu -->
+    <div id="menu-overlay" class="menu-overlay"></div>
+
+    <!-- Mobile Menu Overlay - Now opens from right to left -->
+    <div id="mobileMenu" class="mobile-menu md:hidden">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center">
+                    <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="h-8 w-8 mr-2">
+                    <span class="font-extrabold text-lg text-pink-600">ToyShop</span>
+                </div>
+                <div id="close-menu" class="text-2xl text-gray-700 cursor-pointer">
+                    <i class='bx bx-x'></i>
+                </div>
+            </div>
+
+            <ul class="flex flex-col gap-6 font-medium text-gray-700">
+                <li><a href="#" class="nav-link text-lg py-2 block">Home</a></li>
+                <li class="mobile-dropdown">
+                    <button class="nav-link text-lg py-2 w-full text-left flex justify-between items-center">
+                        <span>Shop</span>
+                        <i class='bx bx-chevron-down'></i>
+                    </button>
+                    <ul class="pl-4 mt-2">
+                        <li><a href="#" class="block py-2 text-gray-600 hover:text-pink-500">Toys</a></li>
+                        <li><a href="#" class="block py-2 text-gray-600 hover:text-pink-500">Games</a></li>
+                        <li><a href="#" class="block py-2 text-gray-600 hover:text-pink-500">Gift Items</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="nav-link text-lg py-2 block">About</a></li>
+                <li><a href="#" class="nav-link text-lg py-2 block">Contact</a></li>
+            </ul>
+
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="flex items-center bg-white rounded-full px-4 py-2 shadow-sm">
+                    <i class='bx bx-search text-lg text-gray-700'></i>
+                    <input type="text" placeholder="Search..." class="bg-transparent outline-none px-2 text-sm w-full">
+                </div>
+
+                <div class="flex justify-around text-2xl py-6 text-gray-700">
+                    <a href="#" class="p-2 rounded-full hover:bg-pink-100"><i class='bx bx-user'></i></a>
+                    <a href="#" class="p-2 rounded-full hover:bg-pink-100"><i class='bx bx-heart'></i></a>
+                    <a href="#" class="p-2 rounded-full hover:bg-pink-100"><i class='bx bx-cart'></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Slider -->
+    <header class="slider" id="slider">
+        <div class="slide active"><img src="https://picsum.photos/1600/900?random=1" alt="Slide 1"></div>
+        <div class="slide"><img src="https://picsum.photos/1600/900?random=2" alt="Slide 2"></div>
+        <div class="slide"><img src="https://picsum.photos/1600/900?random=3" alt="Slide 3"></div>
+        <div class="slide"><img src="https://picsum.photos/1600/900?random=4" alt="Slide 4"></div>
+        <div class="dots" id="dots"></div>
+    </header>
+
+    <!-- Product Categories Section -->
+    <section class="py-16 px-4 bg-white">
+        <div class="container mx-auto">
+            <!-- Section Header -->
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Product Categories</h2>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                <!-- Category 1 -->
+                <div class="category-card group">
+                    <div class="category-icon">
+                        <i class='bx bx-brain'></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Educational</h3>
+                        <p class="category-desc">Learning through play</p>
+                    </div>
+                </div>
+
+                <!-- Category 2 -->
+                <div class="category-card group">
+                    <div class="category-icon">
+                        <i class='bx bx-run'></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Outdoor</h3>
+                        <p class="category-desc">Active play equipment</p>
+                    </div>
+                </div>
+
+                <!-- Category 3 -->
+                <div class="category-card group">
+                    <div class="category-icon">
+                        <i class='bx bx-cube'></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Building</h3>
+                        <p class="category-desc">Creative construction</p>
+                    </div>
+                </div>
+
+                <!-- Category 4 -->
+                <div class="category-card group">
+                    <div class="category-icon">
+                       <i class="fa-solid fa-chess-board"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Soft Toys</h3>
+                        <p class="category-desc">Cuddly companions</p>
+                    </div>
+                </div>
+
+                <!-- Category 5 -->
+                <div class="category-card group">
+                    <div class="category-icon">
+                        <i class="fa-solid fa-chess-board"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Board Games</h3>
+                        <p class="category-desc">Family game night</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        // Burger toggle
+        const menuBtn = document.getElementById("menu-btn");
+        const mobileMenu = document.getElementById("mobileMenu");
+        const menuOverlay = document.getElementById("menu-overlay");
+        const closeMenu = document.getElementById("close-menu");
+
+        function toggleMenu() {
+            menuBtn.classList.toggle("active");
+            mobileMenu.classList.toggle("active");
+            menuOverlay.classList.toggle("active");
+            document.body.style.overflow = mobileMenu.classList.contains("active") ? "hidden" : "";
+        }
+
+        menuBtn.addEventListener("click", toggleMenu);
+        closeMenu.addEventListener("click", toggleMenu);
+        menuOverlay.addEventListener("click", toggleMenu);
+
+        // Mobile dropdown smooth
+        document.querySelectorAll(".mobile-dropdown button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                btn.parentElement.classList.toggle("open");
+            });
+        });
+
+        // Fade slider
+        const slides = document.querySelectorAll(".slide");
+        const dotsContainer = document.getElementById("dots");
+        let index = 0;
+        let slideInterval;
+        const duration = 4000;
+
+        slides.forEach((_, i) => {
+            const dot = document.createElement("div");
+            dot.classList.add("dot");
+            dot.innerHTML = "<div class='progress'></div>";
+            dot.addEventListener("click", () => {
+                showSlide(i);
+                resetInterval();
+            });
+            dotsContainer.appendChild(dot);
+        });
+        const dots = document.querySelectorAll(".dot");
+
+        function showSlide(i) {
+            slides.forEach((s, j) => {
+                s.classList.toggle("active", j === i);
+            });
+            dots.forEach((d, j) => {
+                d.classList.toggle("active", j === i);
+                d.querySelector(".progress").style.width = j === i ? "100%" : "0";
+                d.querySelector(".progress").style.transitionDuration = j === i ? duration + "ms" : "0ms";
+            });
+            index = i;
+        }
+
+        function nextSlide() {
+            showSlide((index + 1) % slides.length);
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, duration);
+        }
+
+        showSlide(0);
+        resetInterval();
+
+        // Add animation to category cards when they come into view
+        document.addEventListener('DOMContentLoaded', function () {
+            const categoryCards = document.querySelectorAll('.category-card');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            categoryCards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+
+            // Add click effect to category cards
+            categoryCards.forEach(card => {
+                card.addEventListener('click', function () {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+
+                    // You can add navigation logic here
+                    console.log('Category clicked:', this.querySelector('.category-title').textContent);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
