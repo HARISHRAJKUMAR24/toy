@@ -7,7 +7,6 @@
     <title>Toy Shop Website</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         /* Glassy nav style */
         .nav-glass {
@@ -244,82 +243,73 @@
             }
         }
 
-        /* Category Cards Styling */
-        .category-card {
+        /* Category Item Styling */
+        .category-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            padding: 1.5rem 1rem;
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             cursor: pointer;
         }
 
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        .category-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #fce7f3 0%, #dbeafe 100%);
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
+        .category-img-container {
             position: relative;
-            overflow: hidden;
-        }
-
-        .category-icon::before {
-            content: '';
-            position: absolute;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ec4899 0%, #3b82f6 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 50%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
         }
 
-        .category-icon i {
-            font-size: 2rem;
-            color: #ec4899;
-            z-index: 2;
-            position: relative;
-            transition: all 0.3s ease;
+        .category-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            border-radius: 16px;
+            transition: all 0.4s ease;
         }
 
-        .category-card:hover .category-icon::before {
-            opacity: 1;
-        }
-
-        .category-card:hover .category-icon i {
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .category-content {
-            padding: 0 0.5rem;
+        .category-text {
+            text-align: center;
+            width: 100%;
         }
 
         .category-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #1f2937;
-            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
 
-        .category-desc {
-            color: #6b7280;
-            font-size: 0.875rem;
-            line-height: 1.4;
+        /* Shine Overlay Effect */
+        .shine-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+            border-radius: 16px;
+        }
+
+        /* Hover Effects */
+        .category-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-item:hover .category-img {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .category-item:hover .shine-overlay {
+            transform: translateX(100%);
+        }
+
+        .category-item:hover .category-title {
+            color: #ec4899;
         }
 
         /* Responsive adjustments */
@@ -334,13 +324,8 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .category-icon {
-                width: 70px;
-                height: 70px;
-            }
-
-            .category-icon i {
-                font-size: 1.75rem;
+            .category-img {
+                height: 160px;
             }
         }
 
@@ -349,8 +334,8 @@
                 grid-template-columns: 1fr;
             }
 
-            .category-card {
-                padding: 1.25rem 1rem;
+            .category-img {
+                height: 200px;
             }
         }
     </style>
@@ -470,63 +455,68 @@
         <div class="container mx-auto">
             <!-- Section Header -->
             <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">Product Categories</h2>
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Shop By Category</h2>
             </div>
 
             <!-- Categories Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
                 <!-- Category 1 -->
-                <div class="category-card group">
-                    <div class="category-icon">
-                        <i class='bx bx-brain'></i>
+                <div class="category-item">
+                    <div class="category-img-container">
+                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Building Blocks" class="category-img">
+                        <div class="shine-overlay"></div>
                     </div>
-                    <div class="category-content">
-                        <h3 class="category-title">Educational</h3>
-                        <p class="category-desc">Learning through play</p>
+                    <div class="category-text">
+                        <h3 class="category-title">Building Blocks</h3>
                     </div>
                 </div>
 
                 <!-- Category 2 -->
-                <div class="category-card group">
-                    <div class="category-icon">
-                        <i class='bx bx-run'></i>
+                <div class="category-item">
+                    <div class="category-img-container">
+                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Soft Toys" class="category-img">
+                        <div class="shine-overlay"></div>
                     </div>
-                    <div class="category-content">
-                        <h3 class="category-title">Outdoor</h3>
-                        <p class="category-desc">Active play equipment</p>
+                    <div class="category-text">
+                        <h3 class="category-title">Soft Toys</h3>
                     </div>
                 </div>
 
                 <!-- Category 3 -->
-                <div class="category-card group">
-                    <div class="category-icon">
-                        <i class='bx bx-cube'></i>
+                <div class="category-item">
+                    <div class="category-img-container">
+                        <img src="./images/board.jpe"
+                            alt="Board Games" class="category-img">
+                        <div class="shine-overlay"></div>
                     </div>
-                    <div class="category-content">
-                        <h3 class="category-title">Building</h3>
-                        <p class="category-desc">Creative construction</p>
+                    <div class="category-text">
+                        <h3 class="category-title">Board Games</h3>
                     </div>
                 </div>
 
                 <!-- Category 4 -->
-                <div class="category-card group">
-                    <div class="category-icon">
-                       <i class="fa-solid fa-chess-board"></i>
+                <div class="category-item">
+                    <div class="category-img-container">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Outdoor Toys" class="category-img">
+                        <div class="shine-overlay"></div>
                     </div>
-                    <div class="category-content">
-                        <h3 class="category-title">Soft Toys</h3>
-                        <p class="category-desc">Cuddly companions</p>
+                    <div class="category-text">
+                        <h3 class="category-title">Outdoor Toys</h3>
                     </div>
                 </div>
 
                 <!-- Category 5 -->
-                <div class="category-card group">
-                    <div class="category-icon">
-                        <i class="fa-solid fa-chess-board"></i>
+                <div class="category-item">
+                    <div class="category-img-container">
+                        <img src="https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Educational Toys" class="category-img">
+                        <div class="shine-overlay"></div>
                     </div>
-                    <div class="category-content">
-                        <h3 class="category-title">Board Games</h3>
-                        <p class="category-desc">Family game night</p>
+                    <div class="category-text">
+                        <h3 class="category-title">Educational Toys</h3>
                     </div>
                 </div>
             </div>
@@ -601,10 +591,9 @@
 
         showSlide(0);
         resetInterval();
-
-        // Add animation to category cards when they come into view
+        // Add animation to category items when they come into view
         document.addEventListener('DOMContentLoaded', function () {
-            const categoryCards = document.querySelectorAll('.category-card');
+            const categoryItems = document.querySelectorAll('.category-item');
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -615,17 +604,17 @@
                 });
             }, { threshold: 0.1 });
 
-            categoryCards.forEach(card => {
-                card.style.opacity = 0;
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                observer.observe(card);
+            categoryItems.forEach(item => {
+                item.style.opacity = 0;
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(item);
             });
 
-            // Add click effect to category cards
-            categoryCards.forEach(card => {
-                card.addEventListener('click', function () {
-                    this.style.transform = 'scale(0.95)';
+            // Add click effect to category items
+            categoryItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    this.style.transform = 'scale(0.98)';
                     setTimeout(() => {
                         this.style.transform = '';
                     }, 200);
