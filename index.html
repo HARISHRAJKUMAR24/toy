@@ -8,6 +8,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #fbcfe8, #bfdbfe);
+            min-height: 100vh;
+        }
+
         /* Glassy nav style */
         .nav-glass {
             background: rgba(255, 255, 255, 0.2);
@@ -282,16 +294,23 @@
             transition: color 0.3s ease;
         }
 
-        /* Shine Overlay Effect */
+        /* Diagonal Shine Overlay Effect - Top-left to Bottom-right */
         .shine-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0) 40%, 
+                rgba(255, 255, 255, 0.8) 50%, 
+                rgba(255, 255, 255, 0) 60%, 
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: translateX(-100%) translateY(-100%);
+            transition: transform 0.7s ease;
             border-radius: 16px;
         }
 
@@ -305,7 +324,7 @@
         }
 
         .category-item:hover .shine-overlay {
-            transform: translateX(100%);
+            transform: translateX(100%) translateY(100%);
         }
 
         .category-item:hover .category-title {
@@ -377,7 +396,7 @@
             <div class="flex items-center gap-4">
                 <div class="hidden md:flex items-center bg-white/30 rounded-full px-3 py-1">
                     <i class='bx bx-search text-lg text-white'></i>
-                    <input type="text" placeholder="Search..." class="bg-transparent outline-none px-2 text-sm w-32">
+                    <input type="text" placeholder="Search..." class="bg-transparent outline-none px-2 text-sm w-32 text-white placeholder-white">
                 </div>
                 <i class='bx bx-user text-2xl cursor-pointer nav-link'></i>
                 <i class='bx bx-heart text-2xl cursor-pointer nav-link'></i>
@@ -456,6 +475,7 @@
             <!-- Section Header -->
             <div class="text-center mb-12">
                 <h2 class="text-4xl font-bold text-gray-800 mb-4">Shop By Category</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Explore our diverse collection of toys for all ages and interests</p>
             </div>
 
             <!-- Categories Grid -->
@@ -463,8 +483,7 @@
                 <!-- Category 1 -->
                 <div class="category-item">
                     <div class="category-img-container">
-                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Building Blocks" class="category-img">
+                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Building Blocks" class="category-img">
                         <div class="shine-overlay"></div>
                     </div>
                     <div class="category-text">
@@ -475,8 +494,7 @@
                 <!-- Category 2 -->
                 <div class="category-item">
                     <div class="category-img-container">
-                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Soft Toys" class="category-img">
+                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Soft Toys" class="category-img">
                         <div class="shine-overlay"></div>
                     </div>
                     <div class="category-text">
@@ -487,8 +505,7 @@
                 <!-- Category 3 -->
                 <div class="category-item">
                     <div class="category-img-container">
-                        <img src="./images/board.jpe"
-                            alt="Board Games" class="category-img">
+                        <img src="./images/board.jpe" alt="Board Games" class="category-img">
                         <div class="shine-overlay"></div>
                     </div>
                     <div class="category-text">
@@ -499,8 +516,7 @@
                 <!-- Category 4 -->
                 <div class="category-item">
                     <div class="category-img-container">
-                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Outdoor Toys" class="category-img">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Outdoor Toys" class="category-img">
                         <div class="shine-overlay"></div>
                     </div>
                     <div class="category-text">
@@ -511,8 +527,7 @@
                 <!-- Category 5 -->
                 <div class="category-item">
                     <div class="category-img-container">
-                        <img src="https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Educational Toys" class="category-img">
+                        <img src="https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Educational Toys" class="category-img">
                         <div class="shine-overlay"></div>
                     </div>
                     <div class="category-text">
@@ -522,7 +537,6 @@
             </div>
         </div>
     </section>
-
 
     <script>
         // Burger toggle
@@ -591,6 +605,7 @@
 
         showSlide(0);
         resetInterval();
+        
         // Add animation to category items when they come into view
         document.addEventListener('DOMContentLoaded', function () {
             const categoryItems = document.querySelectorAll('.category-item');
