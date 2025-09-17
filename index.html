@@ -9,7 +9,7 @@
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 
-<body class="font-sans bg-gradient-to-br from-pink-200 to-blue-200 min-h-screen">
+<body class="font-sans min-h-screen">
 
     <!-- Top Strip -->
     <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
@@ -136,187 +136,285 @@
         <div id="dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
     </header>
 
-    <!-- Categories -->
+    <!-- Product Categories Section -->
     <section class="py-16 px-4 bg-white">
         <div class="container mx-auto">
+            <!-- Section Header -->
             <div class="text-center mb-12">
                 <h2 class="text-4xl font-bold text-gray-800 mb-4">Shop By Category</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">Explore our diverse collection of toys for all ages and
                     interests</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-                <!-- Category -->
+            <!-- Categories Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <!-- Category 1 -->
                 <div
-                    class="flex flex-col items-center cursor-pointer transition duration-300 hover:-translate-y-1 group category-item">
-                    <div class="relative w-full rounded-2xl overflow-hidden shadow-md mb-4">
-                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=400&q=80"
-                            class="w-full h-[180px] object-cover rounded-2xl transition duration-300">
+                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Building Blocks"
+                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Diagonal line shine effect -->
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/80 to-transparent -translate-x-full -translate-y-full transition duration-700 rounded-2xl group-hover:translate-x-full group-hover:translate-y-full">
+                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 transition-colors group-hover:text-pink-500">Building
-                        Blocks</h3>
+                    <div class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300">
+                        <h3 class="font-semibold text-gray-800 text-center group-hover:text-pink-600 transition-colors">
+                            Building Blocks</h3>
+                    </div>
                 </div>
 
+                <!-- Category 2 -->
                 <div
-                    class="flex flex-col items-center cursor-pointer transition duration-300 hover:-translate-y-1 group category-item">
-                    <div class="relative w-full rounded-2xl overflow-hidden shadow-md mb-4">
-                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=400&q=80"
-                            class="w-full h-[180px] object-cover rounded-2xl transition duration-300">
+                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Soft Toys"
+                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Diagonal line shine effect -->
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/80 to-transparent -translate-x-full -translate-y-full transition duration-700 rounded-2xl group-hover:translate-x-full group-hover:translate-y-full">
+                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 transition-colors group-hover:text-pink-500">Soft Toys
-                    </h3>
+                    <div class="p-3 bg-gradient-to-br from-blue-200 to-teal-200">
+                        <h3 class="font-semibold text-gray-800 text-center group-hover:text-pink-600 transition-colors">
+                            Soft Toys</h3>
+                    </div>
                 </div>
 
+                <!-- Category 3 -->
                 <div
-                    class="flex flex-col items-center cursor-pointer transition duration-300 hover:-translate-y-1 group category-item">
-                    <div class="relative w-full rounded-2xl overflow-hidden shadow-md mb-4">
-                        <img src="https://images.unsplash.com/photo-1594788006054-ebf650235b8f?auto=format&fit=crop&w=400&q=80"
-                            class="w-full h-[180px] object-cover rounded-2xl transition duration-300">
+                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="relative overflow-hidden">
+                        <img src="./images/board.jpe" alt="Board Games"
+                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Diagonal line shine effect -->
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/80 to-transparent -translate-x-full -translate-y-full transition duration-700 rounded-2xl group-hover:translate-x-full group-hover:translate-y-full">
+                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 transition-colors group-hover:text-pink-500">Board Games
-                    </h3>
+                    <div class="p-3 bg-gradient-to-br from-pink-200 to-blue-200">
+                        <h3 class="font-semibold text-gray-800 text-center group-hover:text-pink-600 transition-colors">
+                            Board Games</h3>
+                    </div>
                 </div>
 
+                <!-- Category 4 -->
                 <div
-                    class="flex flex-col items-center cursor-pointer transition duration-300 hover:-translate-y-1 group category-item">
-                    <div class="relative w-full rounded-2xl overflow-hidden shadow-md mb-4">
-                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80"
-                            class="w-full h-[180px] object-cover rounded-2xl transition duration-300">
+                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Outdoor Toys"
+                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Diagonal line shine effect -->
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/80 to-transparent -translate-x-full -translate-y-full transition duration-700 rounded-2xl group-hover:translate-x-full group-hover:translate-y-full">
+                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 transition-colors group-hover:text-pink-500">Outdoor Toys
-                    </h3>
+                    <div class="p-3 bg-gradient-to-br from-green-200 to-yellow-200">
+                        <h3 class="font-semibold text-gray-800 text-center group-hover:text-pink-600 transition-colors">
+                            Outdoor Toys</h3>
+                    </div>
                 </div>
 
+                <!-- Category 5 -->
                 <div
-                    class="flex flex-col items-center cursor-pointer transition duration-300 hover:-translate-y-1 group category-item">
-                    <div class="relative w-full rounded-2xl overflow-hidden shadow-md mb-4">
-                        <img src="https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?auto=format&fit=crop&w=400&q=80"
-                            class="w-full h-[180px] object-cover rounded-2xl transition duration-300">
+                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Educational Toys"
+                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Diagonal line shine effect -->
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/80 to-transparent -translate-x-full -translate-y-full transition duration-700 rounded-2xl group-hover:translate-x-full group-hover:translate-y-full">
+                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 transition-colors group-hover:text-pink-500">Educational
-                        Toys</h3>
+                    <div class="p-3 bg-gradient-to-br from-pink-300 to-purple-400">
+                        <h3 class="font-semibold text-gray-800 text-center group-hover:text-pink-600 transition-colors">
+                            Educational Toys</h3>
+                    </div>
+                </div>
+
+                <!-- Category 6 -->
+                <div
+                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Puzzle Games"
+                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Diagonal line shine effect -->
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+                        </div>
+                    </div>
+                    <div class="p-3 bg-gradient-to-br from-indigo-300 to-purple-500">
+                        <h3 class="font-semibold text-gray-800 text-center group-hover:text-pink-600 transition-colors">
+                            Puzzle Games</h3>
+                    </div>
+                </div>
+
+                <!-- Category 7 -->
+                <div
+                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Building Blocks"
+                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Diagonal line shine effect -->
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+                        </div>
+                    </div>
+                    <div class="p-3 bg-gradient-to-br from-orange-300 to-pink-400">
+                        <h3 class="font-semibold text-gray-800 text-center group-hover:text-pink-600 transition-colors">
+                            Building Blocks</h3>
+                    </div>
+                </div>
+
+                <!-- Category 8 -->
+                <div
+                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                            alt="Building Blocks"
+                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Diagonal line shine effect -->
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+                        </div>
+                    </div>
+                    <div class="p-3 bg-gradient-to-br from-yellow-200 to-orange-300">
+                        <h3 class="font-semibold text-gray-800 text-center group-hover:text-pink-600 transition-colors">
+                            Building Blocks</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-pink-50">
+        <div class="container mx-auto max-w-6xl">
+            <!-- Header -->
+            <div class="text-center mb-6">
+                <h3 class="text-3xl font-bold text-gray-800">Special Offers</h3>
+                <p class="text-gray-600">Grab the best deals before they're gone!</p>
+            </div>
+
+            <!-- Slider wrapper with left/right padding -->
+            <div id="offerWrapper" class="relative overflow-hidden perspective-[1200px] px-8">
+                <div id="offerTrack"
+                    class="flex transition-transform duration-700 ease-in-out gap-4 will-change-transform">
+                    <!-- Slide 1 -->
+                    <div
+                        class="min-w-[90%] flex-shrink-0 rounded-2xl shadow-lg h-56 md:h-64 lg:h-72 transform transition-transform duration-1000 ease-in-out">
+                        <img src="https://picsum.photos/1200/500?random=10" alt="Offer 1"
+                            class="w-full h-full object-cover rounded-2xl">
+                    </div>
+                    <!-- Slide 2 -->
+                    <div
+                        class="min-w-[90%] flex-shrink-0 rounded-2xl shadow-lg h-56 md:h-64 lg:h-72 transform transition-transform duration-1000 ease-in-out">
+                        <img src="https://picsum.photos/1200/500?random=11" alt="Offer 2"
+                            class="w-full h-full object-cover rounded-2xl">
+                    </div>
+                    <!-- Slide 3 -->
+                    <div
+                        class="min-w-[90%] flex-shrink-0 rounded-2xl shadow-lg h-56 md:h-64 lg:h-72 transform transition-transform duration-1000 ease-in-out">
+                        <img src="https://picsum.photos/1200/500?random=12" alt="Offer 3"
+                            class="w-full h-full object-cover rounded-2xl">
+                    </div>
+                </div>
+
+                <!-- Controls at bottom -->
+                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4">
+                    <button id="prevOffer"
+                        class="px-3 py-2 bg-pink-500 text-white rounded-full shadow hover:bg-pink-600 transition">
+                        <i class='bx bx-chevron-left text-xl'></i>
+                    </button>
+                    <button id="toggleAutoplay"
+                        class="px-3 py-2 bg-pink-500 text-white rounded-full shadow hover:bg-pink-600 transition">
+                        <i class='bx bx-pause text-xl'></i>
+                    </button>
+                    <button id="nextOffer"
+                        class="px-3 py-2 bg-pink-500 text-white rounded-full shadow hover:bg-pink-600 transition">
+                        <i class='bx bx-chevron-right text-xl'></i>
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
     <script>
-        // Burger toggle
-        const menuBtn = document.getElementById("menu-btn");
-        const mobileMenu = document.getElementById("mobileMenu");
-        const menuOverlay = document.getElementById("menu-overlay");
-        const closeMenu = document.getElementById("close-menu");
+        (function () {
+            const track = document.getElementById('offerTrack');
+            const slides = Array.from(track.children);
+            const prevBtn = document.getElementById('prevOffer');
+            const nextBtn = document.getElementById('nextOffer');
+            const toggleBtn = document.getElementById('toggleAutoplay');
 
-        function toggleMenu() {
-            menuBtn.classList.toggle("active");
-            mobileMenu.classList.toggle("!right-0");
-            menuOverlay.classList.toggle("opacity-100");
-            menuOverlay.classList.toggle("visible");
-            document.body.style.overflow = mobileMenu.classList.contains("!right-0") ? "hidden" : "";
-        }
+            let index = 0;
+            const slideCount = slides.length;
+            const autoplayInterval = 3000;
+            let autoplay = true;
+            let autoplayTimer = null;
 
-        menuBtn.addEventListener("click", toggleMenu);
-        closeMenu.addEventListener("click", toggleMenu);
-        menuOverlay.addEventListener("click", toggleMenu);
+            function showSlide(i) {
+                index = ((i % slideCount) + slideCount) % slideCount;
+                const offset = index * (slides[0].offsetWidth + 16); // gap-4 = 16px
+                track.style.transform = `translateX(-${offset}px)`;
 
-        // Mobile dropdown
-        document.querySelectorAll(".mobile-dropdown button").forEach(btn => {
-            btn.addEventListener("click", () => {
-                btn.nextElementSibling.classList.toggle("max-h-0");
-                btn.nextElementSibling.classList.toggle("max-h-48");
-            });
-        });
+                slides.forEach((slide, idx) => {
+                    if (idx === index) {
+                        slide.style.transform = 'scale(1.05) rotateY(0deg)';
+                        slide.style.zIndex = '10';
+                        slide.style.opacity = '1';
+                    } else {
+                        slide.style.transform = 'scale(0.9) rotateY(0deg)';
+                        slide.style.zIndex = '1';
+                        slide.style.opacity = '0.5';
+                    }
+                });
+            }
 
-        // Slider
-        const slides = document.querySelectorAll(".slide");
-        const dotsContainer = document.getElementById("dots");
-        let index = 0;
-        let slideInterval;
-        const duration = 4000;
+            function startAutoplay() {
+                stopAutoplay();
+                autoplayTimer = setInterval(() => showSlide(index + 1), autoplayInterval);
+            }
 
-        slides.forEach((_, i) => {
-            const dot = document.createElement("div");
-            dot.className =
-                "w-3 h-3 rounded-full bg-white/60 cursor-pointer relative overflow-hidden";
-            dot.innerHTML = "<div class='progress absolute bottom-0 left-0 h-full w-0 bg-white'></div>";
-            dot.addEventListener("click", () => {
-                showSlide(i);
-                resetInterval();
-            });
-            dotsContainer.appendChild(dot);
-        });
-        const dots = document.querySelectorAll("#dots .w-3");
+            function stopAutoplay() {
+                if (autoplayTimer) clearInterval(autoplayTimer);
+                autoplayTimer = null;
+            }
 
-        function showSlide(i) {
-            slides.forEach((s, j) => {
-                s.classList.toggle("opacity-100", j === i);
-                s.classList.toggle("z-10", j === i);
-                s.classList.toggle("opacity-0", j !== i);
-            });
-            dots.forEach((d, j) => {
-                d.classList.toggle("bg-pink-500", j === i);
-                const progress = d.querySelector(".progress");
-                progress.style.width = j === i ? "100%" : "0";
-                progress.style.transitionDuration = j === i ? duration + "ms" : "0ms";
-            });
-            index = i;
-        }
-
-        function nextSlide() {
-            showSlide((index + 1) % slides.length);
-        }
-
-        function resetInterval() {
-            clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, duration);
-        }
-
-        showSlide(0);
-        resetInterval();
-
-        // Animate category items when visible
-        const categoryItems = document.querySelectorAll('.category-item');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = 1;
-                    entry.target.style.transform = 'translateY(0)';
+            prevBtn.addEventListener('click', () => { showSlide(index - 1); resetAutoplay(); });
+            nextBtn.addEventListener('click', () => { showSlide(index + 1); resetAutoplay(); });
+            toggleBtn.addEventListener('click', () => {
+                if (autoplay) {
+                    stopAutoplay();
+                    toggleBtn.innerHTML = "<i class='bx bx-play text-xl'></i>";
+                    autoplay = false;
+                } else {
+                    startAutoplay();
+                    toggleBtn.innerHTML = "<i class='bx bx-pause text-xl'></i>";
+                    autoplay = true;
                 }
             });
-        }, { threshold: 0.1 });
 
-        categoryItems.forEach(item => {
-            item.style.opacity = 0;
-            item.style.transform = 'translateY(20px)';
-            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            observer.observe(item);
-        });
+            function resetAutoplay() {
+                stopAutoplay();
+                startAutoplay();
+            }
 
-        categoryItems.forEach(item => {
-            item.addEventListener('click', function () {
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 200);
-                console.log('Category clicked:', this.querySelector('h3').textContent);
-            });
-        });
+            showSlide(0);
+            startAutoplay();
+
+        })();
     </script>
+
+
+
+
 </body>
 
 </html>
