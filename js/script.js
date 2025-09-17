@@ -105,3 +105,61 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+//Offer section 3D js Style
+
+(function () {
+    const slides = Array.from(document.querySelectorAll('#offerTrack > div'));
+    const prevBtn = document.getElementById('prevOffer');
+    const nextBtn = document.getElementById('nextOffer');
+    const toggleBtn = document.getElementById('toggleAutoplay');
+
+    let index = 0;
+    const slideCount = slides.length;
+    const autoplayInterval = 3000;
+    let autoplay = true;
+    let autoplayTimer = null;
+
+    function showSlide(i) {
+        index = ((i % slideCount) + slideCount) % slideCount;
+        slides.forEach((slide, idx) => {
+            if (idx === index) {
+                slide.style.opacity = '1';
+                slide.style.transform = 'scale(1.05)';
+                slide.style.zIndex = '10';
+            } else {
+                slide.style.opacity = '0';
+                slide.style.transform = 'scale(0.95)';
+                slide.style.zIndex = '1';
+            }
+        });
+    }
+
+    function startAutoplay() {
+        stopAutoplay();
+        autoplayTimer = setInterval(() => showSlide(index + 1), autoplayInterval);
+    }
+
+    function stopAutoplay() {
+        if (autoplayTimer) clearInterval(autoplayTimer);
+        autoplayTimer = null;
+    }
+
+    prevBtn.addEventListener('click', () => { showSlide(index - 1); resetAutoplay(); });
+    nextBtn.addEventListener('click', () => { showSlide(index + 1); resetAutoplay(); });
+    toggleBtn.addEventListener('click', () => {
+        if (autoplay) {
+            stopAutoplay();
+            toggleBtn.innerHTML = "<i class='bx bx-play text-xl'></i>";
+            autoplay = false;
+        } else {
+            startAutoplay();
+            toggleBtn.innerHTML = "<i class='bx bx-pause text-xl'></i>";
+            autoplay = true;
+        }
+    });
+
+    function resetAutoplay() { stopAutoplay(); startAutoplay(); }
+
+    showSlide(0);
+    startAutoplay();
+})();
