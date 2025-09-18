@@ -164,3 +164,20 @@ document.addEventListener('DOMContentLoaded', function () {
     startAutoplay();
 })();
 
+// script.js
+document.querySelectorAll('.shop-toggle').forEach(btn => {
+    btn.addEventListener('click', e => {
+        e.preventDefault();
+        const menu = btn.nextElementSibling;
+        if (!menu) return;
+        const icon = btn.querySelector('i');
+
+        // Toggle classes
+        menu.classList.toggle('opacity-100');
+        menu.classList.toggle('pointer-events-auto');
+        menu.classList.toggle('translate-y-0');
+
+        // Rotate arrow
+        if (icon) icon.classList.toggle('rotate-180');
+    });
+});
