@@ -11,7 +11,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes wave {
+            0% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
 
+            70% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .animate-wave {
+            animation: wave 3s ease-out infinite;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
 </head>
 
 <body class="font-sans min-h-screen">
@@ -1145,6 +1179,103 @@
             </div>
         </div>
     </section>
+
+    <!-- Shop with Videos Section -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Shop with Videos</h2>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <div class="video-card relative w-full h-[250px] sm:h-[300px] md:h-[350px] bg-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer"
+                    data-video="https://www.youtube.com/embed/tgbNymZ7vqY" data-name="Premium Teddy Bear"
+                    data-price="₹1,499">
+
+                    <img src="https://i.pinimg.com/736x/ac/ae/0f/acae0f19de54e8af64cc169466a899d5.jpg" alt="Video 1"
+                        class="w-full h-full object-cover">
+
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="relative">
+                            <span class="absolute h-16 w-16 rounded-full bg-red-500 opacity-40 animate-wave"></span>
+                            <span
+                                class="absolute h-16 w-16 rounded-full bg-red-500 opacity-35 animate-wave delay-[400ms]"></span>
+                            <span
+                                class="absolute h-16 w-16 rounded-full bg-red-500 opacity-30 animate-wave delay-[800ms]"></span>
+                            <span
+                                class="absolute h-16 w-16 rounded-full bg-red-500 opacity-25 animate-wave delay-[1200ms]"></span>
+                            <span
+                                class="absolute h-16 w-16 rounded-full bg-red-500 opacity-20 animate-wave delay-[1600ms]"></span>
+
+                            <div
+                                class="relative flex items-center justify-center h-16 w-16 rounded-full bg-red-600 text-white shadow-lg hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-play text-xl ml-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popup Modal -->
+    <div id="videoModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+
+        <!-- Premium 3D Close Button fixed top-right -->
+        <button id="closeModal"
+        class="fixed top-5 right-5 w-14 h-14 rounded-full bg-gradient-to-br from-red-600 to-red-500 shadow-2xl flex items-center justify-center text-white text-3xl font-bold leading-none hover:from-red-700 hover:to-red-600 active:scale-95 transition-transform z-50"
+        title="Close">
+        <span class="-translate-y-0.5 inline-block">&times;</span>
+    </button>
+    
+        <!-- Modal Content -->
+        <div
+            class="backdrop-blur-xl bg-white/90 w-11/12 md:w-4/5 lg:w-3/5 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-fadeIn">
+
+            <!-- Left: Video -->
+            <div class="w-full md:w-3/5 h-[200px] sm:h-[300px] md:h-auto bg-black flex items-center justify-center">
+                <iframe id="videoFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen
+                    class="w-full h-full rounded-lg"></iframe>
+            </div>
+
+            <!-- Right: Product Info -->
+            <div class="w-full md:w-2/5 p-6 flex flex-col justify-between">
+                <div>
+                    <h3 id="productName" class="text-2xl font-bold text-gray-800">Product Name</h3>
+                    <p id="productPrice" class="text-pink-600 text-xl font-semibold mt-2">₹0</p>
+
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-sm text-gray-600 font-medium">In Stock</span>
+                    </div>
+
+                    <p class="text-gray-600 mt-4">
+                        Order this product while watching the video. Limited time offer available!
+                    </p>
+                </div>
+
+                <div class="mt-6 flex items-center gap-3">
+                    <button
+                        class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-lg text-lg font-bold hover:bg-gray-300 transition"
+                        id="decreaseQty">-</button>
+                    <span id="quantity" class="text-lg font-semibold">1</span>
+                    <button
+                        class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-lg text-lg font-bold hover:bg-gray-300 transition"
+                        id="increaseQty">+</button>
+                </div>
+
+                <div class="mt-6 flex gap-3">
+                    <button
+                        class="flex-1 px-5 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition">
+                        Add to Cart
+                    </button>
+                    <button
+                        class="flex-1 px-5 py-3 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
+                        Buy Now
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <!--About Section-->
     <section class="bg-gray-100 py-16">

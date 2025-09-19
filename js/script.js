@@ -224,6 +224,54 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
+
+//------------------------js For Video-Com pop up---------------------------------------
+
+document.addEventListener("DOMContentLoaded", () => {
+    const videoCards = document.querySelectorAll(".video-card");
+    const videoModal = document.getElementById("videoModal");
+    const videoFrame = document.getElementById("videoFrame");
+    const closeModal = document.getElementById("closeModal");
+
+    const productName = document.getElementById("productName");
+    const productPrice = document.getElementById("productPrice");
+
+    // Thumbnail click
+    videoCards.forEach((card) => {
+        card.addEventListener("click", () => {
+            const videoUrl = card.getAttribute("data-video") || "https://www.youtube.com/embed/tgbNymZ7vqY";
+            const name = card.getAttribute("data-name") || "Sample Product";
+            const price = card.getAttribute("data-price") || "₹999";
+
+            videoFrame.src = videoUrl + "?autoplay=1";
+            productName.textContent = name;
+            productPrice.textContent = price;
+
+            videoModal.classList.remove("hidden");
+        });
+    });
+
+    // Close modal
+    closeModal.addEventListener("click", (e) => {
+        e.stopPropagation();
+        videoModal.classList.add("hidden");
+        videoFrame.src = "";
+    });
+
+    // Close when clicking outside
+    videoModal.addEventListener("click", (e) => {
+        if (e.target === videoModal) {
+            videoModal.classList.add("hidden");
+            videoFrame.src = "";
+        }
+    });
+});
+
+
+
+
+//--------------------------------------------------------------------------
 // ---------- Tab Scroll + Zoom + Section Sync ----------
 (function () {
     const menuTabs = document.getElementById('menu-tabs');
@@ -366,4 +414,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 })();
 
-  
+
