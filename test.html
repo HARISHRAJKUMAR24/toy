@@ -4,76 +4,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scrollable Menu Tabs with Tailwind</title>
+  <title>Glow Shadow Tabs</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="border-gray-800 font-sans scroll-smooth relative">
+<body class="font-sans scroll-smooth bg-gray-50">
 
-  <div class="flex flex-col p-5 gap-5 ">
+  <div class="flex flex-col p-5 gap-5">
 
     <!-- Scrollable Tabs -->
     <div id="menu-tabs"
-      class="flex overflow-x-auto snap-x snap-proximity gap-3 px-[50%] whitespace-nowrap cursor-grab hide-scrollbar">
-      <button
-        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
-        data-section="section1">Indo-Chinese Starters</button>
-      <button
-        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
-        data-section="section2">Thai Starters</button>
-      <button
-        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
-        data-section="section3">Harmony Starters</button>
-      <button
-        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
-        data-section="section4">Heritage Starters</button>
-      <button
-        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
-        data-section="section5">Special Soya Chaap</button>
+      class="flex overflow-x-auto snap-x snap-proximity gap-6 px-[50%] py-3 whitespace-nowrap hide-scrollbar cursor-grab">
+
+      <!-- Tab 1 -->
+      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section1">
+        <div
+          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
+          <img src="./images/chinese.jpg" alt="Indo-Chinese" class="w-full h-full object-cover">
+        </div>
+        <span class="mt-2 text-sm font-medium text-gray-700">Indo-Chinese</span>
+      </button>
+
+      <!-- Tab 2 -->
+      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section2">
+        <div
+          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
+          <img src="./images/" alt="Thai" class="w-full h-full object-cover">
+        </div>
+        <span class="mt-2 text-sm font-medium text-gray-700">Thai Starters</span>
+      </button>
+
+      <!-- Tab 3 -->
+      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section3">
+        <div
+          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
+          <img src="./images/harmony.jpg" alt="Harmony" class="w-full h-full object-cover">
+        </div>
+        <span class="mt-2 text-sm font-medium text-gray-700">Harmony</span>
+      </button>
+
+      <!-- Tab 4 -->
+      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section4">
+        <div
+          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
+          <img src="./images/heritage.jpg" alt="Heritage" class="w-full h-full object-cover">
+        </div>
+        <span class="mt-2 text-sm font-medium text-gray-700">Heritage</span>
+      </button>
+
+      <!-- Tab 5 -->
+      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section5">
+        <div
+          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
+          <img src="./images/soya.jpg" alt="Soya Chaap" class="w-full h-full object-cover">
+        </div>
+        <span class="mt-2 text-sm font-medium text-gray-700">Soya Chaap</span>
+      </button>
     </div>
 
     <!-- Sections -->
-    <div class="menu-section hidden pt-6 transition-all duration-300" id="section1">
+    <div class="menu-section hidden pt-6" id="section1">
       <h2 class="text-2xl font-semibold mb-2">Indo-Chinese Starters</h2>
       <p>Delicious Gobi 65, Paneer 65, and Veg Manchurian.</p>
     </div>
-
-    <div class="menu-section hidden pt-6 transition-all duration-300" id="section2">
+    <div class="menu-section hidden pt-6" id="section2">
       <h2 class="text-2xl font-semibold mb-2">Thai Starters</h2>
       <p>Crispy Spring Rolls and Chicken Skewers with Thai Sauce.</p>
     </div>
-
-    <div class="menu-section hidden pt-6 transition-all duration-300" id="section3">
+    <div class="menu-section hidden pt-6" id="section3">
       <h2 class="text-2xl font-semibold mb-2">Harmony Starters</h2>
       <p>Yakitori Hoshi, Soya Chaap Teriyaki, and Prawn Tempura.</p>
     </div>
-
-    <div class="menu-section hidden pt-6 transition-all duration-300" id="section4">
+    <div class="menu-section hidden pt-6" id="section4">
       <h2 class="text-2xl font-semibold mb-2">Heritage Starters</h2>
       <p>Mix Veg Platter, Paneer Tikka, and Seekh Kebabs.</p>
     </div>
-
-    <div class="menu-section hidden pt-6 transition-all duration-300" id="section5">
+    <div class="menu-section hidden pt-6" id="section5">
       <h2 class="text-2xl font-semibold mb-2">Special Soya Chaap</h2>
       <p>Soya Tikka Bhuna, Soya Malai Chaap, Soya Lemon Chaap, and Soya Afghani Chaap.</p>
     </div>
-
-  </div>
-
-  <!-- Scroll-to-Top Button -->
-  <div id="up_btn" class="fixed bottom-10 right-10 opacity-0 invisible transition-opacity duration-600">
-    <button class="bg-gray-800 text-white p-3 rounded-full hover:bg-gray-700">&uarr;</button>
   </div>
 
   <script>
     const menuTabs = document.getElementById('menu-tabs');
-    const tabs = Array.from(menuTabs.children);
+    const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
     const sections = document.querySelectorAll('.menu-section');
-    const upBtn = document.getElementById('up_btn');
 
-    // Tab Scroll + Zoom + Section Sync
+    // Center tab
     function centerTab(tab) {
-      if (!tab) return;
       const containerWidth = menuTabs.clientWidth;
       const tabWidth = tab.offsetWidth;
       const tabOffset = tab.offsetLeft;
@@ -82,20 +100,29 @@
       updateActiveTab(tab);
     }
 
+    // Glow + Shadow Active Style
     function updateActiveTab(activeTab) {
-      tabs.forEach(tab => tab.classList.remove('scale-110', 'text-base', 'border-gray-500', 'shadow-lg', 'z-10'));
+      tabs.forEach(tab => {
+        const imgWrapper = tab.querySelector('.tab-img');
+        const text = tab.querySelector('span');
+        imgWrapper.classList.remove('scale-105', 'shadow-[0_0_15px_rgba(236,72,153,0.7)]', 'border-pink-500');
+        text.classList.remove('font-bold', 'text-pink-600');
+      });
       if (activeTab) {
-        activeTab.classList.add('scale-110', 'text-base', 'border-gray-500', 'shadow-lg', 'z-10');
+        const imgWrapper = activeTab.querySelector('.tab-img');
+        const text = activeTab.querySelector('span');
+        imgWrapper.classList.add('scale-105', 'shadow-[0_0_15px_rgba(236,72,153,0.7)]', 'border-pink-500');
+        text.classList.add('font-bold', 'text-pink-600');
         showSection(activeTab.dataset.section);
       }
     }
 
+    // Show section
     function showSection(sectionId) {
-      sections.forEach(sec => {
-        sec.classList.toggle('hidden', sec.id !== sectionId);
-      });
+      sections.forEach(sec => sec.classList.toggle('hidden', sec.id !== sectionId));
     }
 
+    // Click event
     tabs.forEach(tab => {
       tab.addEventListener('click', () => centerTab(tab));
     });
@@ -103,15 +130,7 @@
     // Initial activation
     centerTab(tabs[0]);
 
-    // Scroll-to-Top Button
-    function toggleUpButton() {
-      if (window.scrollY > 100) upBtn.classList.remove('opacity-0', 'invisible');
-      else upBtn.classList.add('opacity-0', 'invisible');
-    }
-    window.addEventListener('scroll', toggleUpButton);
-    upBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    // Zoom active tab on scroll
+    // Auto highlight on scroll
     menuTabs.addEventListener('scroll', () => {
       const containerCenter = menuTabs.getBoundingClientRect().left + menuTabs.clientWidth / 2;
       let closestTab = null;
@@ -139,7 +158,6 @@
       scrollbar-width: none;
     }
   </style>
-
 </body>
 
 </html>

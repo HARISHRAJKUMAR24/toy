@@ -12,170 +12,54 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @layer utilities {
-            .animate-spin-slow {
-                animation: spin 8s linear infinite;
-            }
+        body {
+            overflow-x: hidden;
         }
 
-        /* Horizontal scroll for mobile */
-        .scroll-container {
-            overflow-x: auto;
-            scrollbar-width: none;
-            /* Firefox */
-            -ms-overflow-style: none;
-            /* IE/Edge */
-        }
-
-        .scroll-container::-webkit-scrollbar {
+        /* Hide scrollbar */
+        .hide-scrollbar::-webkit-scrollbar {
             display: none;
-            /* Chrome, Safari */
         }
 
-        .tab-button.zoomed .tab-img {
-            transform: scale(1.2);
-            border-color: #6366f1;
-            /* Tailwind Indigo-500 */
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-
-        /* fade at bottom of product section */
-        .menu-section::after {
-            content: "";
-            display: block;
-            height: 50px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-            position: sticky;
-            bottom: 0;
+        /* Smooth text zoom */
+        .tab-button span {
+            display: inline-block;
+            transition: all 0.3s ease;
         }
-         .menu-container {
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      gap: 20px;
-    }
 
-    /* Scrollable Tabs */
-    .menu-tabs {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x proximity;
-      scroll-behavior: smooth;
-      gap: 12px;
-      padding: 16px 50%;
-      white-space: nowrap;
-      cursor: grab;
-    }
+        .tab-img {
+            transition: all 0.3s ease;
+        }
 
-    .menu-tabs::-webkit-scrollbar {
-      display: none;
-    }
+        .tab-button img {
+            transition: all 0.3s ease;
+        }
 
-    .menu-tabs::before,
-    .menu-tabs::after {
-      content: '';
-      flex: 0 0 calc(50% - 6px);
-      pointer-events: none;
-    }
+        .tab-button.active .tab-img {
+            border-color: #ec4899;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+            transform: scale(1.1);
+        }
 
-    /* Tab Buttons */
-    .tab-button {
-      flex: 0 0 auto;
-      padding: 8px 16px;
-      border-radius: 6px;
-      background: #1a1a1a00;
-      color: #EFE7D2;
-      border: 2px solid #333330;
-      font-size: 14px;
-      transition: transform 0.2s ease, font-size 0.2s ease, border-color 0.35s ease;
-      white-space: nowrap;
-    }
+        .tab-button.active img {
+            transform: scale(1.1);
+        }
 
-    .tab-button.zoomed {
-      transform: scale(1.15);
-      font-size: 15px;
-      border-color: #4E4C47;
-      z-index: 1;
-      box-shadow: 0 0 6px rgba(78, 76, 71, 0.68);
-    }
-
-    .tab-button:hover {
-      border-color: #4E4C47;
-      cursor: pointer;
-    }
-
-    /* Sections */
-    .menu-section {
-      display: none;
-      padding-top: 24px;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
-    }
-
-    .menu-section.active {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Scroll-to-top Button */
-    .top-btn {
-      position: fixed;
-      bottom: 40px;
-      right: 40px;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
-    }
-
-    .top-btn.show {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .top-btn button {
-      background-color: #222;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .top-btn button:hover {
-      background-color: #444;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .menu-tabs {
-        padding: 12px 16px;
-        gap: 8px;
-      }
-
-      .tab-button {
-        font-size: 13px;
-        padding: 8px 12px;
-      }
-
-      .tab-button.zoomed {
-        font-size: 14px;
-        transform: scale(1.12);
-      }
-
-      .top-btn {
-        bottom: 20px;
-        right: 20px;
-      }
-    }
+        .tab-button.active span {
+            color: #ec4899;
+            font-weight: bold;
+            transform: scale(1.1);
+        }
     </style>
-
 
 </head>
 
-<body class="bg-pink-50 font-sans min-h-screen">
+<body class="bg-pink-50 font-sans min-h-screen overflow-x-hidden">
     <!-- Top Strip -->
     <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
         Minimum Order: ₹499
@@ -424,197 +308,141 @@
         </div>
     </section>
 
-    <section class="py-8 bg-gray-50">
-        <div class="max-w-6xl mx-auto px-4">
-            <!-- Category Tabs -->
-            <div class="overflow-x-auto">
-                <div id="menu-tabs" class="flex gap-6 min-w-max items-center px-4">
-
-                    <!-- Tab Example -->
-                    <button class="tab-button flex flex-col items-center cursor-pointer" data-section="rubber-toys">
-                        <div
-                            class="tab-img w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-gray-200 transition-all duration-300">
-                            <img src="rubber-toys.jpg" alt="Rubber Toys"
-                                class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700">Rubber Toys</span>
-                    </button>
-
-                    <button class="tab-button flex flex-col items-center cursor-pointer" data-section="disney-toys">
-                        <div
-                            class="tab-img w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-gray-200 transition-all duration-300">
-                            <img src="disney-toys.jpg" alt="Disney Toys"
-                                class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700">Disney Toys</span>
-                    </button>
-
-                    <button class="tab-button flex flex-col items-center cursor-pointer" data-section="marvel-toys">
-                        <div
-                            class="tab-img w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-gray-200 transition-all duration-300">
-                            <img src="marvel-toys.jpg" alt="Marvel Toys"
-                                class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700">Marvel Toys</span>
-                    </button>
-
-                    <button class="tab-button flex flex-col items-center cursor-pointer" data-section="soft-toys">
-                        <div
-                            class="tab-img w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-gray-200 transition-all duration-300">
-                            <img src="soft-toys.jpg" alt="Soft Toys" class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700">Soft Toys</span>
-                    </button>
-                    <!-- Tab Example -->
-                    <button class="tab-button flex flex-col items-center cursor-pointer" data-section="rubber-toys">
-                        <div
-                            class="tab-img w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-gray-200 transition-all duration-300">
-                            <img src="rubber-toys.jpg" alt="Rubber Toys"
-                                class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700">Rubber Toys</span>
-                    </button>
-
-                    <button class="tab-button flex flex-col items-center cursor-pointer" data-section="disney-toys">
-                        <div
-                            class="tab-img w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-gray-200 transition-all duration-300">
-                            <img src="disney-toys.jpg" alt="Disney Toys"
-                                class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700">Disney Toys</span>
-                    </button>
-
-                    <button class="tab-button flex flex-col items-center cursor-pointer" data-section="marvel-toys">
-                        <div
-                            class="tab-img w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-gray-200 transition-all duration-300">
-                            <img src="marvel-toys.jpg" alt="Marvel Toys"
-                                class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700">Marvel Toys</span>
-                    </button>
-
-                    <button class="tab-button flex flex-col items-center cursor-pointer" data-section="soft-toys">
-                        <div
-                            class="tab-img w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-gray-200 transition-all duration-300">
-                            <img src="soft-toys.jpg" alt="Soft Toys" class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700">Soft Toys</span>
-                    </button>
+    <div class="p-5">
+        <!-- Scrollable Tabs -->
+        <div id="menu-tabs"
+            class="flex overflow-x-auto snap-x snap-proximity gap-6 py-3 whitespace-nowrap hide-scrollbar cursor-grab px-[50%]">
+            <button class="tab-button flex flex-col items-center cursor-pointer" data-section="section1">
+                <div class="tab-img w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+                    <img src="./images/chinese.jpg" alt="Indo-Chinese" class="w-full h-full object-cover rounded-full">
                 </div>
-            </div>
+                <span class="mt-2 text-sm font-medium text-gray-700">Indo-Chinese</span>
+            </button>
 
-            <!-- Product Sections -->
-            <div class="mt-6 relative">
-                <div id="rubber-toys"
-                    class="menu-section grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 opacity-100 transition-opacity duration-500">
-                    <div class="bg-white shadow p-4 rounded">
-                        <img src="rubber-toys.jpg" class="w-full h-36 object-cover rounded" alt="">
-                        <h3 class="mt-2 font-semibold text-gray-800">Rubber Ball</h3>
-                    </div>
-                    <div class="bg-white shadow p-4 rounded">
-                        <img src="rubber-toys.jpg" class="w-full h-36 object-cover rounded" alt="">
-                        <h3 class="mt-2 font-semibold text-gray-800">Rubber Duck</h3>
-                    </div>
+            <button class="tab-button flex flex-col items-center cursor-pointer" data-section="section2">
+                <div class="tab-img w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+                    <img src="./images/thai.jpg" alt="Thai" class="w-full h-full object-cover rounded-full">
                 </div>
+                <span class="mt-2 text-sm font-medium text-gray-700">Thai Starters</span>
+            </button>
 
-                <div id="disney-toys"
-                    class="menu-section grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 opacity-0 hidden transition-opacity duration-500">
-                    <div class="bg-white shadow p-4 rounded">
-                        <img src="disney-toys.jpg" class="w-full h-36 object-cover rounded" alt="">
-                        <h3 class="mt-2 font-semibold text-gray-800">Mickey Mouse</h3>
-                    </div>
-                    <div class="bg-white shadow p-4 rounded">
-                        <img src="disney-toys.jpg" class="w-full h-36 object-cover rounded" alt="">
-                        <h3 class="mt-2 font-semibold text-gray-800">Frozen Doll</h3>
-                    </div>
+            <button class="tab-button flex flex-col items-center cursor-pointer" data-section="section3">
+                <div class="tab-img w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+                    <img src="./images/harmony.jpg" alt="Harmony" class="w-full h-full object-cover rounded-full">
                 </div>
+                <span class="mt-2 text-sm font-medium text-gray-700">Harmony</span>
+            </button>
 
-                <div id="marvel-toys"
-                    class="menu-section grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 opacity-0 hidden transition-opacity duration-500">
-                    <div class="bg-white shadow p-4 rounded">
-                        <img src="marvel-toys.jpg" class="w-full h-36 object-cover rounded" alt="">
-                        <h3 class="mt-2 font-semibold text-gray-800">Iron Man Figure</h3>
-                    </div>
+            <button class="tab-button flex flex-col items-center cursor-pointer" data-section="section4">
+                <div class="tab-img w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+                    <img src="./images/heritage.jpg" alt="Heritage" class="w-full h-full object-cover rounded-full">
                 </div>
+                <span class="mt-2 text-sm font-medium text-gray-700">Heritage</span>
+            </button>
 
-                <div id="soft-toys"
-                    class="menu-section grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 opacity-0 hidden transition-opacity duration-500">
-                    <div class="bg-white shadow p-4 rounded">
-                        <img src="soft-toys.jpg" class="w-full h-36 object-cover rounded" alt="">
-                        <h3 class="mt-2 font-semibold text-gray-800">Teddy Bear</h3>
-                    </div>
+            <button class="tab-button flex flex-col items-center cursor-pointer" data-section="section5">
+                <div class="tab-img w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+                    <img src="./images/soya.jpg" alt="Soya Chaap" class="w-full h-full object-cover rounded-full">
                 </div>
-            </div>
+                <span class="mt-2 text-sm font-medium text-gray-700">Soya Chaap</span>
+            </button>
         </div>
-    </section>
 
-  <script>
-    const menuTabs = document.getElementById('menu-tabs');
-    const tabs = Array.from(menuTabs.children);
-    const sections = document.querySelectorAll('.menu-section');
-    const upBtn = document.getElementById('up_btn');
+        <!-- Sections -->
+        <!-- Tab Sections Wrapper -->
+        <div class="p-5 relative overflow-hidden">
 
-    // ---------- Tab Scroll + Zoom + Section Sync ----------
-    function centerTab(tab) {
-      if (!tab) return;
-      const containerWidth = menuTabs.clientWidth;
-      const tabWidth = tab.offsetWidth;
-      const tabOffset = tab.offsetLeft;
-      const targetScroll = tabOffset - (containerWidth / 2) + (tabWidth / 2);
-      menuTabs.scrollTo({ left: targetScroll, behavior: 'smooth' });
-      updateActiveTab(tab);
-    }
+            <!-- Section 1 - Indo-Chinese Starters -->
+            <div class="menu-section hidden pt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                id="section1">
+                <!-- Product Card 1 -->
+                <div
+                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+                    <div class="relative">
+                        <img src="./images/board.jpe" alt="Indo-Chinese Starter"
+                            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div
+                            class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50">
+                            <span class="text-[10px] font-bold uppercase leading-tight">SAVE</span>
+                            <span class="text-lg font-black leading-none">20%</span>
+                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+                        </div>
+                        <button
+                            class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg transition transform hover:scale-110">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col">
+                        <h3
+                            class="text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
+                            Indo-Chinese Starter</h3>
+                        <div class="flex items-center mb-2 text-yellow-400">
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                                class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                                class="bi bi-star-half"></i>
+                            <span class="ml-2 text-sm text-gray-500">(5 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="space-x-2">
+                                <span class="text-lg font-bold text-gray-900">₹15,999</span>
+                                <span class="text-sm text-gray-400 line-through">₹19,999</span>
+                            </div>
+                            <button
+                                class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 px-4 py-1 rounded-md shadow transition-all duration-500 bg-[length:200%_100%] bg-left hover:bg-right">Add</button>
+                        </div>
+                    </div>
+                </div>
 
-    function updateActiveTab(activeTab) {
-      tabs.forEach(tab => tab.classList.remove('zoomed'));
-      if (activeTab) activeTab.classList.add('zoomed');
-      showSection(activeTab.dataset.section);
-    }
+                <!-- Add more product cards for Section 1 here -->
+            </div>
 
-    function showSection(sectionId) {
-      sections.forEach(sec => {
-        sec.classList.toggle('active', sec.id === sectionId);
-      });
-    }
+            <!-- Section 2 - Thai Starters -->
+            <div class="menu-section hidden pt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                id="section2">
+                <div
+                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+                    <div class="relative">
+                        <img src="./images/thai.jpg" alt="Thai Starter"
+                            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div
+                            class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50">
+                            <span class="text-[10px] font-bold uppercase leading-tight">SAVE</span>
+                            <span class="text-lg font-black leading-none">15%</span>
+                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+                        </div>
+                        <button
+                            class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg transition transform hover:scale-110">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col">
+                        <h3
+                            class="text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
+                            Thai Starter</h3>
+                        <div class="flex items-center mb-2 text-yellow-400">
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                                class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                                class="bi bi-star-half"></i>
+                            <span class="ml-2 text-sm text-gray-500">(3 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="space-x-2">
+                                <span class="text-lg font-bold text-gray-900">₹12,499</span>
+                                <span class="text-sm text-gray-400 line-through">₹14,999</span>
+                            </div>
+                            <button
+                                class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 px-4 py-1 rounded-md shadow transition-all duration-500 bg-[length:200%_100%] bg-left hover:bg-right">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    // Click event
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => centerTab(tab));
-    });
-
-    // Initial activation
-    centerTab(tabs[0]);
-
-    // ---------- Scroll-to-Top Button ----------
-    function toggleUpButton() {
-      if (window.scrollY > 100) upBtn.classList.add('show');
-      else upBtn.classList.remove('show');
-    }
-
-    window.addEventListener('scroll', toggleUpButton);
-    upBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    // ---------- Zoom active tab on scroll ----------
-    menuTabs.addEventListener('scroll', () => {
-      const containerCenter = menuTabs.getBoundingClientRect().left + menuTabs.clientWidth / 2;
-      let closestTab = null;
-      let minDistance = Infinity;
-      tabs.forEach(tab => {
-        const tabCenter = tab.getBoundingClientRect().left + tab.offsetWidth / 2;
-        const distance = Math.abs(containerCenter - tabCenter);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestTab = tab;
-        }
-      });
-      updateActiveTab(closestTab);
-    });
-
-  </script>
+            <!-- Section 3, 4, 5 -->
+            <!-- Repeat same structure for other sections with their own products -->
+        </div>
 
 
-
-
+    </div>
 
 
     <!-- Modern Footer with Logo & Disclaimer Heading -->
