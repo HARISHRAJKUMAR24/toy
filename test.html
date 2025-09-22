@@ -1,155 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shop with Videos</title>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <title>Scrollable Menu Tabs with Tailwind</title>
   <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="border-gray-800 font-sans scroll-smooth relative">
+
+  <div class="flex flex-col p-5 gap-5 ">
+
+    <!-- Scrollable Tabs -->
+    <div id="menu-tabs"
+      class="flex overflow-x-auto snap-x snap-proximity gap-3 px-[50%] whitespace-nowrap cursor-grab hide-scrollbar">
+      <button
+        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
+        data-section="section1">Indo-Chinese Starters</button>
+      <button
+        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
+        data-section="section2">Thai Starters</button>
+      <button
+        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
+        data-section="section3">Harmony Starters</button>
+      <button
+        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
+        data-section="section4">Heritage Starters</button>
+      <button
+        class="tab-button flex-shrink-0 px-4 py-2 rounded border border-gray-800 transition-transform duration-200 text-sm hover:border-gray-600"
+        data-section="section5">Special Soya Chaap</button>
+    </div>
+
+    <!-- Sections -->
+    <div class="menu-section hidden pt-6 transition-all duration-300" id="section1">
+      <h2 class="text-2xl font-semibold mb-2">Indo-Chinese Starters</h2>
+      <p>Delicious Gobi 65, Paneer 65, and Veg Manchurian.</p>
+    </div>
+
+    <div class="menu-section hidden pt-6 transition-all duration-300" id="section2">
+      <h2 class="text-2xl font-semibold mb-2">Thai Starters</h2>
+      <p>Crispy Spring Rolls and Chicken Skewers with Thai Sauce.</p>
+    </div>
+
+    <div class="menu-section hidden pt-6 transition-all duration-300" id="section3">
+      <h2 class="text-2xl font-semibold mb-2">Harmony Starters</h2>
+      <p>Yakitori Hoshi, Soya Chaap Teriyaki, and Prawn Tempura.</p>
+    </div>
+
+    <div class="menu-section hidden pt-6 transition-all duration-300" id="section4">
+      <h2 class="text-2xl font-semibold mb-2">Heritage Starters</h2>
+      <p>Mix Veg Platter, Paneer Tikka, and Seekh Kebabs.</p>
+    </div>
+
+    <div class="menu-section hidden pt-6 transition-all duration-300" id="section5">
+      <h2 class="text-2xl font-semibold mb-2">Special Soya Chaap</h2>
+      <p>Soya Tikka Bhuna, Soya Malai Chaap, Soya Lemon Chaap, and Soya Afghani Chaap.</p>
+    </div>
+
+  </div>
+
+  <!-- Scroll-to-Top Button -->
+  <div id="up_btn" class="fixed bottom-10 right-10 opacity-0 invisible transition-opacity duration-600">
+    <button class="bg-gray-800 text-white p-3 rounded-full hover:bg-gray-700">&uarr;</button>
+  </div>
+
+  <script>
+    const menuTabs = document.getElementById('menu-tabs');
+    const tabs = Array.from(menuTabs.children);
+    const sections = document.querySelectorAll('.menu-section');
+    const upBtn = document.getElementById('up_btn');
+
+    // Tab Scroll + Zoom + Section Sync
+    function centerTab(tab) {
+      if (!tab) return;
+      const containerWidth = menuTabs.clientWidth;
+      const tabWidth = tab.offsetWidth;
+      const tabOffset = tab.offsetLeft;
+      const targetScroll = tabOffset - (containerWidth / 2) + (tabWidth / 2);
+      menuTabs.scrollTo({ left: targetScroll, behavior: 'smooth' });
+      updateActiveTab(tab);
+    }
+
+    function updateActiveTab(activeTab) {
+      tabs.forEach(tab => tab.classList.remove('scale-110', 'text-base', 'border-gray-500', 'shadow-lg', 'z-10'));
+      if (activeTab) {
+        activeTab.classList.add('scale-110', 'text-base', 'border-gray-500', 'shadow-lg', 'z-10');
+        showSection(activeTab.dataset.section);
+      }
+    }
+
+    function showSection(sectionId) {
+      sections.forEach(sec => {
+        sec.classList.toggle('hidden', sec.id !== sectionId);
+      });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => centerTab(tab));
+    });
+
+    // Initial activation
+    centerTab(tabs[0]);
+
+    // Scroll-to-Top Button
+    function toggleUpButton() {
+      if (window.scrollY > 100) upBtn.classList.remove('opacity-0', 'invisible');
+      else upBtn.classList.add('opacity-0', 'invisible');
+    }
+    window.addEventListener('scroll', toggleUpButton);
+    upBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Zoom active tab on scroll
+    menuTabs.addEventListener('scroll', () => {
+      const containerCenter = menuTabs.getBoundingClientRect().left + menuTabs.clientWidth / 2;
+      let closestTab = null;
+      let minDistance = Infinity;
+      tabs.forEach(tab => {
+        const tabCenter = tab.getBoundingClientRect().left + tab.offsetWidth / 2;
+        const distance = Math.abs(containerCenter - tabCenter);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestTab = tab;
+        }
+      });
+      updateActiveTab(closestTab);
+    });
+  </script>
+
   <style>
-    @keyframes wave {
-      0% { transform: scale(1); opacity: 0.6; }
-      70% { transform: scale(2.2); opacity: 0; }
-      100% { opacity: 0; }
+    /* Hide scrollbar */
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
     }
-    .animate-wave {
-      animation: wave 3s ease-out infinite;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .animate-fadeIn {
-      animation: fadeIn 0.3s ease-out;
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
-</head>
-<body class="bg-gray-50">
-
-<!-- Shop with Videos Section -->
-<section class="py-12">
-  <div class="max-w-7xl mx-auto px-4">
-    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Shop with Videos</h2>
-
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      <div class="video-card relative w-full h-[250px] sm:h-[300px] md:h-[350px] bg-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer"
-           data-video="https://www.youtube.com/embed/tgbNymZ7vqY"
-           data-name="Premium Teddy Bear"
-           data-price="₹1,499">
-
-        <img src="https://i.pinimg.com/736x/ac/ae/0f/acae0f19de54e8af64cc169466a899d5.jpg" 
-             alt="Video 1" class="w-full h-full object-cover">
-
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="relative">
-            <span class="absolute h-16 w-16 rounded-full bg-red-500 opacity-40 animate-wave"></span>
-            <span class="absolute h-16 w-16 rounded-full bg-red-500 opacity-35 animate-wave delay-[400ms]"></span>
-            <span class="absolute h-16 w-16 rounded-full bg-red-500 opacity-30 animate-wave delay-[800ms]"></span>
-            <span class="absolute h-16 w-16 rounded-full bg-red-500 opacity-25 animate-wave delay-[1200ms]"></span>
-            <span class="absolute h-16 w-16 rounded-full bg-red-500 opacity-20 animate-wave delay-[1600ms]"></span>
-
-            <div class="relative flex items-center justify-center h-16 w-16 rounded-full bg-red-600 text-white shadow-lg hover:scale-110 transition-transform duration-300">
-              <i class="fas fa-play text-xl ml-1"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Popup Modal -->
-<div id="videoModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-  
-  <!-- Premium 3D Close Button fixed top-right -->
-  <button id="closeModal"
-    class="fixed top-5 right-5 bg-red-600 w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-white text-3xl font-bold hover:bg-red-700 active:scale-95 transition-transform z-50"
-    title="Close">&times;</button>
-
-  <!-- Modal Content -->
-  <div class="backdrop-blur-xl bg-white/90 w-11/12 md:w-4/5 lg:w-3/5 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-fadeIn">
-
-    <!-- Left: Video -->
-    <div class="w-full md:w-3/5 h-[200px] sm:h-[300px] md:h-auto bg-black flex items-center justify-center">
-      <iframe id="videoFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen class="w-full h-full rounded-lg"></iframe>
-    </div>
-
-    <!-- Right: Product Info -->
-    <div class="w-full md:w-2/5 p-6 flex flex-col justify-between">
-      <div>
-        <h3 id="productName" class="text-2xl font-bold text-gray-800">Product Name</h3>
-        <p id="productPrice" class="text-pink-600 text-xl font-semibold mt-2">₹0</p>
-
-        <div class="flex items-center gap-2 mt-2">
-          <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
-          <span class="text-sm text-gray-600 font-medium">In Stock</span>
-        </div>
-
-        <p class="text-gray-600 mt-4">
-          Order this product while watching the video. Limited time offer available!
-        </p>
-      </div>
-
-      <div class="mt-6 flex items-center gap-3">
-        <button class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-lg text-lg font-bold hover:bg-gray-300 transition" id="decreaseQty">-</button>
-        <span id="quantity" class="text-lg font-semibold">1</span>
-        <button class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-lg text-lg font-bold hover:bg-gray-300 transition" id="increaseQty">+</button>
-      </div>
-
-      <div class="mt-6 flex gap-3">
-        <button class="flex-1 px-5 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition">
-          Add to Cart
-        </button>
-        <button class="flex-1 px-5 py-3 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
-          Buy Now
-        </button>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const videoCards = document.querySelectorAll(".video-card");
-  const videoModal = document.getElementById("videoModal");
-  const videoFrame = document.getElementById("videoFrame");
-  const closeModal = document.getElementById("closeModal");
-
-  const productName = document.getElementById("productName");
-  const productPrice = document.getElementById("productPrice");
-
-  // Thumbnail click
-  videoCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const videoUrl = card.getAttribute("data-video") || "https://www.youtube.com/embed/tgbNymZ7vqY";
-      const name = card.getAttribute("data-name") || "Sample Product";
-      const price = card.getAttribute("data-price") || "₹999";
-
-      videoFrame.src = videoUrl + "?autoplay=1";
-      productName.textContent = name;
-      productPrice.textContent = price;
-
-      videoModal.classList.remove("hidden");
-    });
-  });
-
-  // Close modal
-  closeModal.addEventListener("click", (e) => {
-    e.stopPropagation();
-    videoModal.classList.add("hidden");
-    videoFrame.src = "";
-  });
-
-  // Close when clicking outside
-  videoModal.addEventListener("click", (e) => {
-    if (e.target === videoModal) {
-      videoModal.classList.add("hidden");
-      videoFrame.src = "";
-    }
-  });
-});
-</script>
 
 </body>
+
 </html>
