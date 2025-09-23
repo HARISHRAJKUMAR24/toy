@@ -226,7 +226,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-//------------------------js For Video-Com pop up---------------------------------------
+// ===============================
+// js For Video-Com pop up
+// ===============================
 
 document.addEventListener("DOMContentLoaded", () => {
     const videoCards = document.querySelectorAll(".video-card");
@@ -268,69 +270,73 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//product category
+
+// ===============================
+// product category
+// ===============================
+
 
 document.addEventListener('DOMContentLoaded', () => {
-  const menuTabs = document.getElementById('menu-tabs');
-  const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
-  const sections = document.querySelectorAll('.menu-section');
+    const menuTabs = document.getElementById('menu-tabs');
+    const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
+    const sections = document.querySelectorAll('.menu-section');
 
-  // Highlight tab and show section
-  function updateActiveTab(activeTab) {
-    tabs.forEach(tab => tab.classList.remove('active'));
-    if (!activeTab) return;
-    activeTab.classList.add('active');
-    sections.forEach(sec => sec.classList.toggle('hidden', sec.id !== activeTab.dataset.section));
-  }
+    // Highlight tab and show section
+    function updateActiveTab(activeTab) {
+        tabs.forEach(tab => tab.classList.remove('active'));
+        if (!activeTab) return;
+        activeTab.classList.add('active');
+        sections.forEach(sec => sec.classList.toggle('hidden', sec.id !== activeTab.dataset.section));
+    }
 
-  // Center a tab
-  function centerTab(tab) {
-    if (!tab) return;
-    const containerWidth = menuTabs.clientWidth;
-    const tabCenter = tab.offsetLeft + tab.offsetWidth / 2;
-    let targetScroll = tabCenter - containerWidth / 2;
-    menuTabs.scrollTo({ left: targetScroll, behavior: 'smooth' });
-    updateActiveTab(tab);
-  }
-
-  // Click to center
-  tabs.forEach(tab => tab.addEventListener('click', () => centerTab(tab)));
-
-  // Drag scrolling
-  let isDown = false, startX, scrollLeft;
-  menuTabs.addEventListener('mousedown', e => {
-    isDown = true;
-    menuTabs.classList.add('cursor-grabbing');
-    startX = e.pageX - menuTabs.offsetLeft;
-    scrollLeft = menuTabs.scrollLeft;
-  });
-  menuTabs.addEventListener('mouseleave', () => isDown = false);
-  menuTabs.addEventListener('mouseup', () => isDown = false);
-  menuTabs.addEventListener('mousemove', e => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - menuTabs.offsetLeft;
-    const walk = (x - startX) * 2;
-    menuTabs.scrollLeft = scrollLeft - walk;
-  });
-
-  // Snap closest tab after scroll
-  let scrollTimeout;
-  menuTabs.addEventListener('scroll', () => {
-    if (scrollTimeout) clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      const containerCenter = menuTabs.scrollLeft + menuTabs.clientWidth / 2;
-      let closestTab = tabs[0];
-      let minDistance = Infinity;
-      tabs.forEach(tab => {
+    // Center a tab
+    function centerTab(tab) {
+        if (!tab) return;
+        const containerWidth = menuTabs.clientWidth;
         const tabCenter = tab.offsetLeft + tab.offsetWidth / 2;
-        const distance = Math.abs(containerCenter - tabCenter);
-        if (distance < minDistance) { minDistance = distance; closestTab = tab; }
-      });
-      centerTab(closestTab);
-    }, 100);
-  });
+        let targetScroll = tabCenter - containerWidth / 2;
+        menuTabs.scrollTo({ left: targetScroll, behavior: 'smooth' });
+        updateActiveTab(tab);
+    }
 
-  // Initialize first tab
-  centerTab(tabs[0]);
+    // Click to center
+    tabs.forEach(tab => tab.addEventListener('click', () => centerTab(tab)));
+
+    // Drag scrolling
+    let isDown = false, startX, scrollLeft;
+    menuTabs.addEventListener('mousedown', e => {
+        isDown = true;
+        menuTabs.classList.add('cursor-grabbing');
+        startX = e.pageX - menuTabs.offsetLeft;
+        scrollLeft = menuTabs.scrollLeft;
+    });
+    menuTabs.addEventListener('mouseleave', () => isDown = false);
+    menuTabs.addEventListener('mouseup', () => isDown = false);
+    menuTabs.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - menuTabs.offsetLeft;
+        const walk = (x - startX) * 2;
+        menuTabs.scrollLeft = scrollLeft - walk;
+    });
+
+    // Snap closest tab after scroll
+    let scrollTimeout;
+    menuTabs.addEventListener('scroll', () => {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const containerCenter = menuTabs.scrollLeft + menuTabs.clientWidth / 2;
+            let closestTab = tabs[0];
+            let minDistance = Infinity;
+            tabs.forEach(tab => {
+                const tabCenter = tab.offsetLeft + tab.offsetWidth / 2;
+                const distance = Math.abs(containerCenter - tabCenter);
+                if (distance < minDistance) { minDistance = distance; closestTab = tab; }
+            });
+            centerTab(closestTab);
+        }, 100);
+    });
+
+    // Initialize first tab
+    centerTab(tabs[0]);
 });

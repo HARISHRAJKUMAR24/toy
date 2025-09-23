@@ -1,163 +1,542 @@
-<!DOCTYPE html>
-<html lang="en">
+<section class="py-16 px-4 bg-white">
+  <div class="container mx-auto">
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-800 mb-4">Shop By Category</h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">Explore our diverse collection of toys for all ages and
+        interests</p>
+    </div>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glow Shadow Tabs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
 
-<body class="font-sans scroll-smooth bg-gray-50">
 
-  <div class="flex flex-col p-5 gap-5">
 
-    <!-- Scrollable Tabs -->
-    <div id="menu-tabs"
-      class="flex overflow-x-auto snap-x snap-proximity gap-6 px-[50%] py-3 whitespace-nowrap hide-scrollbar cursor-grab">
+    <!-- Categories Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
 
-      <!-- Tab 1 -->
-      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section1">
-        <div
-          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
-          <img src="./images/chinese.jpg" alt="Indo-Chinese" class="w-full h-full object-cover">
+      <!-- Category 1 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+            alt="Building Blocks"
+            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
         </div>
-        <span class="mt-2 text-sm font-medium text-gray-700">Indo-Chinese</span>
-      </button>
-
-      <!-- Tab 2 -->
-      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section2">
-        <div
-          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
-          <img src="./images/" alt="Thai" class="w-full h-full object-cover">
+        <div class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Building
+            Blocks</h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
+              class="fill-current"></path>
+          </svg>
         </div>
-        <span class="mt-2 text-sm font-medium text-gray-700">Thai Starters</span>
-      </button>
+      </div>
 
-      <!-- Tab 3 -->
-      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section3">
-        <div
-          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
-          <img src="./images/harmony.jpg" alt="Harmony" class="w-full h-full object-cover">
+      <!-- Category 2 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+            alt="Soft Toys" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
         </div>
-        <span class="mt-2 text-sm font-medium text-gray-700">Harmony</span>
-      </button>
+        <div class="p-3 bg-gradient-to-br from-blue-200 to-teal-200 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Soft Toys
+          </h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path class="fill-current"
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
+            </path>
+          </svg>
+        </div>
+      </div>
 
-      <!-- Tab 4 -->
-      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section4">
-        <div
-          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
-          <img src="./images/heritage.jpg" alt="Heritage" class="w-full h-full object-cover">
+      <!-- Category 3 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img src="./images/board.jpe" alt="Board Games"
+            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
         </div>
-        <span class="mt-2 text-sm font-medium text-gray-700">Heritage</span>
-      </button>
+        <div class="p-3 bg-gradient-to-br from-pink-200 to-blue-200 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Board Games
+          </h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path class="fill-current"
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
+            </path>
+          </svg>
+        </div>
+      </div>
 
-      <!-- Tab 5 -->
-      <button class="tab-button flex flex-col items-center cursor-pointer w-32" data-section="section5">
-        <div
-          class="tab-img w-28 h-28 rounded-md overflow-hidden border border-gray-200 shadow transition-all duration-300">
-          <img src="./images/soya.jpg" alt="Soya Chaap" class="w-full h-full object-cover">
+      <!-- Category 4 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+            alt="Building Blocks"
+            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
         </div>
-        <span class="mt-2 text-sm font-medium text-gray-700">Soya Chaap</span>
+        <div class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Building
+            Blocks</h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
+              class="fill-current"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Category 5 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+            alt="Soft Toys" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
+        </div>
+        <div class="p-3 bg-gradient-to-br from-blue-200 to-teal-200 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Soft Toys
+          </h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path class="fill-current"
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
+            </path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Category 6 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img src="./images/board.jpe" alt="Board Games"
+            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
+        </div>
+        <div class="p-3 bg-gradient-to-br from-pink-200 to-blue-200 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Board Games
+          </h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path class="fill-current"
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
+            </path>
+          </svg>
+        </div>
+      </div>
+      <!-- Category 7 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+            alt="Building Blocks"
+            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
+        </div>
+        <div class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Building
+            Blocks</h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
+              class="fill-current"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Category 8 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+            alt="Soft Toys" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
+        </div>
+        <div class="p-3 bg-gradient-to-br from-blue-200 to-teal-200 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Soft Toys
+          </h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path class="fill-current"
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
+            </path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Category 9 -->
+      <div
+        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+        <div class="relative overflow-hidden">
+          <img src="./images/board.jpe" alt="Board Games"
+            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+          </div>
+        </div>
+        <div class="p-3 bg-gradient-to-br from-pink-200 to-blue-200 flex-1 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Board Games
+          </h3>
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+            <path class="fill-current"
+              d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
+            </path>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- CTA Button with smaller size and responsive -->
+    <div class="flex justify-center mt-8">
+      <button type="submit"
+        class="flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-gray-800 hover:text-white bg-gradient-to-r from-pink-400 via-pink-500 to-indigo-400 lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
+        Explore
+        <svg
+          class="w-7 h-7 sm:w-8 sm:h-8 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+          viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
+            class="fill-current"></path>
+        </svg>
       </button>
     </div>
 
-    <!-- Sections -->
-    <div class="menu-section hidden pt-6" id="section1">
-      <h2 class="text-2xl font-semibold mb-2">Indo-Chinese Starters</h2>
-      <p>Delicious Gobi 65, Paneer 65, and Veg Manchurian.</p>
-    </div>
-    <div class="menu-section hidden pt-6" id="section2">
-      <h2 class="text-2xl font-semibold mb-2">Thai Starters</h2>
-      <p>Crispy Spring Rolls and Chicken Skewers with Thai Sauce.</p>
-    </div>
-    <div class="menu-section hidden pt-6" id="section3">
-      <h2 class="text-2xl font-semibold mb-2">Harmony Starters</h2>
-      <p>Yakitori Hoshi, Soya Chaap Teriyaki, and Prawn Tempura.</p>
-    </div>
-    <div class="menu-section hidden pt-6" id="section4">
-      <h2 class="text-2xl font-semibold mb-2">Heritage Starters</h2>
-      <p>Mix Veg Platter, Paneer Tikka, and Seekh Kebabs.</p>
-    </div>
-    <div class="menu-section hidden pt-6" id="section5">
-      <h2 class="text-2xl font-semibold mb-2">Special Soya Chaap</h2>
-      <p>Soya Tikka Bhuna, Soya Malai Chaap, Soya Lemon Chaap, and Soya Afghani Chaap.</p>
+  </div>
+</section>
+
+<!-- Product Section -->
+<section class="py-6 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">Lates Product</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <!-- Product 1 - Flexible Ribbon Badge -->
+      <div class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+        <div class="relative">
+          <img src="./images/board.jpe" alt="Product name"
+            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+
+          <!-- Flexible Ribbon Badge (unchanged) -->
+          <div
+            class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
+            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+            <span class="text-[10px] font-bold uppercase leading-tight">SAVE</span>
+            <span class="text-lg font-black leading-none">20%</span>
+            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+          </div>
+
+          <!-- Wishlist Button -->
+          <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
+           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
+           transition transform hover:scale-110">
+            <i class="fa-solid fa-heart"></i>
+          </button>
+
+        </div>
+
+        <!-- Product Info -->
+        <div class="p-4 flex flex-col">
+          <h3 class="text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
+            Product with Ribbon
+          </h3>
+
+          <!-- Star Ratings -->
+          <div class="flex items-center mb-2 text-yellow-400">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-half"></i>
+            <span class="ml-2 text-sm text-gray-500">(5 reviews)</span>
+          </div>
+
+          <div class="flex items-center justify-between mt-auto">
+            <div class="space-x-2">
+              <span class="text-lg font-bold text-gray-900">₹15,999</span>
+              <span class="text-sm text-gray-400 line-through">₹19,999</span>
+            </div>
+
+            <!-- Mild Add Button -->
+            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
+                                   text-pink-700 px-4 py-1 rounded-md shadow transition-all duration-500 
+                                   bg-[length:200%_100%] bg-left hover:bg-right">
+              Add
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 - Flexible Ribbon Badge -->
+      <div class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+        <div class="relative">
+          <img src="./images/board.jpe" alt="Product name"
+            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+
+          <!-- Flexible Ribbon Badge (unchanged) -->
+          <div
+            class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
+            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+            <span class="text-[10px] font-bold uppercase leading-tight">SAVE</span>
+            <span class="text-lg font-black leading-none">20%</span>
+            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+          </div>
+
+          <!-- Wishlist Button -->
+          <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
+           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
+           transition transform hover:scale-110">
+            <i class="fa-solid fa-heart"></i>
+          </button>
+
+        </div>
+
+        <!-- Product Info -->
+        <div class="p-4 flex flex-col">
+          <h3 class="text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
+            Product with Ribbon
+          </h3>
+
+          <!-- Star Ratings -->
+          <div class="flex items-center mb-2 text-yellow-400">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-half"></i>
+            <span class="ml-2 text-sm text-gray-500">(5 reviews)</span>
+          </div>
+
+          <div class="flex items-center justify-between mt-auto">
+            <div class="space-x-2">
+              <span class="text-lg font-bold text-gray-900">₹15,999</span>
+              <span class="text-sm text-gray-400 line-through">₹19,999</span>
+            </div>
+
+            <!-- Mild Add Button -->
+            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
+                                   text-pink-700 px-4 py-1 rounded-md shadow transition-all duration-500 
+                                   bg-[length:200%_100%] bg-left hover:bg-right">
+              Add
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 - Flexible Ribbon Badge -->
+      <div class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+        <div class="relative">
+          <img src="./images/board.jpe" alt="Product name"
+            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+
+          <!-- Flexible Ribbon Badge (unchanged) -->
+          <div
+            class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
+            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+            <span class="text-[10px] font-bold uppercase leading-tight">SAVE</span>
+            <span class="text-lg font-black leading-none">20%</span>
+            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+          </div>
+
+          <!-- Wishlist Button -->
+          <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
+                       bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
+                       transition transform hover:scale-110">
+            <i class="fa-solid fa-heart"></i>
+          </button>
+
+        </div>
+
+        <!-- Product Info -->
+        <div class="p-4 flex flex-col">
+          <h3 class="text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
+            Product with Ribbon
+          </h3>
+
+          <!-- Star Ratings -->
+          <div class="flex items-center mb-2 text-yellow-400">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-half"></i>
+            <span class="ml-2 text-sm text-gray-500">(5 reviews)</span>
+          </div>
+
+          <div class="flex items-center justify-between mt-auto">
+            <div class="space-x-2">
+              <span class="text-lg font-bold text-gray-900">₹15,999</span>
+              <span class="text-sm text-gray-400 line-through">₹19,999</span>
+            </div>
+
+            <!-- Mild Add Button -->
+            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
+                                               text-pink-700 px-4 py-1 rounded-md shadow transition-all duration-500 
+                                               bg-[length:200%_100%] bg-left hover:bg-right">
+              Add
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 - Flexible Ribbon Badge -->
+      <div class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+        <div class="relative">
+          <img src="./images/board.jpe" alt="Product name"
+            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+
+          <!-- Flexible Ribbon Badge (unchanged) -->
+          <div
+            class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
+            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+            <span class="text-[10px] font-bold uppercase leading-tight">SAVE</span>
+            <span class="text-lg font-black leading-none">20%</span>
+            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+          </div>
+
+          <!-- Wishlist Button -->
+          <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
+       bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
+       transition transform hover:scale-110">
+            <i class="fa-solid fa-heart"></i>
+          </button>
+
+        </div>
+
+        <!-- Product Info -->
+        <div class="p-4 flex flex-col">
+          <h3 class="text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
+            Product with Ribbon
+          </h3>
+
+          <!-- Star Ratings -->
+          <div class="flex items-center mb-2 text-yellow-400">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-half"></i>
+            <span class="ml-2 text-sm text-gray-500">(5 reviews)</span>
+          </div>
+
+          <div class="flex items-center justify-between mt-auto">
+            <div class="space-x-2">
+              <span class="text-lg font-bold text-gray-900">₹15,999</span>
+              <span class="text-sm text-gray-400 line-through">₹19,999</span>
+            </div>
+
+            <!-- Mild Add Button -->
+            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
+                               text-pink-700 px-4 py-1 rounded-md shadow transition-all duration-500 
+                               bg-[length:200%_100%] bg-left hover:bg-right">
+              Add
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 5 - Flexible Ribbon Badge -->
+      <div class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+        <div class="relative">
+          <img src="./images/board.jpe" alt="Product name"
+            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+
+          <!-- Flexible Ribbon Badge (unchanged) -->
+          <div
+            class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
+            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+            <span class="text-[10px] font-bold uppercase leading-tight">SAVE</span>
+            <span class="text-lg font-black leading-none">20%</span>
+            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+          </div>
+
+          <!-- Wishlist Button -->
+          <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
+                       bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
+                       transition transform hover:scale-110">
+            <i class="fa-solid fa-heart"></i>
+          </button>
+
+        </div>
+
+        <!-- Product Info -->
+        <div class="p-4 flex flex-col">
+          <h3 class="text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
+            Product with Ribbon
+          </h3>
+
+          <!-- Star Ratings -->
+          <div class="flex items-center mb-2 text-yellow-400">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-half"></i>
+            <span class="ml-2 text-sm text-gray-500">(5 reviews)</span>
+          </div>
+
+          <div class="flex items-center justify-between mt-auto">
+            <div class="space-x-2">
+              <span class="text-lg font-bold text-gray-900">₹15,999</span>
+              <span class="text-sm text-gray-400 line-through">₹19,999</span>
+            </div>
+
+            <!-- Mild Add Button -->
+            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
+                                               text-pink-700 px-4 py-1 rounded-md shadow transition-all duration-500 
+                                               bg-[length:200%_100%] bg-left hover:bg-right">
+              Add
+            </button>
+
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
-
-  <script>
-    const menuTabs = document.getElementById('menu-tabs');
-    const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
-    const sections = document.querySelectorAll('.menu-section');
-
-    // Center tab
-    function centerTab(tab) {
-      const containerWidth = menuTabs.clientWidth;
-      const tabWidth = tab.offsetWidth;
-      const tabOffset = tab.offsetLeft;
-      const targetScroll = tabOffset - (containerWidth / 2) + (tabWidth / 2);
-      menuTabs.scrollTo({ left: targetScroll, behavior: 'smooth' });
-      updateActiveTab(tab);
-    }
-
-    // Glow + Shadow Active Style
-    function updateActiveTab(activeTab) {
-      tabs.forEach(tab => {
-        const imgWrapper = tab.querySelector('.tab-img');
-        const text = tab.querySelector('span');
-        imgWrapper.classList.remove('scale-105', 'shadow-[0_0_15px_rgba(236,72,153,0.7)]', 'border-pink-500');
-        text.classList.remove('font-bold', 'text-pink-600');
-      });
-      if (activeTab) {
-        const imgWrapper = activeTab.querySelector('.tab-img');
-        const text = activeTab.querySelector('span');
-        imgWrapper.classList.add('scale-105', 'shadow-[0_0_15px_rgba(236,72,153,0.7)]', 'border-pink-500');
-        text.classList.add('font-bold', 'text-pink-600');
-        showSection(activeTab.dataset.section);
-      }
-    }
-
-    // Show section
-    function showSection(sectionId) {
-      sections.forEach(sec => sec.classList.toggle('hidden', sec.id !== sectionId));
-    }
-
-    // Click event
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => centerTab(tab));
-    });
-
-    // Initial activation
-    centerTab(tabs[0]);
-
-    // Auto highlight on scroll
-    menuTabs.addEventListener('scroll', () => {
-      const containerCenter = menuTabs.getBoundingClientRect().left + menuTabs.clientWidth / 2;
-      let closestTab = null;
-      let minDistance = Infinity;
-      tabs.forEach(tab => {
-        const tabCenter = tab.getBoundingClientRect().left + tab.offsetWidth / 2;
-        const distance = Math.abs(containerCenter - tabCenter);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestTab = tab;
-        }
-      });
-      updateActiveTab(closestTab);
-    });
-  </script>
-
-  <style>
-    /* Hide scrollbar */
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-  </style>
-</body>
-
-</html>
+</section>
