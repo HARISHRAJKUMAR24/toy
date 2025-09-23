@@ -12,6 +12,9 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /*<==========> CSS Styles <==========>*/
+
+        /*------------- Header Slide Images Height Fix -------------*/
         #slider {
             height: 50vh;
             /* Desktop */
@@ -31,6 +34,7 @@
             }
         }
 
+        /*------------- Video Commerce Section -------------*/
         @keyframes wave {
             0% {
                 transform: scale(1);
@@ -69,12 +73,13 @@
 
 <body class="font-sans">
 
-    <!-- Top Strip -->
+    <!-- Minimum Order Amount Start-->
     <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
         Minimum Order: ₹499
     </div>
+    <!-- Minimum Order Amount End-->
 
-    <!-- Navbar -->
+    <!-- Navbar Start -->
     <nav class="sticky top-0 w-full z-50 bg-white/20 backdrop-blur-lg border-b border-white/30 transition duration-300">
         <div class="container mx-auto flex items-center justify-between px-4 py-3">
 
@@ -98,12 +103,14 @@
                     </button>
 
                     <!-- Dropdown Menu -->
+
                     <ul
-                        class="absolute top-full left-0 bg-white p-2 rounded-lg shadow-lg opacity-0 translate-y-2 pointer-events-none transition duration-300 min-w-[200px] max-w-xs flex flex-col gap-1 shop-menu">
-                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500 break-words">Very Long Product Name
+                        class="absolute top-full left-0 bg-white p-2 rounded-lg shadow-lg opacity-0 translate-y-2 pointer-events-none transition duration-300 flex flex-col gap-1 max-h-[60vh] overflow-y-auto shop-menu w-max">
+                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500">Very Long Product Name
                                 That Should Wrap</a></li>
-                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500 break-words">Games</a></li>
-                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500 break-words">Gift Items</a></li>
+                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500 ">Games</a></li>
+                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500">Gift Items</a></li>
+
                     </ul>
                 </li>
 
@@ -121,17 +128,17 @@
                         class="bg-transparent outline-none px-2 text-sm w-32 text-gray-700 placeholder:text-gray-700">
                 </div>
 
-                <a href="./test.html" class="inline-block hover:text-pink-500 transition-all duration-300">
+                <a href="./wishlist.html" class="inline-block hover:text-pink-500 transition-all duration-300">
                     <i class='bx bx-user text-2xl cursor-pointer'></i>
                 </a>
-                <a href="./wishlist.html" class="inline-block hover:text-pink-500 transition-all duration-300">
+                <a href="./signup.html" class="inline-block hover:text-pink-500 transition-all duration-300">
                     <i class='bx bx-heart text-2xl cursor-pointer'></i>
                 </a>
-                <a href="./cart.html" class="inline-block hover:text-pink-500 transition-all duration-300">
+                <a href="./forgotpass.html" class="inline-block hover:text-pink-500 transition-all duration-300">
                     <i class='bx bx-cart text-2xl cursor-pointer'></i>
                 </a>
 
-                <!-- Mobile Burger -->
+                <!-- Mobile Burger Icon-->
                 <div id="menu-btn" class="relative w-6 h-4 cursor-pointer transition duration-300 z-[110] md:hidden">
                     <span
                         class="absolute top-0 left-0 h-[3px] w-full bg-pink-500 rounded transition duration-300"></span>
@@ -143,11 +150,13 @@
             </div>
         </div>
     </nav>
+    <!-- Navbar End -->
 
-    <!-- Mobile Overlay -->
+    <!-- Mobile Overlay Start -->
     <div id="menu-overlay" class="fixed inset-0 bg-black/50 z-[90] opacity-0 invisible transition duration-300"></div>
+    <!-- Mobile Overlay End-->
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Menu Start-->
     <div id="mobileMenu"
         class="fixed top-0 -right-full w-4/5 max-w-xs h-screen bg-white/95 backdrop-blur-md transition-all duration-300 z-[100] overflow-y-auto shadow-xl md:hidden">
         <div class="p-6">
@@ -164,15 +173,16 @@
             <ul class="flex flex-col gap-6 font-medium text-gray-700">
                 <li><a href="#" class="text-lg py-2 block hover:text-pink-500 transition-all duration-300">Home</a></li>
 
-
+                <!-- Shop All Dropdown -->
                 <li class="mobile-dropdown">
                     <button
                         class="text-lg py-2 w-full text-left flex justify-between items-center hover:text-pink-500 transition-all duration-300">
                         <span>Shop All</span>
                         <i class="bx bx-chevron-down transition-transform duration-300"></i>
                     </button>
-
-                    <ul class="pl-4 mt-2 max-h-0 overflow-hidden transition-all duration-300 flex flex-col gap-1">
+                    <!-- Dropdown Menu -->
+                    <ul
+                        class="pl-4 mt-2 max-h-0 overflow-hidden overflow-y-auto transition-all duration-300 flex flex-col gap-1">
                         <li><a href="#"
                                 class="block py-2 text-gray-600 hover:text-pink-500 transition-all duration-300">Very
                                 Long Product Name That Should Wrap</a></li>
@@ -182,6 +192,7 @@
                         <li><a href="#"
                                 class="block py-2 text-gray-600 hover:text-pink-500 transition-all duration-300">Gift
                                 Items</a></li>
+
                     </ul>
                 </li>
 
@@ -191,13 +202,13 @@
                 <li><a href="#" class="text-lg py-2 block hover:text-pink-500 transition-all duration-300">Contact</a>
                 </li>
             </ul>
-
+            <!--Search Tab-->
             <div class="mt-8 pt-6 border-t border-gray-200">
                 <div class="flex items-center bg-white rounded-full px-4 py-2 shadow-sm">
                     <i class='bx bx-search text-lg text-gray-700'></i>
                     <input type="text" placeholder="Search..." class="bg-transparent outline-none px-2 text-sm w-full">
                 </div>
-
+                <!--Icons-->
                 <div class="flex justify-around text-2xl py-6 text-gray-700">
                     <a href="#" class="p-2 rounded-full hover:bg-pink-100 transition-all duration-300"><i
                             class='bx bx-user'></i></a>
@@ -209,9 +220,9 @@
             </div>
         </div>
     </div>
+    <!-- Mobile Menu End -->
 
-
-    <!-- Header Slider -->
+    <!-- Header Slider Start -->
     <header id="slider"
         class="relative w-[95%] h-[60vh] sm:[h:40vh] md:[h:60vh] mx-auto my-4 overflow-hidden rounded-2xl shadow-2xl">
         <div class="absolute inset-0 opacity-100 z-10 transition-opacity duration-1000 slide">
@@ -232,20 +243,21 @@
         </div>
         <div id="dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
     </header>
+    <!-- Header Slider End -->
 
-
-    <!-- Product Categories Section -->
+    <!-- Product Categories Section Start-->
     <section class="py-16 px-4 bg-white">
         <div class="container mx-auto">
-            <!-- Section Header -->
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">Shop By Category</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Explore our diverse collection of toys for all ages and
-                    interests</p>
+            <!-- Product Categories Section Heading -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">
+                    Shop By Category
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                    Explore our diverse collection of toys for all ages and interests
+                </p>
+
             </div>
-
-
-
 
             <!-- Categories Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
@@ -462,9 +474,10 @@
                     </div>
                 </div>
             </div>
+
             <!-- CTA Button with smaller size and responsive -->
             <div class="flex justify-center mt-8">
-                <button type="submit"
+                <a href="./allproduct.html"
                     class="flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-gray-800 hover:text-white bg-gradient-to-r from-pink-400 via-pink-500 to-indigo-400 lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
                     Explore
                     <svg class="w-7 h-7 sm:w-8 sm:h-8 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
@@ -473,33 +486,36 @@
                             d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
                             class="fill-current"></path>
                     </svg>
-                </button>
+                </a>
             </div>
 
         </div>
     </section>
+    <!-- Product Categories Section End-->
 
-    <!-- Latest Product Section -->
+    <!-- Latest Product Section Start-->
     <section class="py-16 px-4 bg-gray-50">
         <div class="container mx-auto">
-            <!-- Section Header -->
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">Latest Products</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">
+
+            <!-- Latest Product Section Heading -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Latest Products
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
                     Explore our latest collection of toys for all ages and interests
                 </p>
             </div>
 
             <!--Product Grid Section-->
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
-                <!-- Product 1 - Flexible Ribbon Badge -->
+                <!-- Product 1 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge  -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -540,7 +556,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Add To Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -551,14 +567,14 @@
                     </div>
                 </div>
 
-                <!-- Product 2 - Flexible Ribbon Badge -->
+                <!-- Product 2 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -599,7 +615,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Add To Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -610,14 +626,14 @@
                     </div>
                 </div>
 
-                <!-- Product 3 - Flexible Ribbon Badge -->
+                <!-- Product 3 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -658,7 +674,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -669,14 +685,14 @@
                     </div>
                 </div>
 
-                <!-- Product 4 - Flexible Ribbon Badge -->
+                <!-- Product 4 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -717,7 +733,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Add To Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -728,14 +744,14 @@
                     </div>
                 </div>
 
-                <!-- Product 5 - Flexible Ribbon Badge -->
+                <!-- Product 5 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -776,7 +792,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Add To Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -790,16 +806,19 @@
             </div>
         </div>
     </section>
+    <!--Latest Product Section End -->
 
 
-
-    <!-- Special Offer Section -->
+    <!-- Special Offer Section Start-->
     <section class="py-12 bg-pink-50">
         <div class="container mx-auto max-w-6xl px-4">
-            <!-- Header -->
-            <div class="text-center mb-6">
-                <h3 class="text-3xl font-bold text-gray-800">Special Offers</h3>
-                <p class="text-gray-600">Grab the best deals before they're gone!</p>
+
+            <!-- Special Offer Heading -->
+            <div class="text-center mb-8">
+                <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Special Offers
+                </h3>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Grab the best deals before
+                    they're gone!</p>
             </div>
 
             <!-- 3D fade slider wrapper -->
@@ -858,30 +877,31 @@
             </div>
         </div>
     </section>
+    <!-- Special Offer Section End-->
 
-
-    <!-- Product Section -->
+    <!-- Latest Product Section Start-->
     <section class="py-16 px-4 bg-gray-50">
         <div class="container mx-auto">
-            <!-- Section Header -->
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">Latest Products</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">
+
+            <!-- Latest Product Section Heading -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Latest Products
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
                     Explore our latest collection of toys for all ages and interests
                 </p>
             </div>
 
             <!--Product Grid Section-->
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
-
-                <!-- Product 1 - Flexible Ribbon Badge -->
+                <!-- Product 1 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge  -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -912,6 +932,7 @@
                             <i class="bi bi-star-fill"></i>
                             <i class="bi bi-star-fill"></i>
                             <i class="bi bi-star-half"></i>
+
                             <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
                         </div>
 
@@ -922,7 +943,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Add To Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -933,14 +954,14 @@
                     </div>
                 </div>
 
-                <!-- Product 2 - Flexible Ribbon Badge -->
+                <!-- Product 2 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -981,7 +1002,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Add To Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -992,14 +1013,14 @@
                     </div>
                 </div>
 
-                <!-- Product 3 - Flexible Ribbon Badge -->
+                <!-- Product 3 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -1040,7 +1061,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -1051,14 +1072,14 @@
                     </div>
                 </div>
 
-                <!-- Product 4 - Flexible Ribbon Badge -->
+                <!-- Product 4 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -1099,7 +1120,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Add To Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -1110,14 +1131,14 @@
                     </div>
                 </div>
 
-                <!-- Product 5 - Flexible Ribbon Badge -->
+                <!-- Product 5 -->
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
                         <img src="./images/board.jpe" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                        <!-- Flexible Ribbon Badge (unchanged) -->
+                        <!-- Flexible Ribbon Badge -->
                         <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
                             style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                             <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
@@ -1158,7 +1179,7 @@
                             </div>
 
 
-                            <!-- Mild Add Button -->
+                            <!-- Add To Cart Button -->
                             <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
                                    text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
                                    bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
@@ -1172,20 +1193,26 @@
             </div>
         </div>
     </section>
+    <!--Latest Product Section End -->
 
-    <!--Why Shop With Us-->
+    <!--Why Shop With Us Start-->
     <section class="bg-white py-20">
         <div class="max-w-6xl mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold text-gray-800 mb-12">Why Shop With <span class="text-pink-600">Us</span></h2>
-            <p class="text-gray-600 text-lg mb-16">We offer the best products, quality service, and seamless shopping
+            <!--Why Shop With Us Heading-->
+            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Why Shop With <span
+                    class="text-pink-600">Us</span></h2>
+            <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">We offer the best products,
+                quality service, and seamless shopping
                 experience to make your life easier and fun!</p>
 
-            <!-- Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Cards Grid-->
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 justify-center">
+
 
                 <!-- Card 1 -->
-                <div
-                    class="bg-gray-50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105">
+                <div class="bg-gray-50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
+           w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
@@ -1195,47 +1222,76 @@
                 </div>
 
                 <!-- Card 2 -->
-                <div
-                    class="bg-gray-50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105">
+                <div class="bg-gray-50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
+           w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTImNf14UOHtFVN3T2-HELY9-dv3PkJOJPdiA&s"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Trusted Quality</h3>
-                    <p class="text-gray-500 text-sm">All products are thoroughly checked to ensure premium quality.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
+                    <p class="text-gray-500 text-sm">Get your orders delivered quickly with our reliable shipping
+                        partners.</p>
                 </div>
 
                 <!-- Card 3 -->
-                <div
-                    class="bg-gray-50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105">
-                    <img src="data:image/jpeg;base64,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"
+                <div class="bg-gray-50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
+           w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">24/7 Support</h3>
-                    <p class="text-gray-500 text-sm">Our friendly support team is always ready to assist you anytime.
-                    </p>
-                </div>
-
-                <!-- Card 4 -->
-                <div
-                    class="bg-gray-50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105">
-                    <img src="data:image/jpeg;base64,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"
-                        alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
-
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Best Offers</h3>
-                    <p class="text-gray-500 text-sm">Enjoy exciting discounts and deals regularly on our products.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
+                    <p class="text-gray-500 text-sm">Get your orders delivered quickly with our reliable shipping
+                        partners.</p>
                 </div>
 
             </div>
         </div>
     </section>
+    <!--Why Shop With Us Start-->
 
-
-    <!-- Shop with Videos Section -->
+    <!-- Video Commerce Section Start -->
     <section class="py-16 px-4 bg-gray-50">
         <div class="container mx-auto">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Shop with Videos</h2>
+            <!-- Video Commerce Heading-->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">
+                    Shop with Videos
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                    Explore our diverse collection of toys for all ages and interests
+                </p>
 
+            </div>
+            <!-- Video Commerce Grid-->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!--Video - 1 -->
+                <div class="video-card relative w-full h-[250px] sm:h-[300px] md:h-[350px] bg-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer"
+                    data-video="https://www.youtube.com/embed/tgbNymZ7vqY" data-name="Premium Teddy Bear"
+                    data-price="₹1,499">
+
+                    <img src="https://i.pinimg.com/736x/ac/ae/0f/acae0f19de54e8af64cc169466a899d5.jpg" alt="Video 1"
+                        class="w-full h-full object-cover">
+
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="relative">
+                            <span class="absolute h-16 w-16 rounded-full bg-red-500 opacity-40 animate-wave"></span>
+                            <span
+                                class="absolute h-16 w-16 rounded-full bg-red-500 opacity-35 animate-wave delay-[400ms]"></span>
+                            <span
+                                class="absolute h-16 w-16 rounded-full bg-red-500 opacity-30 animate-wave delay-[800ms]"></span>
+                            <span
+                                class="absolute h-16 w-16 rounded-full bg-red-500 opacity-25 animate-wave delay-[1200ms]"></span>
+                            <span
+                                class="absolute h-16 w-16 rounded-full bg-red-500 opacity-20 animate-wave delay-[1600ms]"></span>
+
+                            <div
+                                class="relative flex items-center justify-center h-16 w-16 rounded-full bg-red-600 text-white shadow-lg hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-play text-xl ml-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Video - 1 -->
                 <div class="video-card relative w-full h-[250px] sm:h-[300px] md:h-[350px] bg-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer"
                     data-video="https://www.youtube.com/embed/tgbNymZ7vqY" data-name="Premium Teddy Bear"
                     data-price="₹1,499">
@@ -1265,8 +1321,9 @@
             </div>
         </div>
     </section>
+    <!-- Video Commerce Section End -->
 
-    <!-- Popup Modal -->
+    <!-- Video Popup Start-->
     <div id="videoModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
 
         <!-- Premium 3D Close Button fixed top-right -->
@@ -1326,8 +1383,9 @@
         </div>
 
     </div>
+    <!-- Video Popup Start End-->
 
-    <!--About Section-->
+    <!--About Section Start-->
     <section class="py-16 px-4  bg-gray-50">
         <div class="container mx-auto flex flex-col md:flex-row items-center gap-10">
 
@@ -1341,8 +1399,10 @@
 
             <!-- Right: Text Content -->
             <div class="w-full md:w-1/2 flex flex-col justify-center">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">About Our Brand</h2>
-                <p class="text-gray-600 text-lg leading-relaxed">
+                <!-- Heading And Content-->
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2">About Our Brand
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                     We are dedicated to bringing you the best quality products, crafted with care and attention to
                     detail.
                     Our mission is to create joyful experiences for everyone.
@@ -1351,13 +1411,9 @@
 
         </div>
     </section>
+    <!--About Section End-->
 
-
-
-
-
-
-    <!-- Modern Footer with Logo & Disclaimer Heading -->
+    <!-- Footer Start-->
     <footer class="bg-pink-50 relative overflow-hidden py-10">
         <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
 
@@ -1425,7 +1481,9 @@
         <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-100 rounded-full blur-3xl pointer-events-none">
         </div>
     </footer>
+    <!-- Footer End-->
 
+    <!--JS File Include -->
     <script src="./js/script.js"></script>
 </body>
 

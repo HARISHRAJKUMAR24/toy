@@ -41,8 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Update on resize
-        window.addEventListener('resize', () => location.reload());
+        // ✅ FIXED: Remove auto-reload on resize
+        window.addEventListener('resize', () => {
+            // Optional: Add resize handling logic here if needed
+            console.log('Window resized - dropdown behaviors maintained');
+        });
     }
 
     // ===============================
@@ -134,8 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===============================
-    // CATEGORY ITEMS ANIMATION
+    // CATEGORY ITEMS ANIMATION (COMMENTED OUT TO PREVENT REFRESH ISSUES)
     // ===============================
+    /*
     const categoryItems = document.querySelectorAll('.group');
     if (categoryItems.length > 0) {
         const observer = new IntersectionObserver((entries) => {
@@ -162,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+    */
 
     // ===============================
     // OFFER SECTION CAROUSEL
@@ -224,8 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-
-
 // ===============================
 // js For Video-Com pop up
 // ===============================
@@ -270,11 +273,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
 // ===============================
 // product category
 // ===============================
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const menuTabs = document.getElementById('menu-tabs');
