@@ -13,67 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="font-sans bg-pink-50 min-h-screen">
-    <!-- Page Checking Buttons Section Start -->
-    <div class="container mx-auto px-4 py-8">
-        <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
-            Page Quick Actions
-        </h2>
+<body class="font-sans bg-pink-50 flex flex-col min-h-screen">
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            <!-- Button 1 -->
-            <a href="./index.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                Home page
-            </a>
-            <!-- Button 2 -->
-            <a href="./allproduct.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                Shop All page
-            </a>
-            <!-- Button 3 -->
-            <a href="./cart.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                Cart Page
-            </a>
-            <!-- Button 4 -->
-            <a href="./forgotpass.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                Forgot Password Page
-            </a>
-            <!-- Button 5 -->
-            <a href="./login.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                Login Page
-            </a>
-            <!-- Button 6 -->
-            <a href="./signup.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                Sign-Up Page
-            </a>
-            <!-- Button 7 -->
-            <a href="./myprofile.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                My Profile Page
-            </a>
-            <!-- Button 8 -->
-            <a href="./productview.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                Single Product View Page
-            </a>
-            <!-- Button 9 -->
-            <a href="./wishlist.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                Wishlist Page
-            </a>
-            <!-- Button 10 -->
-            <a href="./myoders.html"
-                class="block text-center w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow hover:bg-pink-600 transition">
-                My Oders Page
-            </a>
-        </div>
-    </div>
-    <!-- Page Checking Buttons Section End -->
     <!-- Minimum Order Amount Start-->
     <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
         Minimum Order: ₹499
@@ -224,27 +165,20 @@
     <!-- Mobile Menu End -->
 
 
-    <!-- Login Section Start -->
+    <!-- Login Section -->
     <section class="flex items-center justify-center bg-pink-50 py-12 px-4">
         <div class="w-full max-w-md bg-white/70 backdrop-blur-md rounded-3xl shadow-lg p-6">
 
-            <!-- Header -->
+            <!-- Login Section Heading -->
             <div class="text-center mb-6">
                 <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="mx-auto mb-2">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-pink-600">Sign Up</h2>
-                <p class="text-gray-600 text-sm mt-1">Enter your details to continue</p>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-pink-600">Welcome Back!</h2>
+                <p class="text-gray-600 text-sm mt-1">Log in to continue shopping your favorite toys</p>
             </div>
 
-            <!-- Form -->
+            <!-- Login Form -->
             <form class="space-y-4">
-                <!-- Name -->
-                <div>
-                    <label for="name" class="block text-gray-700 font-medium mb-1">Name</label>
-                    <input type="text" id="name" placeholder="Enter your name"
-                        class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
-                </div>
-
-                <!-- Phone Number -->
+                <!-- Phone Number Input -->
                 <div>
                     <label for="phone" class="block text-gray-700 font-medium mb-1">Phone Number</label>
                     <div class="flex">
@@ -259,41 +193,50 @@
                     </div>
                 </div>
 
-
-                <!-- Email (optional) -->
-                <div>
-                    <label for="email" class="block text-gray-700 font-medium mb-1">Email Address
-                        (optional)</label>
-                    <input type="email" id="email" placeholder="Enter your email"
-                        class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
-                </div>
-
-                <!-- Password -->
+                <!-- Password Input -->
                 <div>
                     <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
-                    <input type="password" id="password" placeholder="Enter a password"
+                    <input type="password" id="password" placeholder="Enter your password"
                         class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
                 </div>
 
-                <!-- Send OTP Button -->
+                <!-- Remember & Forgot Password -->
+                <div class="flex justify-between items-center text-sm text-gray-600">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" class="form-checkbox h-4 w-4 text-pink-600 rounded">
+                        Remember me
+                    </label>
+                    <a href="#" class="hover:text-pink-500">Forgot password?</a>
+                </div>
+
+                <!-- Login Button -->
                 <button type="submit"
                     class="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-2 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all">
-                    SEND OTP
+                    Log In
                 </button>
             </form>
 
-            <!-- Login Link -->
+            <!-- Divider -->
+            <div class="flex items-center my-6">
+                <hr class="flex-1 border-gray-300">
+                <span class="mx-2 text-gray-400 text-sm">OR</span>
+                <hr class="flex-1 border-gray-300">
+            </div>
+
+            <!-- Signup Link -->
             <p class="text-center text-gray-600 text-sm mt-6">
-                Already have an account?
-                <a href="#" class="text-pink-600 font-semibold hover:underline">Login</a>
+                Don't have an account?
+                <a href="#" class="text-pink-600 font-semibold hover:underline">Sign Up</a>
             </p>
 
         </div>
     </section>
-
     <!-- Login Section End-->
-    <!-- Footer Start-->
-    <footer class="bg-pink-50 relative overflow-hidden py-10">
+
+
+
+    <!-- Footer End -->
+    <footer class="bg-pink-50 relative overflow-hidden py-6 mt-auto">
         <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
 
             <!-- Logo & Small Address -->
@@ -325,46 +268,42 @@
                 <h3 class="font-semibold text-gray-800">Follow Us</h3>
                 <div class="flex gap-3">
                     <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-facebook text-pink-500 text-lg'></i>
-                    </a>
+                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition"><i
+                            class='bx bxl-facebook text-pink-500 text-lg'></i></a>
                     <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-instagram text-pink-500 text-lg'></i>
-                    </a>
+                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition"><i
+                            class='bx bxl-instagram text-pink-500 text-lg'></i></a>
                     <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-twitter text-pink-500 text-lg'></i>
-                    </a>
+                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition"><i
+                            class='bx bxl-twitter text-pink-500 text-lg'></i></a>
                     <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-linkedin text-pink-500 text-lg'></i>
-                    </a>
+                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition"><i
+                            class='bx bxl-linkedin text-pink-500 text-lg'></i></a>
                 </div>
             </div>
         </div>
 
-        <!-- Disclaimer Section -->
-        <div class="mt-8 px-6">
+        <!-- Disclaimer -->
+        <div class="mt-6 px-6">
             <h3 class="text-gray-800 font-semibold text-sm mb-2">Disclaimer:</h3>
             <p class="text-gray-500 text-xs">
-                Ztorespot.com, a brand of 1Milestone Technology Solution Pvt Ltd, is not liable for product
-                sales. We
+                Ztorespot.com, a brand of 1Milestone Technology Solution Pvt Ltd, is not liable for product sales. We
                 provide a DIY platform connecting Merchants & Buyers. All transactions are the responsibility of
                 respective parties. Exercise caution.
             </p>
         </div>
 
-        <!-- Decorative floating shapes -->
-        <div class="absolute -top-10 -left-10 w-40 h-40 bg-pink-100 rounded-full blur-3xl pointer-events-none">
-        </div>
-        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-100 rounded-full blur-3xl pointer-events-none">
-        </div>
+        <!-- Decorative floating shapes (kept inside) 
+        <div class="absolute -top-10 -left-10 w-40 h-40 bg-pink-100 rounded-full blur-3xl pointer-events-none"></div>
+        <div
+            class="absolute bottom-0 right-0 w-40 h-40 bg-yellow-100 rounded-full blur-3xl pointer-events-none translate-y-1/3">
+        </div>-->
     </footer>
-    <!-- Footer End-->
+    <!-- Footer End -->
 
     <!--JS File Include -->
     <script src="./js/script.js"></script>
+
 </body>
 
 </html>
