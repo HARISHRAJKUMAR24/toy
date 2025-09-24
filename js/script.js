@@ -341,3 +341,67 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize first tab
     centerTab(tabs[0]);
 });
+
+
+// ===============================================
+// product Image View For Thumbail To Main Image 
+// ===============================================
+
+const mainImage = document.getElementById('mainProductImage');
+const thumbnails = document.querySelectorAll('.thumbnail');
+
+thumbnails.forEach(thumbnail => {
+    thumbnail.addEventListener('click', () => {
+        // Change main image
+        mainImage.src = thumbnail.src;
+
+        // Remove border from all thumbnails
+        thumbnails.forEach(img => img.classList.remove('border-pink-500'));
+        thumbnails.forEach(img => img.classList.add('border-gray-200'));
+
+        // Highlight selected thumbnail
+        thumbnail.classList.add('border-pink-500');
+        thumbnail.classList.remove('border-gray-200');
+    });
+});
+
+
+// ===============================================
+// Report Product Pop Up 
+// ===============================================
+
+// Elements
+const reportBtn = document.querySelector('.report-btn');
+const reportModal = document.getElementById('reportModal');
+const closeReportModal = document.getElementById('closeReportModal');
+const reportForm = document.getElementById('reportForm');
+
+// Open Modal
+reportBtn.addEventListener('click', () => {
+    reportModal.classList.remove('opacity-0', 'invisible');
+    reportModal.classList.add('opacity-100', 'visible');
+});
+
+// Close Modal
+closeReportModal.addEventListener('click', () => {
+    reportModal.classList.add('opacity-0', 'invisible');
+    reportModal.classList.remove('opacity-100', 'visible');
+});
+
+// Submit Form
+reportForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Report submitted successfully!');
+    reportModal.classList.add('opacity-0', 'invisible');
+    reportModal.classList.remove('opacity-100', 'visible');
+    reportForm.reset();
+});
+
+// Close modal on clicking outside
+reportModal.addEventListener('click', (e) => {
+    if (e.target === reportModal) {
+        reportModal.classList.add('opacity-0', 'invisible');
+        reportModal.classList.remove('opacity-100', 'visible');
+    }
+});
+
