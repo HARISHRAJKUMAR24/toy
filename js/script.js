@@ -367,7 +367,7 @@ thumbnails.forEach(thumbnail => {
 
 
 // ===============================================
-// Report Product Pop Up 
+// Report Product Form Pop Up 
 // ===============================================
 
 // Elements
