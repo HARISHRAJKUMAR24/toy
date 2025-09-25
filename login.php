@@ -1,16 +1,21 @@
+<?php include_once __DIR__ . "/includes/file_includes.php"; ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Wishlist - ToyShop</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!--Php File Include For Head Links & Scripts-->
+    <?php include_once __DIR__ . "/includes/head_links.php"; ?>
+
+    <style>
+        /*<==========> CSS Styles <==========>*/
+
+        /*------------- Phone Number Input Field Full Width Fix -------------*/
+        .iti {
+            width: 100% !important;
+        }
+    </style>
 </head>
 
 <body class="font-sans bg-pink-50 flex flex-col min-h-screen">
@@ -165,74 +170,60 @@
     <!-- Mobile Menu End -->
 
 
-    <!-- Login Section -->
+    <!-- Login Section Start -->
     <section class="flex items-center justify-center bg-pink-50 py-12 px-4">
         <div class="w-full max-w-md bg-white/70 backdrop-blur-md rounded-3xl shadow-lg p-6">
 
-            <!-- Login Section Heading -->
+            <!-- Header -->
             <div class="text-center mb-6">
                 <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="mx-auto mb-2">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-pink-600">Welcome Back!</h2>
-                <p class="text-gray-600 text-sm mt-1">Log in to continue shopping your favorite toys</p>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-pink-600">Login to your account</h2>
+                <p class="text-gray-600 text-sm mt-1">Enter your details to continue</p>
             </div>
 
-            <!-- Login Form -->
-            <form class="space-y-4">
-                <!-- Phone Number Input -->
-                <div>
-                    <label for="phone" class="block text-gray-700 font-medium mb-1">Phone Number</label>
-                    <div class="flex">
-                        <span
-                            class="flex items-center gap-1 px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700">
-                            <img src="https://flagcdn.com/16x12/in.png" alt="India"
-                                class="w-4 h-3 object-cover rounded-sm">
-                            +91
-                        </span>
-                        <input type="tel" id="phone" placeholder="Enter your phone"
-                            class="flex-1 px-2 py-2 border rounded-r-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
+            <!-- Form -->
+            <form id="form" class="space-y-4">
+                <div id="step1">
+                    <!-- Email/Phone -->
+                    <div class="mb-4" id="emailWrapper" style="display:none;">
+                        <label for="email" class="block text-gray-700 font-medium mb-1">Email or Phone</label>
+                        <input type="email" name="email" id="email" placeholder="Email or Phone"
+                            class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition email-and-phone">
                     </div>
-                </div>
 
-                <!-- Password Input -->
-                <div>
-                    <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password"
-                        class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
-                </div>
+                    <div class="mb-4" id="phoneWrapper">
+                        <label for="phone" class="block text-gray-700 font-medium mb-1">Phone or Email</label>
+                        <input type="tel" name="phone[main]" id="phone" placeholder="Phone or Email"
+                            class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition email-and-phone">
+                    </div>
 
-                <!-- Remember & Forgot Password -->
-                <div class="flex justify-between items-center text-sm text-gray-600">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" class="form-checkbox h-4 w-4 text-pink-600 rounded">
-                        Remember me
-                    </label>
-                    <a href="#" class="hover:text-pink-500">Forgot password?</a>
-                </div>
+                    <!-- Password -->
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between">
+                            <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
+                            <a href="<?= $storeUrl ?>forgot-password" class="text-pink-600 font-semibold hover:underline text-sm">Forgot Password?</a>
+                        </div>
+                        <input type="password" name="password" id="password" placeholder="Enter a password" required
+                            class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
+                    </div>
 
-                <!-- Login Button -->
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-2 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all">
-                    Log In
-                </button>
+                    <!-- Login Button -->
+                    <button type="button" id="sendOtp"
+                        class="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all login">
+                        Login
+                    </button>
+                </div>
             </form>
 
-            <!-- Divider -->
-            <div class="flex items-center my-6">
-                <hr class="flex-1 border-gray-300">
-                <span class="mx-2 text-gray-400 text-sm">OR</span>
-                <hr class="flex-1 border-gray-300">
-            </div>
-
-            <!-- Signup Link -->
+            <!-- Register Link -->
             <p class="text-center text-gray-600 text-sm mt-6">
                 Don't have an account?
-                <a href="#" class="text-pink-600 font-semibold hover:underline">Sign Up</a>
+                <a href="<?= $storeUrl ?>register<?= isset($_GET['step']) ? '?step' : '' ?>" class="text-pink-600 font-semibold hover:underline">Create</a>
             </p>
 
         </div>
     </section>
-    <!-- Login Section End-->
-
+    <!-- Login Section End -->
 
 
     <!-- Footer End -->
@@ -301,9 +292,24 @@
     </footer>
     <!-- Footer End -->
 
-    <!--JS File Include -->
-    <script src="./js/script.js"></script>
 
+    <!--JS File Include -->
+    <script src="<?= APP_URL ?>themes/theme9/js/script.js"></script>
+
+
+    <!-- Js Code For Automatically Take (+91) -->
+    <script>
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            onlyCountries: ['IN'],
+            preferredCountries: ["<?= getSettings("country") ?>"],
+            hiddenInput: "full",
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+    </script>
+
+    <script src="<?= APP_URL ?>shop/javascripts/login.js"></script>
 </body>
 
 </html>

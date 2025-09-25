@@ -1,16 +1,21 @@
+<?php include_once __DIR__ . "/includes/file_includes.php"; ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Wishlist - ToyShop</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!--Php File Include For Head Links & Scripts-->
+    <?php include_once __DIR__ . "/includes/head_links.php"; ?>
+
+    <style>
+        /*<==========> CSS Styles <==========>*/
+
+        /*------------- Phone Number Input Field Full Width Fix -------------*/
+        .iti {
+            width: 100% !important;
+        }
+    </style>
 </head>
 
 <body class="font-sans bg-pink-50 min-h-screen">
@@ -165,7 +170,7 @@
     <!-- Mobile Menu End -->
 
 
-    <!-- Login Section Start -->
+    <!-- Register Section Start -->
     <section class="flex items-center justify-center bg-pink-50 py-12 px-4">
         <div class="w-full max-w-md bg-white/70 backdrop-blur-md rounded-3xl shadow-lg p-6">
 
@@ -177,62 +182,74 @@
             </div>
 
             <!-- Form -->
-            <form class="space-y-4">
-                <!-- Name -->
-                <div>
-                    <label for="name" class="block text-gray-700 font-medium mb-1">Name</label>
-                    <input type="text" id="name" placeholder="Enter your name"
-                        class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
-                </div>
-
-                <!-- Phone Number -->
-                <div>
-                    <label for="phone" class="block text-gray-700 font-medium mb-1">Phone Number</label>
-                    <div class="flex">
-                        <span
-                            class="flex items-center gap-1 px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700">
-                            <img src="https://flagcdn.com/16x12/in.png" alt="India"
-                                class="w-4 h-3 object-cover rounded-sm">
-                            +91
-                        </span>
-                        <input type="tel" id="phone" placeholder="Enter your phone"
-                            class="flex-1 px-2 py-2 border rounded-r-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
+            <form id="form" class="space-y-4">
+                <!-- Step 1 -->
+                <div id="step1">
+                    <!-- Name -->
+                    <div class="mb-4">
+                        <label for="name" class="block text-gray-700 font-medium mb-1">Name</label>
+                        <input type="text" name="name" id="name" placeholder="Enter your name" required
+                            class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
                     </div>
+
+                    <!-- Phone Number -->
+                    <div class="mb-4">
+                        <label for="phone" class="block text-gray-700 font-medium mb-1">Phone Number</label>
+                        <input type="tel" name="phone[main]" id="phone" placeholder="Enter your phone" required
+                            class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
+                    </div>
+
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label for="email" class="block text-gray-700 font-medium mb-1">Email Address (optional)</label>
+                        <input type="email" name="email" id="email" placeholder="Enter your email"
+                            class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-4">
+                        <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
+                        <input type="password" name="password" id="password" placeholder="Enter a password" required
+                            class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
+                    </div>
+
+                    <!-- Send OTP Button -->
+                    <button type="button" id="sendOtp"
+                        class="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-2 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all">
+                        SEND OTP
+                    </button>
                 </div>
 
+                <!-- Step 2 -->
+                <div id="step2" style="display:none;">
+                    <div id="msg" class="p-3 rounded-lg bg-cyan-100 text-cyan-700 text-sm mb-4"></div>
 
-                <!-- Email (optional) -->
-                <div>
-                    <label for="email" class="block text-gray-700 font-medium mb-1">Email Address
-                        (optional)</label>
-                    <input type="email" id="email" placeholder="Enter your email"
-                        class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
+                    <div>
+                        <label for="otp" class="block text-gray-700 font-medium mb-1">Enter OTP</label>
+                        <input type="number" name="otp" id="otp" placeholder="Enter OTP" required
+                            class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
+                    </div>
+
+                    <!-- Create Account Button -->
+                    <button type="button" id="create"
+                        class="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-2 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all">
+                        CREATE ACCOUNT
+                    </button>
                 </div>
-
-                <!-- Password -->
-                <div>
-                    <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
-                    <input type="password" id="password" placeholder="Enter a password"
-                        class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
-                </div>
-
-                <!-- Send OTP Button -->
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-2 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all">
-                    SEND OTP
-                </button>
             </form>
 
             <!-- Login Link -->
             <p class="text-center text-gray-600 text-sm mt-6">
                 Already have an account?
-                <a href="#" class="text-pink-600 font-semibold hover:underline">Login</a>
+                <a href="<?= $storeUrl ?>login<?= isset($_GET['step']) ? '?step' : '' ?>" class="text-pink-600 font-semibold hover:underline">Login</a>
             </p>
 
         </div>
     </section>
+    <!-- Register Section End-->
 
-    <!-- Login Section End-->
+
     <!-- Footer Start-->
     <footer class="bg-pink-50 relative overflow-hidden py-10">
         <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
@@ -305,7 +322,21 @@
     <!-- Footer End-->
 
     <!--JS File Include -->
-    <script src="./js/script.js"></script>
+    <script src="<?= APP_URL ?>themes/theme9/js/script.js"></script>
+    <script src="<?= APP_URL ?>shop/javascripts/register.js"></script>
+
+    <!-- Js Code For Automatically Take (+91) -->
+    <script>
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            onlyCountries: ['IN'],
+            preferredCountries: ["<?= getSettings("country") ?>"],
+            hiddenInput: "full",
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+    </script>
+
 </body>
 
 </html>
