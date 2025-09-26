@@ -1,16 +1,11 @@
+<?php include_once __DIR__ . "/includes/files_includes.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toy Shop Website</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!--Php File Include For Head Links & Scripts-->
+    <?php include_once __DIR__ . "/includes/head_links.php"; ?>
     <style>
         /*<==========> CSS Styles <==========>*/
 
@@ -74,153 +69,15 @@
 <body class="font-sans">
 
     <!-- Minimum Order Amount Start-->
-    <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
-        Minimum Order: ₹499
-    </div>
+    <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
+        <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
+            Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
+        </div>
+    <?php endif; ?>
     <!-- Minimum Order Amount End-->
 
-    <!-- Navbar Start -->
-    <nav class="sticky top-0 w-full z-50 bg-white/20 backdrop-blur-lg border-b border-white/30 transition duration-300">
-        <div class="container mx-auto flex items-center justify-between px-4 py-3">
-
-            <!-- Left: Logo -->
-            <div class="flex items-center">
-                <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="h-10 w-10 mr-2">
-                <span class="font-extrabold text-xl text-pink-600">ToyShop</span>
-            </div>
-
-            <!-- Center: Pages -->
-            <ul class="hidden md:flex gap-6 lg:gap-8 font-medium text-gray-700 relative flex-wrap">
-                <li>
-                    <a href="#" class="hover:text-pink-500 transition-all duration-300">Home</a>
-                </li>
-
-                <!-- Shop All Dropdown -->
-                <li class="relative">
-                    <button class="flex items-center gap-1 hover:text-pink-500 focus:outline-none shop-toggle">
-                        <span>Shop All</span>
-                        <i class="bx bx-chevron-down transition-transform duration-300"></i>
-                    </button>
-
-                    <!-- Dropdown Menu -->
-
-                    <ul
-                        class="absolute top-full left-0 bg-white p-2 rounded-lg shadow-lg opacity-0 translate-y-2 pointer-events-none transition duration-300 flex flex-col gap-1 max-h-[60vh] overflow-y-auto shop-menu w-max">
-                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500">Very Long Product Name
-                                That Should Wrap</a></li>
-                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500 ">Games</a></li>
-                        <li><a href="#" class="block py-1 px-2 hover:text-pink-500">Gift Items</a></li>
-
-                    </ul>
-                </li>
-
-
-                <li>
-                    <a href="#" class="hover:text-pink-500 transition-all duration-300">New Arrivals</a>
-                </li>
-            </ul>
-
-            <!-- Right: Icons -->
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex items-center bg-white/30 rounded-full px-3 py-1">
-                    <i class='bx bx-search text-lg text-gray-700'></i>
-                    <input type="text" placeholder="Search..."
-                        class="bg-transparent outline-none px-2 text-sm w-32 text-gray-700 placeholder:text-gray-700">
-                </div>
-
-                <a href="./wishlist.html" class="inline-block hover:text-pink-500 transition-all duration-300">
-                    <i class='bx bx-user text-2xl cursor-pointer'></i>
-                </a>
-                <a href="./signup.html" class="inline-block hover:text-pink-500 transition-all duration-300">
-                    <i class='bx bx-heart text-2xl cursor-pointer'></i>
-                </a>
-                <a href="./forgotpass.html" class="inline-block hover:text-pink-500 transition-all duration-300">
-                    <i class='bx bx-cart text-2xl cursor-pointer'></i>
-                </a>
-
-                <!-- Mobile Burger Icon-->
-                <div id="menu-btn" class="relative w-6 h-4 cursor-pointer transition duration-300 z-[110] md:hidden">
-                    <span
-                        class="absolute top-0 left-0 h-[3px] w-full bg-pink-500 rounded transition duration-300"></span>
-                    <span
-                        class="absolute top-[7px] left-0 h-[3px] w-full bg-pink-500 rounded transition duration-300"></span>
-                    <span
-                        class="absolute top-[14px] left-0 h-[3px] w-full bg-pink-500 rounded transition duration-300"></span>
-                </div>
-            </div>
-        </div>
-    </nav>
-    <!-- Navbar End -->
-
-    <!-- Mobile Overlay Start -->
-    <div id="menu-overlay" class="fixed inset-0 bg-black/50 z-[90] opacity-0 invisible transition duration-300"></div>
-    <!-- Mobile Overlay End-->
-
-    <!-- Mobile Menu Start-->
-    <div id="mobileMenu"
-        class="fixed top-0 -right-full w-4/5 max-w-xs h-screen bg-white/95 backdrop-blur-md transition-all duration-300 z-[100] overflow-y-auto shadow-xl md:hidden">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-8">
-                <div class="flex items-center">
-                    <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="h-8 w-8 mr-2">
-                    <span class="font-extrabold text-lg text-pink-600">ToyShop</span>
-                </div>
-                <div id="close-menu" class="text-2xl text-gray-700 cursor-pointer">
-                    <i class='bx bx-x'></i>
-                </div>
-            </div>
-
-            <ul class="flex flex-col gap-6 font-medium text-gray-700">
-                <li><a href="#" class="text-lg py-2 block hover:text-pink-500 transition-all duration-300">Home</a></li>
-
-                <!-- Shop All Dropdown -->
-                <li class="mobile-dropdown">
-                    <button
-                        class="text-lg py-2 w-full text-left flex justify-between items-center hover:text-pink-500 transition-all duration-300">
-                        <span>Shop All</span>
-                        <i class="bx bx-chevron-down transition-transform duration-300"></i>
-                    </button>
-                    <!-- Dropdown Menu -->
-                    <ul
-                        class="pl-4 mt-2 max-h-0 overflow-hidden overflow-y-auto transition-all duration-300 flex flex-col gap-1">
-                        <li><a href="#"
-                                class="block py-2 text-gray-600 hover:text-pink-500 transition-all duration-300">Very
-                                Long Product Name That Should Wrap</a></li>
-                        <li><a href="#"
-                                class="block py-2 text-gray-600 hover:text-pink-500 transition-all duration-300">Games</a>
-                        </li>
-                        <li><a href="#"
-                                class="block py-2 text-gray-600 hover:text-pink-500 transition-all duration-300">Gift
-                                Items</a></li>
-
-                    </ul>
-                </li>
-
-
-                <li><a href="#" class="text-lg py-2 block hover:text-pink-500 transition-all duration-300">About</a>
-                </li>
-                <li><a href="#" class="text-lg py-2 block hover:text-pink-500 transition-all duration-300">Contact</a>
-                </li>
-            </ul>
-            <!--Search Tab-->
-            <div class="mt-8 pt-6 border-t border-gray-200">
-                <div class="flex items-center bg-white rounded-full px-4 py-2 shadow-sm">
-                    <i class='bx bx-search text-lg text-gray-700'></i>
-                    <input type="text" placeholder="Search..." class="bg-transparent outline-none px-2 text-sm w-full">
-                </div>
-                <!--Icons-->
-                <div class="flex justify-around text-2xl py-6 text-gray-700">
-                    <a href="#" class="p-2 rounded-full hover:bg-pink-100 transition-all duration-300"><i
-                            class='bx bx-user'></i></a>
-                    <a href="#" class="p-2 rounded-full hover:bg-pink-100 transition-all duration-300"><i
-                            class='bx bx-heart'></i></a>
-                    <a href="#" class="p-2 rounded-full hover:bg-pink-100 transition-all duration-300"><i
-                            class='bx bx-cart'></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Mobile Menu End -->
+    <!--Php File Include For Nav Bar-->
+    <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
     <!-- Header Slider Start -->
     <header id="slider"
@@ -256,229 +113,45 @@
                 <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
                     Explore our diverse collection of toys for all ages and interests
                 </p>
-
             </div>
 
             <!-- Categories Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
 
-                <!-- Category 1 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Building Blocks"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                <?php
+                $categories = getCategories(); // pre-built function
+                foreach ($categories as $category) :
+                    // You can set a default image if category image is missing
+                    $catImage = !empty($category['icon']) ? UPLOADS_URL . $category['icon'] : 'https://via.placeholder.com/400x160?text=No+Image';
+                ?>
+                    <div
+                        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                        <div class="relative overflow-hidden">
+                            <img src="<?= $catImage ?>" alt="<?= $category['name'] ?>"
+                                class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+                            </div>
+                        </div>
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+                            class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors"><?= $category['name'] ?></h3>
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+                                viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
+                                    class="fill-current"></path>
+                            </svg>
                         </div>
                     </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Building
-                            Blocks</h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
-                                class="fill-current"></path>
-                        </svg>
-                    </div>
-                </div>
+                <?php endforeach; ?>
 
-                <!-- Category 2 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Soft Toys"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
-                        </div>
-                    </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-blue-200 to-teal-200 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Soft Toys
-                        </h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path class="fill-current"
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
-                            </path>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Category 3 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="./images/board.jpe" alt="Board Games"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
-                        </div>
-                    </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-pink-200 to-blue-200 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Board Games
-                        </h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path class="fill-current"
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
-                            </path>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Category 4 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Building Blocks"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
-                        </div>
-                    </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Building
-                            Blocks</h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
-                                class="fill-current"></path>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Category 5 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Soft Toys"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
-                        </div>
-                    </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-blue-200 to-teal-200 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Soft Toys
-                        </h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path class="fill-current"
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
-                            </path>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Category 6 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="./images/board.jpe" alt="Board Games"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
-                        </div>
-                    </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-pink-200 to-blue-200 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Board Games
-                        </h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path class="fill-current"
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
-                            </path>
-                        </svg>
-                    </div>
-                </div>
-                <!-- Category 7 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Building Blocks"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
-                        </div>
-                    </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Building
-                            Blocks</h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
-                                class="fill-current"></path>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Category 8 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                            alt="Soft Toys"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
-                        </div>
-                    </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-blue-200 to-teal-200 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Soft Toys
-                        </h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path class="fill-current"
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
-                            </path>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Category 9 -->
-                <div
-                    class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="./images/board.jpe" alt="Board Games"
-                            class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
-                        </div>
-                    </div>
-                    <div
-                        class="p-3 bg-gradient-to-br from-pink-200 to-blue-200 flex-1 flex items-center justify-between">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Board Games
-                        </h3>
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                            <path class="fill-current"
-                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
-                            </path>
-                        </svg>
-                    </div>
-                </div>
             </div>
 
             <!-- CTA Button with smaller size and responsive -->
             <div class="flex justify-center mt-8">
                 <a href="<?= APP_URL ?>themes/theme9/forgotpass.php"
-                    class="flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-gray-800 hover:text-white bg-gradient-to-r from-pink-400 via-pink-500 to-indigo-400 lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
+                    class="flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-gray-800 hover:text-white bg-gradient-to-r from-pink-400 via-pink-500 to-indigo-400 lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
                     Explore
                     <svg class="w-7 h-7 sm:w-8 sm:h-8 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
                         viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
@@ -492,6 +165,7 @@
         </div>
     </section>
     <!-- Product Categories Section End-->
+
 
     <!-- Latest Product Section Start-->
     <section class="py-16 px-4 bg-gray-50">

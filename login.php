@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . "/includes/file_includes.php"; ?>
+<?php include_once __DIR__ . "/includes/files_includes.php"; ?>
 
 
 <!DOCTYPE html>

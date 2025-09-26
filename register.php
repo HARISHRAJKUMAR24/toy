@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . "/includes/file_includes.php"; ?>
+<?php include_once __DIR__ . "/includes/files_includes.php"; ?>
 
 
 <!DOCTYPE html>
@@ -7,7 +7,6 @@
 <head>
     <!--Php File Include For Head Links & Scripts-->
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
-
     <style>
         /*<==========> CSS Styles <==========>*/
 
