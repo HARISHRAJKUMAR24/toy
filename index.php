@@ -103,68 +103,70 @@
     <!-- Header Slider End -->
 
     <!-- Product Categories Section Start-->
-    <section class="py-16 px-4 bg-white">
-        <div class="container mx-auto">
-            <!-- Product Categories Section Heading -->
-            <div class="text-center mb-8">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">
-                    Shop By Category
-                </h2>
-                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                    Explore our diverse collection of toys for all ages and interests
-                </p>
-            </div>
 
-            <!-- Categories Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
+    <!--Php File Include For Product Category gird Set & Upload Shwon In first-->
+    <?php include_once __DIR__ . "/includes/theme9_function.php"; ?>
+    
+    <?php if (!empty($categories)) : ?>
+        <section class="py-16 px-4 bg-white">
+            <div class="container mx-auto">
+                <!-- Product Categories Section Heading -->
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">
+                        Shop By Category
+                    </h2>
+                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                        Explore our diverse collection of toys for all ages and interests
+                    </p>
+                </div>
 
-                <?php
-                $categories = getCategories(); // pre-built function
-                foreach ($categories as $category) :
-                    // You can set a default image if category image is missing
-                    $catImage = !empty($category['icon']) ? UPLOADS_URL . $category['icon'] : 'https://via.placeholder.com/400x160?text=No+Image';
-                ?>
-                    <div
-                        class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                        <div class="relative overflow-hidden">
-                            <img src="<?= $catImage ?>" alt="<?= $category['name'] ?>"
-                                class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                <!-- Categories Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
+                    <?php foreach ($categories as $category) :
+                        $catImage = !empty($category['icon']) ? UPLOADS_URL . $category['icon'] : 'https://via.placeholder.com/400x160?text=No+Image';
+                    ?>
+                        <div
+                            class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                            <div class="relative overflow-hidden">
+                                <img src="<?= $catImage ?>" alt="<?= $category['name'] ?>"
+                                    class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+                                </div>
+                            </div>
                             <div
-                                class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
+                                class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
+                                <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors"><?= $category['name'] ?></h3>
+                                <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+                                    viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
+                                        class="fill-current"></path>
+                                </svg>
                             </div>
                         </div>
-                        <div
-                            class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
-                            <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors"><?= $category['name'] ?></h3>
-                            <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                                viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
-                                    class="fill-current"></path>
-                            </svg>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="flex justify-center mt-8">
+                    <a href="<?= $storeUrl?>shop-all"
+                        class="flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-gray-800 hover:text-white bg-gradient-to-r from-pink-400 via-pink-500 to-indigo-400 lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
+                        Explore
+                        <svg class="w-7 h-7 sm:w-8 sm:h-8 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
+                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
+                                class="fill-current"></path>
+                        </svg>
+                    </a>
+                </div>
 
             </div>
-
-            <!-- CTA Button with smaller size and responsive -->
-            <div class="flex justify-center mt-8">
-                <a href="<?= APP_URL ?>themes/theme9/forgotpass.php"
-                    class="flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-gray-800 hover:text-white bg-gradient-to-r from-pink-400 via-pink-500 to-indigo-400 lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
-                    Explore
-                    <svg class="w-7 h-7 sm:w-8 sm:h-8 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                        viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
-                            class="fill-current"></path>
-                    </svg>
-                </a>
-            </div>
-
-        </div>
-    </section>
+        </section>
+    <?php endif; ?>
     <!-- Product Categories Section End-->
+
 
 
     <!-- Latest Product Section Start-->
@@ -186,7 +188,7 @@
                 <div
                     class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
                     <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
+                        <img src="" alt="Product name"
                             class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
                         <!-- Flexible Ribbon Badge -->

@@ -34,11 +34,6 @@
                     <!-- Dropdown Menu -->
                     <ul
                         class="absolute top-full left-0 bg-white p-2 rounded-lg shadow-lg opacity-0 translate-y-2 pointer-events-none transition duration-300 flex flex-col gap-1 max-h-[60vh] overflow-y-auto shop-menu w-max">
-                        <li>
-                            <a href="<?= $storeUrl ?>shop?category=" class="block py-1 px-2 hover:text-pink-500">
-                                All Categories
-                            </a>
-                        </li>
 
                         <?php
                         $categories = getCategories();
