@@ -127,8 +127,18 @@
 
     <!-- Product Categories Section Start-->
 
-    <!--Php File Include For Product Category gird Set & Upload Shwon In first-->
-    <?php include_once __DIR__ . "/includes/theme9_function.php"; ?>
+    <?php
+    // Product Category gird Set & Upload Shwon In first
+    $stmt = getCategories(); // pre-built function returning PDOStatement or false
+
+    if ($stmt) {
+        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC); // fetch as array
+        $categories = array_reverse($categories);        // newest first
+        $categories = array_slice($categories, 0, 10);   // limit to 10
+    } else {
+        $categories = [];
+    }
+    ?>
 
     <?php if (!empty($categories)) : ?>
         <section class="py-16 px-4 bg-white">
