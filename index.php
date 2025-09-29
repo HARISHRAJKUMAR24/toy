@@ -79,34 +79,57 @@
     <!--Php File Include For Nav Bar-->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
-    <!-- Header Slider Start -->
-    <header id="slider"
-        class="relative w-[95%] h-[60vh] sm:[h:40vh] md:[h:60vh] mx-auto my-4 overflow-hidden rounded-2xl shadow-2xl">
-        <div class="absolute inset-0 opacity-100 z-10 transition-opacity duration-1000 slide">
-            <img src="https://picsum.photos/1600/900?random=1" class="w-full h-full object-cover rounded-2xl shadow-2xl"
-                alt="Slide 1">
-        </div>
-        <div class="absolute inset-0 opacity-0 transition-opacity duration-1000 slide">
-            <img src="https://picsum.photos/1600/900?random=2" class="w-full h-full object-cover rounded-2xl shadow-2xl"
-                alt="Slide 2">
-        </div>
-        <div class="absolute inset-0 opacity-0 transition-opacity duration-1000 slide">
-            <img src="https://picsum.photos/1600/900?random=3" class="w-full h-full object-cover rounded-2xl shadow-2xl"
-                alt="Slide 3">
-        </div>
-        <div class="absolute inset-0 opacity-0 transition-opacity duration-1000 slide">
-            <img src="https://picsum.photos/1600/900?random=4" class="w-full h-full object-cover rounded-2xl shadow-2xl"
-                alt="Slide 4">
-        </div>
-        <div id="dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
-    </header>
-    <!-- Header Slider End -->
+
+    <!-- Header Slide Start -->
+    <?php
+    // Fetch banner images and links
+    $banners = [];
+    for ($i = 1; $i <= 4; $i++) {
+        $column = "homepage_banner" . ($i > 1 ? "_$i" : "");
+        $link_column = "homepage_banner_link" . ($i > 1 ? "_$i" : "");
+
+        $image = getData($column, "seller_banners", "(seller_id = '$sellerId')");
+        $link = getData($link_column, "seller_banners", "(seller_id = '$sellerId')");
+
+        if (!empty($image)) {
+            $banners[] = ['image' => $image, 'link' => $link];
+        }
+    }
+
+    // Only render slider if there are banners
+    if (!empty($banners)) :
+    ?>
+        <header id="slider"
+            class="relative w-[95%] h-[60vh] sm:[h:40vh] md:[h:60vh] mx-auto my-4 overflow-hidden rounded-2xl shadow-2xl">
+
+            <?php
+            // Render banners
+            foreach ($banners as $index => $banner) {
+                $opacity = $index === 0 ? "opacity-100" : "opacity-0"; // first slide visible
+                echo '<div class="absolute inset-0 ' . $opacity . ' transition-opacity duration-1000 slide">';
+                if (!empty($banner['link'])) {
+                    echo '<a href="' . $banner['link'] . '" target="_blank">';
+                    echo '<img src="' . UPLOADS_URL . $banner['image'] . '" class="w-full h-full object-cover rounded-2xl shadow-2xl" alt="Slide ' . ($index + 1) . '">';
+                    echo '</a>';
+                } else {
+                    echo '<img src="' . UPLOADS_URL . $banner['image'] . '" class="w-full h-full object-cover rounded-2xl shadow-2xl" alt="Slide ' . ($index + 1) . '">';
+                }
+                echo '</div>';
+            }
+            ?>
+
+            <div id="dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
+        </header>
+    <?php endif; ?>
+
+    <!-- Header slide End  -->
+
 
     <!-- Product Categories Section Start-->
 
     <!--Php File Include For Product Category gird Set & Upload Shwon In first-->
     <?php include_once __DIR__ . "/includes/theme9_function.php"; ?>
-    
+
     <?php if (!empty($categories)) : ?>
         <section class="py-16 px-4 bg-white">
             <div class="container mx-auto">
@@ -150,7 +173,7 @@
 
                 <!-- CTA Button -->
                 <div class="flex justify-center mt-8">
-                    <a href="<?= $storeUrl?>shop-all"
+                    <a href="<?= $storeUrl ?>shop-all"
                         class="flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-gray-800 hover:text-white bg-gradient-to-r from-pink-400 via-pink-500 to-indigo-400 lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
                         Explore
                         <svg class="w-7 h-7 sm:w-8 sm:h-8 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
@@ -495,75 +518,82 @@
     <!--Latest Product Section End -->
 
 
-    <!-- Special Offer Section Start-->
-    <section class="py-12 bg-pink-50">
-        <div class="container mx-auto max-w-6xl px-4">
+    <!-- Special Offer Section Start -->
+    <?php
+    // Fetch max 2 offer images
+    $offerSlides = [];
+    for ($i = 1; $i <= 2; $i++) {
+        $imgColumn = "offer_image_$i";
+        $img = getData($imgColumn, "seller_banners", "(seller_id = '$sellerId')");
+        if (!empty($img)) {
+            $offerSlides[] = $img;
+        }
+    }
 
-            <!-- Special Offer Heading -->
-            <div class="text-center mb-8">
-                <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Special Offers
-                </h3>
-                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Grab the best deals before
-                    they're gone!</p>
-            </div>
+    // Only render section if there are images
+    if (!empty($offerSlides)):
+    ?>
+        <section class="py-12 bg-pink-50">
+            <div class="container mx-auto max-w-6xl px-4">
 
-            <!-- 3D fade slider wrapper -->
-            <div id="offerWrapper" class="relative perspective-[1200px] w-full sm:w-[95%] mx-auto my-4
+                <!-- Special Offer Heading -->
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Special Offers</h3>
+                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Grab the best deals before
+                        they're gone!</p>
+                </div>
+
+                <!-- 3D fade slider wrapper -->
+                <div id="offerWrapper" class="relative perspective-[1200px] w-full sm:w-[95%] mx-auto my-4
            h-[25vh] sm:h-[35vh] rounded-2xl overflow-hidden px-2">
-                <div id="offerTrack" class="relative w-full h-full">
-                    <!-- Slide 1 -->
-                    <div
-                        class="absolute inset-0 rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-1000 ease-in-out opacity-0 scale-95">
-                        <img src="https://picsum.photos/1200/800?random=101" alt="Offer 1"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <!-- Slide 2 -->
-                    <div
-                        class="absolute inset-0 rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-1000 ease-in-out opacity-0 scale-95">
-                        <img src="https://picsum.photos/1200/800?random=102" alt="Offer 2"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <!-- Slide 3 -->
-                    <div
-                        class="absolute inset-0 rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-1000 ease-in-out opacity-0 scale-95">
-                        <img src="https://picsum.photos/1200/800?random=103" alt="Offer 3"
-                            class="w-full h-full object-cover">
+                    <div id="offerTrack" class="relative w-full h-full">
+                        <?php foreach ($offerSlides as $index => $slideImg): ?>
+                            <div
+                                class="absolute inset-0 rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-1000 ease-in-out opacity-0 scale-95">
+                                <a href="<?= $storeUrl ?>shop-all">
+                                    <img src="<?= UPLOADS_URL . $slideImg ?>" alt="Offer <?= $index + 1 ?>"
+                                        class="w-full h-full object-cover">
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
+
+                <!-- Buttons below slider -->
+                <div class="flex justify-center gap-4 mt-6 px-2">
+                    <!-- Prev -->
+                    <button id="prevOffer" class="w-10 h-10 flex items-center justify-center rounded-full 
+             bg-gradient-to-br from-pink-400 to-purple-500 
+             text-white shadow-lg backdrop-blur-md border border-white/30
+             hover:scale-110 hover:shadow-xl hover:from-purple-500 hover:to-pink-400 
+             transition-all duration-300">
+                        <i class='bx bx-chevron-left text-lg'></i>
+                    </button>
+
+                    <!-- Play/Pause -->
+                    <button id="toggleAutoplay" class="w-10 h-10 flex items-center justify-center rounded-full 
+             bg-gradient-to-br from-blue-400 to-indigo-500 
+             text-white shadow-lg backdrop-blur-md border border-white/30
+             hover:scale-110 hover:shadow-xl hover:from-indigo-500 hover:to-blue-400 
+             transition-all duration-300">
+                        <i class='bx bx-pause text-lg'></i>
+                    </button>
+
+                    <!-- Next -->
+                    <button id="nextOffer" class="w-10 h-10 flex items-center justify-center rounded-full 
+             bg-gradient-to-br from-pink-400 to-purple-500 
+             text-white shadow-lg backdrop-blur-md border border-white/30
+             hover:scale-110 hover:shadow-xl hover:from-purple-500 hover:to-pink-400 
+             transition-all duration-300">
+                        <i class='bx bx-chevron-right text-lg'></i>
+                    </button>
+                </div>
+
             </div>
+        </section>
+    <?php endif; ?>
+    <!-- Special Offer Section End -->
 
-            <!-- Buttons below slider -->
-            <div class="flex justify-center gap-4 mt-6 px-2">
-                <!-- Prev -->
-                <button id="prevOffer" class="w-10 h-10 flex items-center justify-center rounded-full 
-                 bg-gradient-to-br from-pink-400 to-purple-500 
-                 text-white shadow-lg backdrop-blur-md border border-white/30
-                 hover:scale-110 hover:shadow-xl hover:from-purple-500 hover:to-pink-400 
-                 transition-all duration-300">
-                    <i class='bx bx-chevron-left text-lg'></i>
-                </button>
-
-                <!-- Play/Pause -->
-                <button id="toggleAutoplay" class="w-10 h-10 flex items-center justify-center rounded-full 
-                 bg-gradient-to-br from-blue-400 to-indigo-500 
-                 text-white shadow-lg backdrop-blur-md border border-white/30
-                 hover:scale-110 hover:shadow-xl hover:from-indigo-500 hover:to-blue-400 
-                 transition-all duration-300">
-                    <i class='bx bx-pause text-lg'></i>
-                </button>
-
-                <!-- Next -->
-                <button id="nextOffer" class="w-10 h-10 flex items-center justify-center rounded-full 
-                 bg-gradient-to-br from-pink-400 to-purple-500 
-                 text-white shadow-lg backdrop-blur-md border border-white/30
-                 hover:scale-110 hover:shadow-xl hover:from-purple-500 hover:to-pink-400 
-                 transition-all duration-300">
-                    <i class='bx bx-chevron-right text-lg'></i>
-                </button>
-            </div>
-        </div>
-    </section>
-    <!-- Special Offer Section End-->
 
     <!-- Latest Product Section Start-->
     <section class="py-16 px-4 bg-gray-50">
@@ -895,11 +925,11 @@
             <div
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 justify-center">
 
-
                 <!-- Card 1 -->
                 <div class="bg-gray-200 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
-           w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s"
+       w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+                    <?php $img1 = getData("featured_image_1", "seller_banners", "(seller_id = '$sellerId')"); ?>
+                    <img src="<?= !empty($img1) ? UPLOADS_URL . $img1 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
@@ -909,8 +939,9 @@
 
                 <!-- Card 2 -->
                 <div class="bg-sky-500/50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
-           w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTImNf14UOHtFVN3T2-HELY9-dv3PkJOJPdiA&s"
+       w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+                    <?php $img2 = getData("featured_image_2", "seller_banners", "(seller_id = '$sellerId')"); ?>
+                    <img src="<?= !empty($img2) ? UPLOADS_URL . $img2 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTImNf14UOHtFVN3T2-HELY9-dv3PkJOJPdiA&s' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
@@ -920,8 +951,9 @@
 
                 <!-- Card 3 -->
                 <div class="bg-cyan-100 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
-           w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s"
+       w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+                    <?php $img3 = getData("featured_image_3", "seller_banners", "(seller_id = '$sellerId')"); ?>
+                    <img src="<?= !empty($img3) ? UPLOADS_URL . $img3 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
@@ -932,7 +964,8 @@
             </div>
         </div>
     </section>
-    <!--Why Shop With Us Start-->
+    <!--Why Shop With Us End-->
+
 
     <!-- Video Commerce Section Start -->
     <section class="py-16 px-4 bg-gray-50">
@@ -1071,33 +1104,56 @@
     </div>
     <!-- Video Popup Start End-->
 
-    <!--About Section Start-->
-    <section class="py-16 px-4  bg-gray-50">
-        <div class="container mx-auto flex flex-col md:flex-row items-center gap-10">
+
+    <!-- About Section Start -->
+    <?php
+    // Fetch data
+    $aboutContent = $sellerId ? getData("about_content", "homepage_settings", "(seller_id = '$sellerId')") : '';
+    $aboutImage = $sellerId ? getData("about_image", "homepage_settings", "(seller_id = '$sellerId')") : '';
+
+    // Hide section if both are empty
+    if (empty($aboutContent) && empty($aboutImage)) return;
+    ?>
+    <section class="py-16 px-4 bg-gray-50 bg-gradient-to-r from-pink-200 via-white to-pink-200">
+        <div class="container mx-auto flex flex-col md:flex-row items-center gap-6
+            <?= empty($aboutImage) ? 'justify-center text-center' : '' ?>">
 
             <!-- Left: Image -->
-            <div class="w-full md:w-1/2">
-                <div class="relative rounded-2xl shadow-2xl overflow-hidden aspect-[16/9]">
-                    <img src="https://wallpapers.com/images/featured/nature-2ygv7ssy2k0lxlzu.jpg" alt="About Us"
-                        class="w-full h-full object-cover object-center">
+            <?php if (!empty($aboutImage)) : ?>
+                <div class="<?= !empty($aboutContent) ? 'w-full md:w-1/2' : 'w-full flex justify-center' ?>">
+                    <div class="relative rounded-2xl shadow-2xl overflow-hidden 
+                    w-11/12 sm:w-10/12 md:w-4/5 lg:w-4/5  <!-- increased width on desktop -->
+                    h-64 sm:h-80 md:h-64 lg:h-80  <!-- slightly taller for desktop -->
+                    aspect-[16/9]">
+                        <img src="<?= UPLOADS_URL . $aboutImage ?>" alt="About Us"
+                            class="w-full h-full object-cover object-center">
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
             <!-- Right: Text Content -->
-            <div class="w-full md:w-1/2 flex flex-col justify-center">
-                <!-- Heading And Content-->
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2">About Our Brand
-                </h2>
-                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    We are dedicated to bringing you the best quality products, crafted with care and attention to
-                    detail.
-                    Our mission is to create joyful experiences for everyone.
-                </p>
-            </div>
+            <?php if (!empty($aboutContent)) : ?>
+                <div class="<?= !empty($aboutImage) ? 'w-full md:w-1/2' : 'w-full' ?> flex flex-col justify-center">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2
+                   <?= empty($aboutImage) ? 'text-center' : 'text-left md:text-left' ?>">
+                        About <?= $storeName ?? 'Our Brand' ?>
+                    </h2>
+                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto
+                  <?= empty($aboutImage) ? 'text-center' : 'md:mx-0 text-left' ?>
+                  leading-relaxed">
+                        <?= htmlspecialchars($aboutContent) ?>
+                    </p>
+                </div>
+            <?php endif; ?>
 
         </div>
     </section>
-    <!--About Section End-->
+    <!-- About Section End -->
+
+
+
+
+
 
     <!-- Footer Start-->
     <footer class="bg-pink-50 relative overflow-hidden py-10">
