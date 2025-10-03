@@ -201,332 +201,153 @@
     <!-- Product Categories Section End-->
 
 
+    <!--Latest Product Testing Start -->
+    <?php
+    // Fetch latest products
+    $productsStmt = getProducts(['limit' => 10]);
+    ?>
 
-    <!-- Latest Product Section Start-->
     <section class="py-16 px-4 bg-gray-50">
         <div class="container mx-auto">
 
-            <!-- Latest Product Section Heading -->
+            <!-- Section Heading -->
             <div class="text-center mb-8">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Latest Products
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">
+                    Latest Product Testing
                 </h2>
                 <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
                     Explore our latest collection of toys for all ages and interests
                 </p>
             </div>
 
-            <!--Product Grid Section-->
+            <!-- Product Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
-                <!-- Product 1 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
+                <?php while ($product = $productsStmt->fetch(PDO::FETCH_ASSOC)) :
+                    $productId = $product['id'];
+                    $name = $product['name'];
+                    $image = $product['image'];
+                    $price = $product['price'];
+                    $mrp = $product['mrp_price'];
+                    $badge = $product['badge'];
+                    $savePercent = $mrp && $mrp > $price ? round((($mrp - $price) / $mrp) * 100) : 0;
 
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
+                    // Advanced variants
+                    $advancedStmt = getData("*", "seller_product_advanced_variants", "product_id = '$productId'");
+                    $advancedVariants = $advancedStmt ? $advancedStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+                ?>
+                    <div class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col">
 
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-                    </div>
+                        <!-- Product Image + Badge + Wishlist -->
+                        <div class="relative">
+                            <img src="<?= UPLOADS_URL . $image ?>" alt="<?= htmlspecialchars($name) ?>"
+                                class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
 
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-3">
-                            Product with Ribbon
-                        </h3>
+                            <?php if ($badge || $savePercent > 0) : ?>
+                                <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 
+                                        bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] 
+                                        shadow-lg border-2 border-red-300 border-opacity-50 text-[10px] sm:text-xs font-bold uppercase"
+                                    style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                    <span><?= strtoupper($badge ?: 'SAVE') ?></span>
+                                    <?php if ($savePercent > 0): ?>
+                                        <span class="text-lg font-black leading-none"><?= $savePercent ?>%</span>
+                                    <?php endif; ?>
+                                    <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+                                </div>
+                            <?php endif; ?>
 
-                        <!-- Color Variant Dropdown -->
-                        <div class="mb-3">
-                            <label for="colorSelect" class="block text-sm font-medium text-gray-700 mb-1">Select
-                                Color:</label>
-                            <select id="colorSelect" name="colorSelect"
-                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition">
-                                <option value="red" class="text-red-600">Red</option>
-                                <option value="green" class="text-green-600">Green</option>
-                                <option value="blue" class="text-blue-600">Blue</option>
-                                <option value="yellow" class="text-yellow-500">Yellow</option>
-                            </select>
-                        </div>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-                            <!-- Add To Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
+                            <!-- Wishlist Button -->
+                            <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
+                                       bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
+                                       transition transform hover:scale-110">
+                                <i class="fa-solid fa-heart"></i>
                             </button>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Product 2 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <!-- Product Info -->
+                        <div class="p-4 flex flex-col flex-grow">
 
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
+                            <h3 class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 
+                                   group-hover:text-pink-600 transition-colors mb-3">
+                                <?= htmlspecialchars($name) ?>
+                            </h3>
 
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
+                            <!-- Variant Dropdown -->
+                            <?php if (!empty($advancedVariants)) : ?>
+                                <div class="mb-3">
+                                    <label for="variantSelect-<?= $productId ?>" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Select Variant:
+                                    </label>
+                                    <div class="relative">
+                                        <select id="variantSelect-<?= $productId ?>" class="block w-full appearance-none border border-gray-300 rounded-lg bg-white px-4 py-2 pr-10 text-gray-700 text-sm
+                                           focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition shadow-sm hover:shadow-md">
+                                            <?php foreach ($advancedVariants as $variant): ?>
+                                                <option value="<?= $variant['id'] ?>"
+                                                    data-price="<?= htmlspecialchars($variant['price'] ?? $price) ?>"
+                                                    data-mrp="<?= htmlspecialchars($variant['mrp_price'] ?? $mrp) ?>"
+                                                    data-stock="<?= htmlspecialchars($variant['stock'] ?? 0) ?>">
+                                                    <?= htmlspecialchars($variant['variant_name'] ?? $variant['name'] ?? 'Variant') ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
 
-                    </div>
+                            <!-- Price + Add to Cart -->
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
+                                    <span class="text-sm sm:text-base md:text-lg font-bold">₹<?= number_format($price) ?></span>
+                                    <?php if ($mrp && $mrp > $price): ?>
+                                        <span class="text-sm sm:text-sm text-gray-400 line-through">₹<?= number_format($mrp) ?></span>
+                                    <?php endif; ?>
+                                </div>
 
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
+                                <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
+                                           text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
+                                           bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
+                                    Add
+                                </button>
                             </div>
 
-
-                            <!-- Add To Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
                         </div>
                     </div>
-                </div>
-
-                <!-- Product 3 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-
-                            <!-- Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 4 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-
-                            <!-- Add To Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 5 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-
-                            <!-- Add To Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
+                <?php endwhile; ?>
             </div>
         </div>
     </section>
-    <!--Latest Product Section End -->
+    <!--Latest Product Section Testing End -->
 
+    <!-- Latest Product Section Start-->
+
+    <section class="py-16 px-4 bg-gray-50">
+        <div class="container mx-auto">
+
+            <!-- Section Heading -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                    Explore our latest and most exciting products
+                </p>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
+                <?php
+                $products = getProducts(); // Fetch all products
+                foreach ($products as $product) {
+                    echo getProductHtml($product["id"], "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col");
+                }
+                ?>
+            </div>
+        </div>
+    </section>
+
+    <!--Latest Product Section End -->
 
     <!-- Special Offer Section Start -->
     <?php
@@ -605,321 +426,31 @@
     <!-- Special Offer Section End -->
 
 
-    <!-- Latest Product Section Start-->
+    <!-- Random Product Section Start-->
     <section class="py-16 px-4 bg-gray-50">
         <div class="container mx-auto">
 
-            <!-- Latest Product Section Heading -->
+            <!-- Section Heading -->
             <div class="text-center mb-8">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Latest Products
-                </h2>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
                 <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                    Explore our latest collection of toys for all ages and interests
+                    Explore our latest and most exciting products
                 </p>
             </div>
 
-            <!--Product Grid Section-->
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
-                <!-- Product 1 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-
-                        <!-- Flexible Ribbon Badge  -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-
-                            <!-- Add To Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 2 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-
-                            <!-- Add To Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 3 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-
-                            <!-- Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 4 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-
-                            <!-- Add To Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 5 -->
-                <div
-                    class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
-                    <div class="relative">
-                        <img src="./images/board.jpe" alt="Product name"
-                            class="w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-
-                        <!-- Flexible Ribbon Badge -->
-                        <div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded transform rotate-[-15deg] shadow-lg border-2 border-red-300 border-opacity-50"
-                            style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                            <span class="text-[10px] sm:text-xs font-bold uppercase">SAVE</span>
-                            <span class="text-lg font-black leading-none">20%</span>
-                            <div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-           bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
-           transition transform hover:scale-110">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="p-4 flex flex-col">
-                        <h3
-                            class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">
-                            Product with Ribbon
-                        </h3>
-
-                        <!-- Star Ratings -->
-                        <div class="flex items-center mb-2 text-yellow-400">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ml-2 text-xs sm:text-sm md:text-sm text-gray-500">(5 reviews)</span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
-                                <span class="text-sm sm:text-base md:text-lg font-bold">₹15,999</span>
-                                <span class="text-sm sm:text-sm text-gray-400 line-through">₹19,999</span>
-                            </div>
-
-
-                            <!-- Add To Cart Button -->
-                            <button class="relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                                   text-pink-700 px-3 py-1 rounded-md shadow transition-all duration-500 
-                                   bg-[length:200%_100%] bg-left hover:bg-right sm:px-4 sm:py-1.5 md:px-5 md:py-2">
-                                Add
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
+            <!-- Product Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
+                <?php
+                $products = getProducts(); // Fetch all products
+                foreach ($products as $product) {
+                    echo getProductHtml($product["id"], "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col");
+                }
+                ?>
             </div>
         </div>
     </section>
-    <!--Latest Product Section End -->
+
+    <!-- Random Product Section End -->
 
     <!--Why Shop With Us Start-->
     <section class="bg-white py-20">
