@@ -101,22 +101,22 @@
             <!-- Flex Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-<!-- Left Side: Cart Items -->
-<div class="lg:col-span-2 space-y-6">
-    <div class="bg-gray-50 p-6 rounded-3xl shadow-lg space-y-4">
+                <!-- Left Side: Cart Items -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-gray-50 p-6 rounded-3xl shadow-lg space-y-4">
 
-<div class="py-10">
-    <div class="px-2 sm:container lg:container-fluid">
+                        <div class="py-10">
+                            <div class="px-2 sm:container lg:container-fluid">
 
-        <div class="flex flex-col gap-6 lg:flex-colum" id="content">
+                                <div class="flex flex-col gap-6 lg:flex-colum" id="content">
 
-        </div>
-    </div>
-</div>
+                                </div>
+                            </div>
+                        </div>
 
 
-    </div>
-</div>
+                    </div>
+                </div>
 
 
 
@@ -310,7 +310,7 @@
         </div>
     </footer>
     <!--  Footer End -->
-
+<?php include_once __DIR__ . "/includes/footer_link.php"; ?>
     <!--JS File Include -->
     <script src="<?= APP_URL ?>themes/theme9/js/script.js"></script>
     <script src="<?= APP_URL ?>shop/javascripts/cart.js"></script>
