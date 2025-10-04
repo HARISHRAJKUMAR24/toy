@@ -49,12 +49,10 @@ function getProductHtml($id, $divClass = "")
     if (empty($variation)) $variation = $unit . $unit_type;
 
     // SAVE %
-
     $savePercent = 0;
     if ($badge === "Save" && $mrp_price && $mrp_price > $price) {
         $savePercent = round((($mrp_price - $price) / $mrp_price) * 100);
     }
-
 
     // Wishlist
     $wishlist = '<button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
@@ -123,9 +121,9 @@ function getProductHtml($id, $divClass = "")
     // Variants Dropdown
     if ($variantData = getData("id", "seller_product_variants", "product_id='$product_id'")) {
         $html .= '<div class="mb-3">
-                    <label for="variantSelect-' . $product_id . '" class="block text-sm font-medium text-gray-700 mb-1">Select Variant:</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Variant:</label>
                     <div class="relative">
-                        <select id="variantSelect-' . $product_id . '" class="variantSelect block w-full appearance-none border border-gray-300 rounded-lg bg-white px-4 py-2 pr-10 text-gray-700 text-sm
+                        <select class="variantSelect block w-full appearance-none border border-gray-300 rounded-lg bg-white px-4 py-2 pr-10 text-gray-700 text-sm
                                focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition shadow-sm hover:shadow-md">';
         $html .= '<option value="' . $product_id . '" data-image="' . UPLOADS_URL . $image . '" data-price="' . $price . '" data-mrp="' . $mrp_price . '">' . htmlspecialchars($variation) . '</option>';
 
@@ -155,9 +153,16 @@ function getProductHtml($id, $divClass = "")
 
     $html .= '</div></div></div>'; // close wrappers
 
-    // JS for Variant Change
-    $html .= "<script>
-        document.getElementById('variantSelect-$product_id')?.addEventListener('change', function() {
+    return $html;
+}
+
+?>
+
+<!-- GLOBAL VARIANT SCRIPT (put once in your footer or before </body>) -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.variantSelect').forEach(function(select) {
+        select.addEventListener('change', function() {
             const selected = this.options[this.selectedIndex];
             const img = selected.dataset.image;
             const price = selected.dataset.price;
@@ -168,11 +173,12 @@ function getProductHtml($id, $divClass = "")
             const priceEl = card.querySelector('.productPrice');
             const mrpEl = card.querySelector('.productMrp');
 
-            if(imageEl) imageEl.src = img;
-            if(priceEl) priceEl.textContent = '" . currencyToSymbol($storeCurrency) . "' + parseFloat(price).toLocaleString();
-            if(mrpEl) mrpEl.textContent = mrp && mrp > price ? '" . currencyToSymbol($storeCurrency) . "' + parseFloat(mrp).toLocaleString() : '';
+            if (imageEl) imageEl.src = img;
+            if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + parseFloat(price).toLocaleString();
+            if (mrpEl) mrpEl.textContent = (mrp && mrp > price)
+                ? "<?= currencyToSymbol($storeCurrency) ?>" + parseFloat(mrp).toLocaleString()
+                : '';
         });
-    </script>";
-
-    return $html;
-}
+    });
+});
+</script>

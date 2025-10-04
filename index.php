@@ -441,10 +441,19 @@
             <!-- Product Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
                 <?php
-                $products = getProducts(); // Fetch all products
+                $productsStmt = getProducts();   // This is PDOStatement
+                $products = $productsStmt->fetchAll(PDO::FETCH_ASSOC); // Convert to array
+
+                shuffle($products); // Now works fine
+
                 foreach ($products as $product) {
-                    echo getProductHtml($product["id"], "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col");
+                    echo getProductHtml(
+                        $product["id"],
+                        "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col"
+                    );
                 }
+
+
                 ?>
             </div>
         </div>
@@ -692,10 +701,6 @@
     <!-- About Section End -->
 
 
-
-
-
-
     <!-- Footer Start-->
     <footer class="bg-pink-50 relative overflow-hidden py-10">
         <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
@@ -766,8 +771,7 @@
     </footer>
     <!-- Footer End-->
 
-    <!--JS File Include -->
-    <script src="<?= APP_URL ?>themes/theme9/js/script.js"></script>
+    <?php include_once __DIR__ . "/includes/footer_link.php"; ?>
 
 </body>
 
