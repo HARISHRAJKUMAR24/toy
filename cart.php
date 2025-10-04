@@ -101,101 +101,23 @@
             <!-- Flex Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <!-- Left Side: Cart Items -->
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-gray-50 p-6 rounded-3xl shadow-lg space-y-4">
+<!-- Left Side: Cart Items -->
+<div class="lg:col-span-2 space-y-6">
+    <div class="bg-gray-50 p-6 rounded-3xl shadow-lg space-y-4">
 
-                        <?php
-                        $cartData = getCartData(); // fetch cart items
-                        if (!empty($cartData)):
-                            foreach ($cartData as $cart):
-                                // Get variation and unit
-                                if ($cart['other']) {
-                                    $variation = getData("variation", "seller_product_variants", "id = '{$cart['other']}'");
-                                    $unit = getData("unit", "seller_product_variants", "id = '{$cart['other']}'");
-                                } else {
-                                    $variation = getData("variation", "seller_products", "id = '{$cart['product_id']}'");
-                                    $unit = getData("unit", "seller_products", "id = '{$cart['product_id']}'");
-                                }
+<div class="py-10">
+    <div class="px-2 sm:container lg:container-fluid">
 
-                                $size = getData("size", "seller_product_advanced_variants", "id = '{$cart['advanced_variant']}'");
-                                $color = getData("color", "seller_product_advanced_variants", "id = '{$cart['advanced_variant']}'");
-                                $color = getData("color_name", "product_colors", "id = '$color'");
+        <div class="flex flex-col gap-6 lg:flex-colum" id="content">
 
-                                if (!$variation && $size) {
-                                    $variation = "Size: $size | Color: $color";
-                                }
+        </div>
+    </div>
+</div>
 
-                                $image = getData("image", "seller_products", "id = '{$cart['product_id']}'");
-                                if ($cart['other'] && getData("image", "seller_product_variants", "id = '{$cart['other']}'")) {
-                                    $image = getData("image", "seller_product_variants", "id = '{$cart['other']}'");
-                                }
-                                if ($cart['advanced_variant'] && getData("image", "seller_product_advanced_variants", "id = '{$cart['advanced_variant']}'")) {
-                                    $image = getData("image", "seller_product_advanced_variants", "id = '{$cart['advanced_variant']}'");
-                                }
 
-                                $unit_calc_value = $unit * $cart['quantity'];
-                                $unit_type = getData("unit_type", "seller_products", "id = '{$cart['product_id']}'");
-                                $variation_text = ($variation) ? "(" . $variation . ")" : "(" . $unit . $unit_type . ")";
-                        ?>
+    </div>
+</div>
 
-                                <div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 flex gap-4">
-                                    <!-- Delete Button -->
-                                    <button class="absolute top-3 right-3 border border-gray-300 px-2 py-1 rounded-md hover:border-red-600 hover:text-red-600 transition bg-white shadow-sm removeQtyBtn"
-                                        data-id="<?= $cart['product_id'] ?>" data-variant="<?= $cart['other'] ?>" data-advancedVariant="<?= $cart['advanced_variant'] ?>">
-                                        <i class="fas fa-trash-alt text-sm"></i>
-                                    </button>
-
-                                    <!-- Product Image -->
-                                    <img src="<?= UPLOADS_URL . $image ?>" alt="<?= getData("name", "seller_products", "id = '{$cart['product_id']}'") ?>" class="w-24 h-24 object-cover rounded-xl">
-
-                                    <!-- Product Info -->
-                                    <div class="flex-1">
-                                        <h3 class="text-lg font-semibold text-gray-800 hover:text-pink-600 transition">
-                                            <?= limit_characters(getData("name", "seller_products", "id = '{$cart['product_id']}'"), 30) . ' ' . $variation_text ?>
-                                        </h3>
-                                        <p class="text-gray-500 text-sm"><?= $variation ?></p>
-
-                                        <!-- Quantity & Price -->
-                                        <div class="mt-2 flex flex-wrap items-center gap-4">
-                                            <div class="flex items-center border rounded-lg overflow-hidden addToCartWrapper" data-id="<?= $cart['product_id'] ?>">
-                                                <button class="px-3 py-1 text-gray-600 hover:text-pink-600 decreaseQtyBtn"
-                                                    data-id="<?= $cart['product_id'] ?>" data-variant="<?= $cart['other'] ?>" data-advancedVariant="<?= $cart['advanced_variant'] ?>">-</button>
-                                                <span class="px-3 py-1 text-gray-800 font-medium currentQty"><?= $cart['quantity'] ?></span>
-                                                <button class="px-3 py-1 text-gray-600 hover:text-pink-600 increaseQtyBtn"
-                                                    data-id="<?= $cart['product_id'] ?>" data-variant="<?= $cart['other'] ?>" data-advancedVariant="<?= $cart['advanced_variant'] ?>">+</button>
-                                            </div>
-
-                                            <div>
-                                                <div class="flex items-center gap-2">
-                                                    <span class="line-through text-gray-400 text-sm"><?= currencyToSymbol($storeCurrency) . number_format($cart['mrp_price']) ?></span>
-                                                    <span class="font-bold text-lg text-gray-900"><?= currencyToSymbol($storeCurrency) . number_format($cart['price'] * $cart['quantity']) ?></span>
-                                                </div>
-                                                <?php if (isset($cart['mrp_price']) && $cart['mrp_price'] > $cart['price']): ?>
-                                                    <div class="flex items-center justify-between bg-pink-50 text-pink-600 rounded-lg px-3 py-1 mt-1 text-sm">
-                                                        <span class="flex items-center gap-1">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2" d="M5 13l4 4L19 7" />
-                                                            </svg>
-                                                            You saved
-                                                        </span>
-                                                        <span class="font-semibold"><?= currencyToSymbol($storeCurrency) . number_format($cart['mrp_price'] - $cart['price']) ?></span>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            <?php endforeach;
-                        else: ?>
-                            <p class="text-center text-gray-500 py-6">Your cart is empty.</p>
-                        <?php endif; ?>
-
-                    </div>
-                </div>
 
 
                 <!-- Right Side: Sticky Order Summary -->

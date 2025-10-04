@@ -1,97 +1,66 @@
 <?php
-// Including autoload
-require_once __DIR__ . '/../../../config/autoload.php';
+require_once __DIR__ . "/../../../config/autoload.php";
 
-// Count cart items
-$count = countData("*", "customer_cart", " (seller_id = '$sellerId' AND store_id = '$storeId')");
-
-// Initialize HTML
+$cartData = getCartData();
 $html = "";
 
-// Fetch cart data
-$data = getCartData();
+if (!empty($cartData)):
+    foreach ($cartData as $cart):
+        $variation = $cart['other'] ? getData("variation", "seller_product_variants", "id='{$cart['other']}'")
+            : getData("variation", "seller_products", "id='{$cart['product_id']}'");
+        $unit = $cart['other'] ? getData("unit", "seller_product_variants", "id='{$cart['other']}'")
+            : getData("unit", "seller_products", "id='{$cart['product_id']}'");
 
-foreach ($data as $key => $cart) {
+        $size = getData("size", "seller_product_advanced_variants", "id='{$cart['advanced_variant']}'");
+        $color = getData("color", "seller_product_advanced_variants", "id='{$cart['advanced_variant']}'");
+        $color = getData("color_name", "product_colors", "id='$color'");
 
-    // Get variation & unit
-    if ($cart['other']) {
-        $variation = getData("variation", "seller_product_variants", "id = '{$cart['other']}'");
-        $unit = getData("unit", "seller_product_variants", "id = '{$cart['other']}'");
-    } else {
-        $variation = getData("variation", "seller_products", "id = '{$cart['product_id']}'");
-        $unit = getData("unit", "seller_products", "id = '{$cart['product_id']}'");
-    }
+        if (!$variation && $size) $variation = "Size: $size | Color: $color";
 
-    // Advanced variant
-    $size = getData("size", "seller_product_advanced_variants", "id = '{$cart['advanced_variant']}'");
-    $color = getData("color", "seller_product_advanced_variants", "id = '{$cart['advanced_variant']}'");
-    $color = getData("color_name", "product_colors", "id = '$color'");
+        $image = getData("image", "seller_products", "id='{$cart['product_id']}'");
+        if ($cart['other'] && getData("image", "seller_product_variants", "id='{$cart['other']}'"))
+            $image = getData("image", "seller_product_variants", "id='{$cart['other']}'");
+        if ($cart['advanced_variant'] && getData("image", "seller_product_advanced_variants", "id='{$cart['advanced_variant']}'"))
+            $image = getData("image", "seller_product_advanced_variants", "id='{$cart['advanced_variant']}'");
 
-    if (!$variation && $size) {
-        $variation = "Size: $size | Color: $color";
-    }
+        $unit_calc_value = $unit * $cart['quantity'];
+        $unit_type = getData("unit_type", "seller_products", "id='{$cart['product_id']}'");
+        $variation_text = ($variation) ? "($variation)" : "($unit$unit_type)";
 
-    // Product image
-    $image = getData("image", "seller_products", "id = '{$cart['product_id']}'");
-
-    if ($cart['other'] && getData("image", "seller_product_variants", "id = '{$cart['other']}'")) {
-        $image = getData("image", "seller_product_variants", "id = '{$cart['other']}'");
-    }
-    if ($cart['advanced_variant'] && getData("image", "seller_product_advanced_variants", "id = '{$cart['advanced_variant']}'")) {
-        $image = getData("image", "seller_product_advanced_variants", "id = '{$cart['advanced_variant']}'");
-    }
-
-    $stock_unit = getData("stock_unit", "seller_products", "id = '{$cart['product_id']}'");
-    $unit_type = getData("unit_type", "seller_products", "id = '{$cart['product_id']}'");
-    $total_stocks = (int)$cart['quantity'] * (int)getData("unit", "seller_products", "id = '{$cart['product_id']}'");
-
-    if ($stock_unit == "kg" || $stock_unit == "litre") {
-        $total_stocks /= 1000;
-    } else if ($stock_unit == "meter") {
-        $total_stocks *= 0.3048;
-    }
-
-    $unit_calc_value = ($unit * $cart['quantity']);
-    $unit_type_updated = $unit_type;
-    $variation_text = ($variation) ? "(" . $variation . ")" : "(" . $unit . $unit_type . ")";
-    if (!$stock_unit) $stock_unit = getData("unit_type", "seller_products", "id = '{$cart['product_id']}'");
-
-    // Generate HTML for each cart item
-    $html .= '<li class="flex py-6 group">
-        <div class="flex-shrink-0 w-24 h-24 overflow-hidden border border-gray-200 rounded-md">
-            <img src="' . UPLOADS_URL . $image . '" alt="' . getData("name", "seller_products", "id = '{$cart['product_id']}'") . '" class="object-contain object-center w-full h-full">
-        </div>
-        <div class="flex flex-col flex-1 ml-4">
-            <div class="flex justify-between text-base font-medium text-gray-900">
-                <h3>
-                    <a href="' . $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$cart['product_id']}'") . '">' . limit_characters(getData("name", "seller_products", "id = '{$cart['product_id']}'"), 30) . ' ' . $variation_text . '</a>
-                </h3>
-                <p class="ml-4">' . currencyToSymbol($storeCurrency) . number_format($cart['price'] * $cart['quantity']) . '</p>
-            </div>
-            <div class="flex items-center justify-between flex-1 text-sm mt-2">
-                <p class="text-gray-500">' . $unit_calc_value . ' ' . $unit_type_updated . '</p>
-                <div class="flex items-center gap-3">
-                    <div class="addToCartWrapper" data-id="' . $cart['product_id'] . '">
-                        <div class="flex items-center gap-3 p-1 bg-gray-100 rounded-full">
-                            <button class="w-[30px] h-[30px] bg-red-200 text-red-500 rounded-full flex items-center justify-center decreaseQtyBtn" data-id="' . $cart['product_id'] . '" data-variant="' . $cart['other'] . '" data-advancedVariant="' . $cart['advanced_variant'] . '"><i class="font-medium bx bx-minus"></i></button>
-                            <span class="text-base font-medium text-center currentQty">' . $cart['quantity'] . '</span>
-                            <button class="w-[30px] h-[30px] bg-green-200 text-green-500 rounded-full flex items-center justify-center increaseQtyBtn" data-id="' . $cart['product_id'] . '" data-variant="' . $cart['other'] . '" data-advancedVariant="' . $cart['advanced_variant'] . '"><i class="font-medium bx bx-plus"></i></button>
-                        </div>
+        $html .= '<div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 flex gap-4">
+            <button class="absolute top-3 right-3 border border-gray-300 px-2 py-1 rounded-md hover:border-red-600 hover:text-red-600 transition bg-white shadow-sm removeQtyBtn" data-id="' . $cart['product_id'] . '" data-variant="' . $cart['other'] . '" data-advancedVariant="' . $cart['advanced_variant'] . '">
+                <i class="fas fa-trash-alt text-sm"></i>
+            </button>
+            <img src="' . UPLOADS_URL . $image . '" alt="' . getData("name", "seller_products", "id='{$cart['product_id']}'") . '" class="w-24 h-24 object-cover rounded-xl">
+            <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-800 hover:text-pink-600 transition">' . limit_characters(getData("name", "seller_products", "id='{$cart['product_id']}'"), 30) . ' ' . $variation_text . '</h3>
+                <p class="text-gray-500 text-sm">' . $variation . '</p>
+                <div class="mt-2 flex flex-wrap items-center gap-4">
+                    <div class="flex items-center border rounded-lg overflow-hidden addToCartWrapper" data-id="' . $cart['product_id'] . '">
+                        <button class="px-3 py-1 text-gray-600 hover:text-pink-600 decreaseQtyBtn" data-id="' . $cart['product_id'] . '" data-variant="' . $cart['other'] . '" data-advancedVariant="' . $cart['advanced_variant'] . '">-</button>
+                        <span class="px-3 py-1 text-gray-800 font-medium currentQty">' . $cart['quantity'] . '</span>
+                        <button class="px-3 py-1 text-gray-600 hover:text-pink-600 increaseQtyBtn" data-id="' . $cart['product_id'] . '" data-variant="' . $cart['other'] . '" data-advancedVariant="' . $cart['advanced_variant'] . '">+</button>
                     </div>
-                    <button type="button" class="w-[30px] h-[30px] bg-red-100 text-red-500 rounded-full flex items-center justify-center transition hover:bg-red-500 hover:text-white removeQtyBtn" data-id="' . $cart['product_id'] . '" data-variant="' . $cart['other'] . '" data-advancedVariant="' . $cart['advanced_variant'] . '"><i class="font-medium bx bx-trash"></i></button>
-                </div>
-            </div>
-        </div>
-    </li>';
-}
-
-// Empty cart
-if (!$count) {
-    $html = '<div class="p-[30px] text-center">
-        <img alt="" src="' . APP_URL . 'assets/img/empty-bag.svg" class="mx-auto mt-[38px]" width="216" height="126">
-        <h3 class="text-[20px] font-bold mt-5">Your bag is empty</h3>
-        <p class="text-[#CCCCCC] text-[16px] mt-3">Looks like you haven\'t made your choice yet.</p>
-    </div>';
-}
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="line-through text-gray-400 text-sm">' . currencyToSymbol($storeCurrency) . number_format($cart['mrp_price']) . '</span>
+                            <span class="font-bold text-lg text-gray-900">' . currencyToSymbol($storeCurrency) . number_format($cart['price'] * $cart['quantity']) . '</span>
+                        </div>';
+        if (isset($cart['mrp_price']) && $cart['mrp_price'] > $cart['price']) {
+            $html .= '<div class="flex items-center justify-between bg-pink-50 text-pink-600 rounded-lg px-3 py-1 mt-1 text-sm">
+                <span class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    You saved
+                </span>
+                <span class="font-semibold">' . currencyToSymbol($storeCurrency) . number_format($cart['mrp_price'] - $cart['price']) . '</span>
+            </div>';
+        }
+        $html .= '</div></div></div></div>';
+    endforeach;
+else:
+    $html = '<p class="text-center text-gray-500 py-6">Your cart is empty.</p>';
+endif;
 
 echo $html;
