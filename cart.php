@@ -310,7 +310,7 @@
         </div>
     </footer>
     <!--  Footer End -->
-<?php include_once __DIR__ . "/includes/footer_link.php"; ?>
+    <?php include_once __DIR__ . "/includes/footer_link.php"; ?>
     <!--JS File Include -->
     <script src="<?= APP_URL ?>themes/theme9/js/script.js"></script>
     <script src="<?= APP_URL ?>shop/javascripts/cart.js"></script>

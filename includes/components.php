@@ -32,7 +32,6 @@ function getProductHtml($id, $divClass = "")
 
     global $storeCurrency, $storeUrl, $customerId, $cookie_id;
 
-    // Product Data
     $product_id   = getData("product_id", "seller_products", "id='$id'") ?: die("Product ID not found for $id");
     $url          = $storeUrl . "product/" . (getData("slug", "seller_products", "id='$id'") ?: die("Slug not found"));
     $name         = getData("name", "seller_products", "id='$id'") ?: die("Product name not found");
@@ -48,15 +47,11 @@ function getProductHtml($id, $divClass = "")
 
     if (empty($variation)) $variation = $unit . $unit_type;
 
-    // SAVE %
-
     $savePercent = 0;
     if ($badge === "Save" && $mrp_price && $mrp_price > $price) {
         $savePercent = round((($mrp_price - $price) / $mrp_price) * 100);
     }
 
-
-    // Wishlist
     $wishlist = '<button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
                                 bg-white/95 hover:bg-pink-100 text-pink-600 rounded-full shadow-lg 
                                 transition transform hover:scale-110 handleWishlist" data-id="' . $id . '">
@@ -70,7 +65,6 @@ function getProductHtml($id, $divClass = "")
                  </button>';
     }
 
-    // Advanced Variant Override
     if ($advVar = getData("id", "seller_product_advanced_variants", "product_id='$product_id'")) {
         $advancedVariant = $advVar;
         $price = getData("price", "seller_product_advanced_variants", "product_id='$product_id'") ?: $price;
@@ -79,7 +73,6 @@ function getProductHtml($id, $divClass = "")
         $totalStocks = getData("stock", "seller_product_advanced_variants", "product_id='$product_id'") ?: $totalStocks;
     }
 
-    // Star Ratings
     $rating = getData("rating", "product_ratings", "product_id='$id'") ?: 0;
     $stars = "";
     for ($i = 1; $i <= 5; $i++) {
@@ -94,8 +87,6 @@ function getProductHtml($id, $divClass = "")
 
     // HTML Card Start
     $html = '<div class="' . $divClass . '" data-id="' . $id . '">
-
-        <!-- Image + Badge + Wishlist -->
         <div class="relative">
             <a href="' . $url . '">
                 <img src="' . UPLOADS_URL . $image . '" alt="' . $name . '" 
@@ -114,7 +105,6 @@ function getProductHtml($id, $divClass = "")
 
     $html .= $wishlist . '</div>';
 
-    // Product Name & Stars
     $html .= '<div class="p-4 flex flex-col flex-grow">
                 <h3 class="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-gray-800 
                            group-hover:text-pink-600 transition-colors mb-1">' . htmlspecialchars($name) . '</h3>
@@ -123,11 +113,11 @@ function getProductHtml($id, $divClass = "")
     // Variants Dropdown
     if ($variantData = getData("id", "seller_product_variants", "product_id='$product_id'")) {
         $html .= '<div class="mb-3">
-                    <label for="variantSelect-' . $product_id . '" class="block text-sm font-medium text-gray-700 mb-1">Select Variant:</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Variant:</label>
                     <div class="relative">
-                        <select id="variantSelect-' . $product_id . '" class="variantSelect block w-full appearance-none border border-gray-300 rounded-lg bg-white px-4 py-2 pr-10 text-gray-700 text-sm
+                        <select class="variantSelect block w-full appearance-none border border-gray-300 rounded-lg bg-white px-4 py-2 pr-10 text-gray-700 text-sm
                                focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition shadow-sm hover:shadow-md">';
-        $html .= '<option value="' . $product_id . '" data-image="' . UPLOADS_URL . $image . '" data-price="' . $price . '" data-mrp="' . $mrp_price . '">' . htmlspecialchars($variation) . '</option>';
+        $html .= '<option value="" disabled selected class="text-gray-400">Select</option>';
 
         $data = readData("*", "seller_product_variants", "product_id='$product_id' AND (stock>0 OR unlimited_stock=1)");
         while ($row = $data->fetch()) {
@@ -144,7 +134,6 @@ function getProductHtml($id, $divClass = "")
                   </div>';
     }
 
-    // Price + AddToCart
     $html .= '<div class="flex items-center justify-between mt-auto">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
                     <span class="productPrice text-sm sm:text-base md:text-lg font-bold">' . currencyToSymbol($storeCurrency) . number_format($price) . '</span>' .
@@ -155,24 +144,30 @@ function getProductHtml($id, $divClass = "")
 
     $html .= '</div></div></div>'; // close wrappers
 
-    // JS for Variant Change
-    $html .= "<script>
-        document.getElementById('variantSelect-$product_id')?.addEventListener('change', function() {
-            const selected = this.options[this.selectedIndex];
-            const img = selected.dataset.image;
-            const price = selected.dataset.price;
-            const mrp = selected.dataset.mrp;
-
-            const card = this.closest('.group');
-            const imageEl = card.querySelector('.productImage');
-            const priceEl = card.querySelector('.productPrice');
-            const mrpEl = card.querySelector('.productMrp');
-
-            if(imageEl) imageEl.src = img;
-            if(priceEl) priceEl.textContent = '" . currencyToSymbol($storeCurrency) . "' + parseFloat(price).toLocaleString();
-            if(mrpEl) mrpEl.textContent = mrp && mrp > price ? '" . currencyToSymbol($storeCurrency) . "' + parseFloat(mrp).toLocaleString() : '';
-        });
-    </script>";
-
     return $html;
 }
+
+?>
+
+<!-- GLOBAL VARIANT SCRIPT -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.variantSelect').forEach(function(select) {
+            select.addEventListener('change', function() {
+                const selected = this.options[this.selectedIndex];
+                const img = selected.dataset.image;
+                const price = selected.dataset.price;
+                const mrp = selected.dataset.mrp;
+
+                const card = this.closest('.group');
+                const imageEl = card.querySelector('.productImage');
+                const priceEl = card.querySelector('.productPrice');
+                const mrpEl = card.querySelector('.productMrp');
+
+                if (imageEl) imageEl.src = img;
+                if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + parseFloat(price).toLocaleString();
+                if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ? "<?= currencyToSymbol($storeCurrency) ?>" + parseFloat(mrp).toLocaleString() : '';
+            });
+        });
+    });
+</script>
