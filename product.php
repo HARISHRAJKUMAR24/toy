@@ -30,13 +30,12 @@
 
 <body class="font-sans bg-pink-50 min-h-screen">
 
-    <!-- Minimum Order Amount Start-->
+    <!-- Minimum Order Amount -->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
         <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
             Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
         </div>
     <?php endif; ?>
-    <!-- Minimum Order Amount End-->
 
     <!-- Nav Bar -->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
@@ -45,34 +44,50 @@
     if (isset($_GET['slug']) && getData("id", "seller_products", "slug = '{$_GET['slug']}' AND (visibility = 'publish' OR (visibility = 'schedule' AND schedule_date <= NOW())) AND seller_id = '$sellerId' AND status = 1")) {
 
         $slug = $_GET['slug'];
-        $id = getData("id", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $product_id = getData("product_id", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $name = getData("name", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $variation = getData("variation", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $price = getData("price", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $mrp_price = getData("mrp_price", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $description = getData("description", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $image = getData("image", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
+        $id = getData("id", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $product_id = getData("product_id", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $name = getData("name", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $variation = getData("variation", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $price = getData("price", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $special_price = getData("special_price", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $mrp_price = getData("mrp_price", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $description = getData("description", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $image = getData("image", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $unit = getData("unit", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $unit_type = getData("unit_type", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $sku = getData("sku", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
 
         $unlimited_stock = getData("unlimited_stock", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
         $total_stocks = getData("total_stocks", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
+        $stock_unit = getData("stock_unit", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
         $maxQty = ($unlimited_stock == 1) ? "Unlimited" : (int)$total_stocks;
 
         $variantId = isset($_GET['variation']) ? $_GET['variation'] : '';
 
+        // Increment visitors
         $db->prepare("UPDATE seller_products SET visitors = visitors+1 WHERE id = :id")->execute(['id' => $id]);
         $visitors = getData("visitors", "seller_products", "id = '$id'");
 
+        // Ratings
         $stmt = $db->prepare("SELECT AVG(rating) AS average_rating FROM product_ratings WHERE product_id = ?");
         $stmt->execute([$id]);
         $averageRating = ($stmt->rowCount() > 0) ? $stmt->fetch(PDO::FETCH_ASSOC)['average_rating'] : 0;
 
+        // Variants
         $variantsData = readData("*", "seller_product_advanced_variants", "product_id = '$product_id'");
         $basicVariants = readData("*", "seller_product_variants", "product_id = '$product_id'");
 
-        // Cart variants
+        // Wishlist
+        $wishlistExists = isLoggedIn() && getData("id", "customer_wishlists", "customer_id = '$customerId' AND product_id = '$id' AND other = ''");
+
+        // Cart
         $cartVariants = readData("other", "customer_cart", "customer_id = '$cookie_id' AND product_id = '$id'")->fetchAll(PDO::FETCH_COLUMN);
         $inCartInitial = in_array($variantId, $cartVariants);
+
+        // Prepare advanced variants array for JS
+        $variantsDataArr = [];
+        while ($v = $variantsData->fetch(PDO::FETCH_ASSOC)) $variantsDataArr[] = $v;
+
     } else {
         redirect($storeUrl);
     }
@@ -101,49 +116,60 @@
                         </div>
                     </div>
 
-                    <!-- Info -->
+                    <!-- Product Info -->
                     <div class="flex-1 flex flex-col flex-[0.45]">
                         <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2"><?= htmlspecialchars($name) ?></h1>
                         <p class="text-base sm:text-lg md:text-xl text-gray-600 mb-4"><?= htmlspecialchars($variation) ?></p>
 
-                        <!-- Variants -->
+                        <!-- Basic Variants -->
                         <?php if ($basicVariants && $basicVariants->rowCount() > 0) : ?>
-                            <div class="flex flex-wrap gap-2 mb-4">
+                            <div class="flex gap-2 mb-4 overflow-x-auto">
+                                <?php
+                                $mainVariantLabel = !empty($variation) ? $variation : $name;
+                                ?>
+                                <button class="variant-btn px-3 py-1 border rounded-lg text-sm hover:bg-pink-100 ring-2 ring-pink-400"
+                                    data-variant-id="main"
+                                    data-image="<?= UPLOADS_URL . $image ?>"
+                                    data-price="<?= $price ?>">
+                                    <?= htmlspecialchars($mainVariantLabel) ?>
+                                </button>
+
                                 <?php while ($bv = $basicVariants->fetch()) : ?>
                                     <?php $variantLabel = $bv['variation'] ?? $bv['variant'] ?? ($bv['name'] ?? "Variant " . $bv['id']); ?>
-                                    <button class="variant-btn px-3 py-1 border rounded-lg text-sm hover:bg-pink-100" data-variant-id="<?= $bv['id'] ?>" data-variant-image="<?= UPLOADS_URL . ($bv['image'] ?? $image) ?>">
+                                    <button class="variant-btn px-3 py-1 border rounded-lg text-sm hover:bg-pink-100"
+                                        data-variant-id="<?= $bv['id'] ?>"
+                                        data-image="<?= UPLOADS_URL . ($bv['image'] ?? $image) ?>"
+                                        data-price="<?= $bv['price'] ?? $price ?>">
                                         <?= htmlspecialchars($variantLabel) ?>
                                     </button>
                                 <?php endwhile; ?>
                             </div>
                         <?php endif; ?>
 
-                        <?php if ($variantsData->rowCount() > 0) : ?>
+                        <!-- Advanced Variants -->
+                        <?php if (count($variantsDataArr) > 0): ?>
                             <div class="flex gap-2 sm:gap-3 mt-2 mb-4 flex-wrap">
-                                <?php while ($v = $variantsData->fetch()):
-                                    $colorCode = !empty($v['color']) ? getData("color_code", "product_colors", "id = '{$v['color']}'") : '';
-                                    $variantImage = $v['image'] ?? $image;
+                                <?php foreach($variantsDataArr as $v):
+                                    $variantImage = !empty($v['image']) ? UPLOADS_URL.$v['image'] : UPLOADS_URL.$image;
+                                    $variantPrice = $v['price'] ?? $price;
                                 ?>
-                                    <button
-                                        class="variant-btn px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base font-semibold rounded-lg border hover:bg-pink-50 transition"
-                                        style="<?= !empty($colorCode) ? "background-color: $colorCode; color: " . getContrastYIQ($colorCode) . "; border:none;" : "" ?>"
-                                        data-variant-id="<?= $v['id'] ?>"
-                                        data-variant-image="<?= UPLOADS_URL . $variantImage ?>">
-                                        <?= strtoupper($v['color'] ?? $v['size'] ?? $v['variation'] ?? 'VAR') ?>
-                                    </button>
-                                <?php endwhile; ?>
+                                <button class="adv-variant-btn px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base font-semibold rounded-lg border hover:bg-pink-50 transition"
+                                    data-variant-id="<?= $v['id'] ?>"
+                                    data-image="<?= $variantImage ?>"
+                                    data-price="<?= $variantPrice ?>">
+                                    <?= htmlspecialchars($v['variation'] ?? strtoupper($v['color'] ?? $v['size'] ?? $v['id'])) ?>
+                                </button>
+                                <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
 
-                        <!-- Price & Ratings -->
+                        <!-- Price & Stock -->
                         <div class="flex items-center gap-3 mb-6">
-                            <span class="text-2xl font-bold text-pink-600"><?= currencyToSymbol($storeCurrency) . $price ?></span>
+                            <span id="productPrice" class="text-2xl font-bold text-pink-600"><?= currencyToSymbol($storeCurrency) . $price ?></span>
                             <?php if ($mrp_price) : ?>
-                                <span class="text-gray-400 line-through"><?= currencyToSymbol($storeCurrency) . $mrp_price ?></span>
+                                <span id="productMRP" class="text-gray-400 line-through"><?= currencyToSymbol($storeCurrency) . $mrp_price ?></span>
                             <?php endif; ?>
                         </div>
-
-                        <p class="text-gray-700 leading-relaxed mb-4"><?= $description ?></p>
 
                         <p id="stock" class="font-semibold mt-2 <?= ($maxQty !== "Unlimited" && ((int)$maxQty) <= 5) ? 'text-red-500' : 'text-green-500' ?>">
                             <?= ($maxQty === "Unlimited") ? "Unlimited stock" : (((int)$maxQty <= 0) ? "Out of Stock" : ((int)$maxQty . " left")) ?>
@@ -151,18 +177,29 @@
 
                         <p class="text-xs text-gray-400 mt-1">Viewed <?= (int)$visitors ?> times</p>
 
-                        <!-- Add to Cart -->
+                        <!-- Add to Cart & Wishlist & Report -->
                         <div class="flex flex-wrap gap-4 mb-6 items-center mt-4">
                             <?php
                             $disableAdd = (($maxQty !== "Unlimited" && (int)$maxQty <= 0) || $inCartInitial);
                             $btnClass = $disableAdd ? 'bg-gray-300 cursor-not-allowed' : 'bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700';
                             ?>
-                            <button class="px-5 py-2 rounded-lg <?= $btnClass ?> text-white font-semibold shadow-lg transition transform hover:scale-105 addToCartBtn text-sm sm:text-base"
-                                data-id="<?= $id ?>"
-                                data-variant="<?= $variantId ?>"
-                                data-redirectUrl="<?= $storeUrl ?>cart"
-                                <?= $disableAdd ? 'disabled' : '' ?>>
+                            <button id="addToCartBtn" class="px-5 py-2 rounded-lg <?= $btnClass ?> text-white font-semibold shadow-lg transition transform hover:scale-105 text-sm sm:text-base"
+                                data-id="<?= $id ?>" data-variant="<?= $variantId ?>" data-redirectUrl="<?= $storeUrl ?>cart" <?= $disableAdd ? 'disabled' : '' ?>>
                                 <?= ($maxQty !== "Unlimited" && (int)$maxQty <= 0) ? 'Out of Stock' : ($inCartInitial ? 'Already in Cart' : 'Add to Cart') ?>
+                            </button>
+
+                            <?php if (isLoggedIn()) : ?>
+                                <button id="wishlistBtn" data-id="<?= $id ?>" class="wishlistBtn px-3 py-2 rounded-lg border <?= $wishlistExists ? 'bg-rose-500 text-white' : 'bg-white text-pink-500' ?> font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
+                                    <i class="<?= $wishlistExists ? 'fas' : 'far' ?> fa-heart"></i>
+                                </button>
+                            <?php else: ?>
+                                <a href="<?= $storeUrl ?>login" class="px-3 py-2 rounded-lg border bg-white text-pink-500 font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <button id="reportBtn" class="report-btn px-3 py-2 sm:px-4 sm:py-2 md:px-4 md:py-2 rounded-lg bg-red-500 text-white shadow hover:bg-red-600 transition transform hover:scale-105 flex items-center justify-center text-sm sm:text-base">
+                                <i class="fas fa-flag"></i>
                             </button>
                         </div>
                     </div>
@@ -170,151 +207,133 @@
             </div>
         </div>
     </section>
-    <!-- Latest Product Section Start-->
 
-    <section class="py-16 px-4 bg-gray-50">
-        <div class="container mx-auto">
-
-            <!-- Section Heading -->
-            <div class="text-center mb-8">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
-                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                    Explore our latest and most exciting products
-                </p>
+    <!-- Report Modal -->
+    <div id="reportModal" class="fixed inset-0 bg-black/50 flex items-center justify-center opacity-0 invisible transition-opacity duration-300 z-50 p-4">
+        <div class="bg-white rounded-xl w-full max-w-xs md:max-w-md lg:max-w-sm p-6 relative shadow-lg">
+            <button id="closeReportModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            <div class="text-center mb-6">
+                <div class="text-4xl mb-2">😢</div>
+                <h2 class="text-2xl font-bold text-gray-800">Report This Product</h2>
+                <p class="text-gray-600 mt-1 text-sm">Please let us know why you want to report it</p>
             </div>
-
-            <!-- Product Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
-                <?php
-                $products = getProducts(); // Fetch all products
-                $counter = 0;
-
-                foreach ($products as $product) {
-                    if ($counter >= 10) break; // Stop after 10 products
-                    echo getProductHtml($product["id"], "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col");
-                    $counter++;
-                }
-                ?>
-            </div>
+            <form id="reportForm" class="flex flex-col gap-4">
+                <input type="text" placeholder="Your Name" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
+                <input type="email" placeholder="Your Email" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
+                <textarea placeholder="Reason" rows="3" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none resize-none"></textarea>
+                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-red-400 to-red-600 text-white font-semibold rounded-lg shadow hover:from-red-500 hover:to-red-700 transition transform hover:scale-105">
+                    Submit Report
+                </button>
+            </form>
         </div>
-    </section>
+    </div>
 
-    <!--Latest Product Section End -->
-    <!-- Footer Start-->
-    <footer class="bg-pink-50 relative overflow-hidden py-10">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
-
-            <!-- Logo & Small Address -->
-            <div class="flex flex-col gap-3 md:w-1/3">
-                <div class="flex items-center gap-2">
-                    <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="h-10 w-10">
-                    <span class="font-extrabold text-xl text-pink-600">ToyShop</span>
-                </div>
-                <p class="text-gray-600 text-sm mt-2">
-                    1Milestone Technology Solution Pvt Ltd<br>
-                    123 Business Street, City<br>
-                    Pin: 560001 | GSTIN: 29ABCDE1234F1Z5
-                </p>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="flex flex-col gap-2 md:w-1/3">
-                <h3 class="font-semibold text-gray-800">Quick Links</h3>
-                <ul class="space-y-1 text-gray-600 text-sm">
-                    <li><a href="#" class="hover:text-pink-500 transition">Terms & Conditions</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Shipping Policy</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Track Order</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Blogs</a></li>
-                </ul>
-            </div>
-
-            <!-- Social Icons -->
-            <div class="flex flex-col gap-3 md:w-1/3">
-                <h3 class="font-semibold text-gray-800">Follow Us</h3>
-                <div class="flex gap-3">
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-facebook text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-instagram text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-twitter text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-linkedin text-pink-500 text-lg'></i>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Disclaimer Section -->
-        <div class="mt-8 px-6">
-            <h3 class="text-gray-800 font-semibold text-sm mb-2">Disclaimer:</h3>
-            <p class="text-gray-500 text-xs">
-                Ztorespot.com, a brand of 1Milestone Technology Solution Pvt Ltd, is not liable for product sales. We
-                provide a DIY platform connecting Merchants & Buyers. All transactions are the responsibility of
-                respective parties. Exercise caution.
-            </p>
-        </div>
-
-        <!-- Decorative floating shapes -->
-        <div class="absolute -top-10 -left-10 w-40 h-40 bg-pink-100 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-100 rounded-full blur-3xl pointer-events-none">
-        </div>
-    </footer>
-    <!-- Footer End-->
+    <!-- Footer -->
     <?php include_once __DIR__ . "/includes/footer_link.php"; ?>
 
-    <script>
-        const cartVariants = <?= json_encode($cartVariants) ?>;
+<script>
+const cartVariants = <?= json_encode($cartVariants) ?>;
+const maxQty = <?= ($maxQty === "Unlimited") ? -1 : (int)$maxQty ?>;
+const unlimitedStock = <?= ($unlimited_stock == 1) ? 1 : 0 ?>;
+const currencySymbol = '<?= currencyToSymbol($storeCurrency) ?>';
+const addToCartBtn = document.getElementById('addToCartBtn');
+const productPrice = document.getElementById('productPrice');
 
-        document.querySelectorAll('.variant-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.variant-btn').forEach(x => x.classList.remove('ring-2', 'ring-pink-400'));
-                this.classList.add('ring-2', 'ring-pink-400');
+// Basic Variant Click
+document.querySelectorAll('.variant-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.variant-btn').forEach(x => x.classList.remove('ring-2','ring-pink-400'));
+        this.classList.add('ring-2','ring-pink-400');
 
-                const variantImage = this.dataset.variantImage;
-                if (variantImage) document.getElementById('mainProductImage').src = variantImage;
+        const img = this.dataset.image;
+        const price = this.dataset.price;
+        const variantId = this.dataset.variantId;
 
-                const addBtn = document.querySelector('.addToCartBtn');
-                if (addBtn) {
-                    const variantId = this.dataset.variantId;
-                    addBtn.dataset.variant = variantId;
+        if(img) document.getElementById('mainProductImage').src = img;
+        if(price) productPrice.textContent = currencySymbol + price;
+        addToCartBtn.dataset.variant = variantId;
 
-                    if ((<?= (int)$maxQty ?> <= 0 && "<?= $unlimited_stock ?>" != "1") || cartVariants.includes(variantId)) {
-                        addBtn.textContent = cartVariants.includes(variantId) ? 'Already in Cart' : 'Out of Stock';
-                        addBtn.disabled = true;
-                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
-                        addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
-                    } else {
-                        addBtn.textContent = 'Add to Cart';
-                        addBtn.disabled = false;
-                        addBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
-                        addBtn.classList.add('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
-                    }
-                }
-            });
-        });
-    </script>
+        // Handle add-to-cart button state
+        if((maxQty <= 0 && !unlimitedStock) || cartVariants.includes(variantId)) {
+            addToCartBtn.textContent = cartVariants.includes(variantId) ? 'Already in Cart' : 'Out of Stock';
+            addToCartBtn.disabled = true;
+            addToCartBtn.classList.remove('bg-gradient-to-r','from-pink-400','to-pink-600','hover:from-pink-500','hover:to-pink-700');
+            addToCartBtn.classList.add('bg-gray-300','cursor-not-allowed');
+        } else {
+            addToCartBtn.textContent = 'Add to Cart';
+            addToCartBtn.disabled = false;
+            addToCartBtn.classList.remove('bg-gray-300','cursor-not-allowed');
+            addToCartBtn.classList.add('bg-gradient-to-r','from-pink-400','to-pink-600','hover:from-pink-500','hover:to-pink-700');
+        }
+    });
+});
+
+// Advanced Variant Click
+document.querySelectorAll('.adv-variant-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.adv-variant-btn').forEach(x => x.classList.remove('ring-2','ring-pink-400'));
+        this.classList.add('ring-2','ring-pink-400');
+
+        const img = this.dataset.image;
+        const price = this.dataset.price;
+        const variantId = this.dataset.variantId;
+
+        if(img) document.getElementById('mainProductImage').src = img;
+        if(price) productPrice.textContent = currencySymbol + price;
+        addToCartBtn.dataset.variant = variantId;
+
+        if((maxQty <= 0 && !unlimitedStock) || cartVariants.includes(variantId)) {
+            addToCartBtn.textContent = cartVariants.includes(variantId) ? 'Already in Cart' : 'Out of Stock';
+            addToCartBtn.disabled = true;
+            addToCartBtn.classList.remove('bg-gradient-to-r','from-pink-400','to-pink-600','hover:from-pink-500','hover:to-pink-700');
+            addToCartBtn.classList.add('bg-gray-300','cursor-not-allowed');
+        } else {
+            addToCartBtn.textContent = 'Add to Cart';
+            addToCartBtn.disabled = false;
+            addToCartBtn.classList.remove('bg-gray-300','cursor-not-allowed');
+            addToCartBtn.classList.add('bg-gradient-to-r','from-pink-400','to-pink-600','hover:from-pink-500','hover:to-pink-700');
+        }
+    });
+});
+
+// Wishlist
+const wishlistBtn = document.getElementById('wishlistBtn');
+wishlistBtn?.addEventListener('click', () => {
+    const productId = wishlistBtn.dataset.id;
+    fetch(`<?= $storeUrl ?>ajax/wishlist.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `product_id=${productId}`
+    }).then(res => res.json()).then(data => {
+        if (data.status === 'added') {
+            wishlistBtn.classList.add('bg-rose-500','text-white');
+            wishlistBtn.querySelector('i').classList.replace('far','fas');
+        } else {
+            wishlistBtn.classList.remove('bg-rose-500','text-white');
+            wishlistBtn.querySelector('i').classList.replace('fas','far');
+        }
+    });
+});
+
+// Report modal
+const reportBtn = document.getElementById('reportBtn');
+const reportModal = document.getElementById('reportModal');
+const closeReportModal = document.getElementById('closeReportModal');
+
+reportBtn?.addEventListener('click', () => reportModal.classList.remove('opacity-0','invisible'));
+closeReportModal?.addEventListener('click', () => reportModal.classList.add('opacity-0','invisible'));
+</script>
 
 </body>
-
 </html>
 
 <?php
-function getContrastYIQ($hexcolor)
-{
+function getContrastYIQ($hexcolor) {
     $hexcolor = str_replace("#", "", $hexcolor);
-    $r = hexdec(substr($hexcolor, 0, 2));
-    $g = hexdec(substr($hexcolor, 2, 2));
-    $b = hexdec(substr($hexcolor, 4, 2));
-    $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+    $r = hexdec(substr($hexcolor,0,2));
+    $g = hexdec(substr($hexcolor,2,2));
+    $b = hexdec(substr($hexcolor,4,2));
+    $yiq = (($r*299)+($g*587)+($b*114))/1000;
     return ($yiq >= 128) ? '#000000' : '#FFFFFF';
 }
 ?>
