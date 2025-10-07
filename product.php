@@ -5,6 +5,27 @@
 
 <head>
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
+    <style>
+        /* Responsive main product image */
+        #mainProductImage {
+            width: 100%;
+            max-height: 60vh;
+            min-height: 250px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            #mainProductImage {
+                max-height: 40vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #mainProductImage {
+                max-height: 30vh;
+            }
+        }
+    </style>
 </head>
 
 <body class="font-sans bg-pink-50 min-h-screen">
@@ -29,11 +50,9 @@
         $name = getData("name", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
         $variation = getData("variation", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
         $price = getData("price", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $special_price = getData("special_price", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
         $mrp_price = getData("mrp_price", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
         $description = getData("description", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
         $image = getData("image", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $unit_type = getData("unit_type", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
 
         $unlimited_stock = getData("unlimited_stock", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
         $total_stocks = getData("total_stocks", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
@@ -50,9 +69,8 @@
 
         $variantsData = readData("*", "seller_product_advanced_variants", "product_id = '$product_id'");
         $basicVariants = readData("*", "seller_product_variants", "product_id = '$product_id'");
-        $wishlistExists = isLoggedIn() && getData("id", "customer_wishlists", "customer_id = '$customerId' AND product_id = '$id' AND other = ''");
 
-        // Get all variants already in cart
+        // Cart variants
         $cartVariants = readData("other", "customer_cart", "customer_id = '$cookie_id' AND product_id = '$id'")->fetchAll(PDO::FETCH_COLUMN);
         $inCartInitial = in_array($variantId, $cartVariants);
     } else {
@@ -63,23 +81,23 @@
     <!-- Product Section -->
     <section class="py-12 bg-gray-100">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="bg-white rounded-2xl shadow-xl transform transition hover:shadow-2xl duration-300 p-8">
-                <div class="flex flex-col lg:flex-row gap-12">
+            <div class="bg-white rounded-2xl shadow-xl transform transition hover:shadow-2xl duration-300 p-6 lg:p-8">
+                <div class="flex flex-col lg:flex-row gap-8">
 
                     <!-- Images -->
                     <div class="flex flex-col lg:flex-row gap-4 justify-center items-start flex-[0.55]">
                         <div id="thumbnailContainer" class="flex lg:flex-col gap-3 max-h-[360px] overflow-x-auto lg:overflow-y-auto order-2 lg:order-1">
                             <?php
-                            $html = '<img src="' . UPLOADS_URL . $image . '" class="thumbnail w-20 h-20 object-cover rounded-lg cursor-pointer border-2 border-pink-500 transition" onclick="document.getElementById(\'mainProductImage\').src=this.src">';
+                            $html = '<img src="' . UPLOADS_URL . $image . '" class="thumbnail w-16 h-16 object-cover rounded-lg cursor-pointer border-2 border-pink-500 transition" onclick="document.getElementById(\'mainProductImage\').src=this.src">';
                             $data = readData("*", "seller_product_additional_images", "product_id = '$product_id'");
                             while ($row = $data->fetch()) {
-                                $html .= '<img src="' . UPLOADS_URL . $row['image'] . '" class="thumbnail w-20 h-20 object-cover rounded-lg cursor-pointer border-2 border-gray-200 transition" onclick="document.getElementById(\'mainProductImage\').src=this.src">';
+                                $html .= '<img src="' . UPLOADS_URL . $row['image'] . '" class="thumbnail w-16 h-16 object-cover rounded-lg cursor-pointer border-2 border-gray-200 transition" onclick="document.getElementById(\'mainProductImage\').src=this.src">';
                             }
                             echo $html;
                             ?>
                         </div>
-                        <div class="flex justify-center items-center w-full lg:w-full max-w-full rounded-lg overflow-hidden shadow-md order-1 lg:order-2" style="height: 60vh; min-height: 400px; max-height: 700px;">
-                            <img id="mainProductImage" src="<?= UPLOADS_URL . $image ?>" alt="<?= htmlspecialchars($name) ?>" class="w-full h-full object-contain transition-transform duration-300 hover:scale-105">
+                        <div class="flex justify-center items-center w-full lg:w-full max-w-full rounded-lg overflow-hidden shadow-md order-1 lg:order-2">
+                            <img id="mainProductImage" src="<?= UPLOADS_URL . $image ?>" alt="<?= htmlspecialchars($name) ?>" class="transition-transform duration-300 hover:scale-105">
                         </div>
                     </div>
 
@@ -88,7 +106,7 @@
                         <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2"><?= htmlspecialchars($name) ?></h1>
                         <p class="text-base sm:text-lg md:text-xl text-gray-600 mb-4"><?= htmlspecialchars($variation) ?></p>
 
-                        <!-- Basic Variants -->
+                        <!-- Variants -->
                         <?php if ($basicVariants && $basicVariants->rowCount() > 0) : ?>
                             <div class="flex flex-wrap gap-2 mb-4">
                                 <?php while ($bv = $basicVariants->fetch()) : ?>
@@ -100,7 +118,6 @@
                             </div>
                         <?php endif; ?>
 
-                        <!-- Advanced Variants -->
                         <?php if ($variantsData->rowCount() > 0) : ?>
                             <div class="flex gap-2 sm:gap-3 mt-2 mb-4 flex-wrap">
                                 <?php while ($v = $variantsData->fetch()):
@@ -118,15 +135,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <!-- Ratings -->
-                        <div class="flex items-center gap-1 text-yellow-400 mb-4">
-                            <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                <i class="<?= $i <= round($averageRating) ? 'fas' : 'far' ?> fa-star"></i>
-                            <?php endfor; ?>
-                            <span class="ml-2 text-sm text-gray-600">(<?= countData("id", "product_ratings", "product_id = '$id'") ?> reviews)</span>
-                        </div>
-
-                        <!-- Price -->
+                        <!-- Price & Ratings -->
                         <div class="flex items-center gap-3 mb-6">
                             <span class="text-2xl font-bold text-pink-600"><?= currencyToSymbol($storeCurrency) . $price ?></span>
                             <?php if ($mrp_price) : ?>
@@ -142,6 +151,7 @@
 
                         <p class="text-xs text-gray-400 mt-1">Viewed <?= (int)$visitors ?> times</p>
 
+                        <!-- Add to Cart -->
                         <div class="flex flex-wrap gap-4 mb-6 items-center mt-4">
                             <?php
                             $disableAdd = (($maxQty !== "Unlimited" && (int)$maxQty <= 0) || $inCartInitial);
@@ -152,7 +162,7 @@
                                 data-variant="<?= $variantId ?>"
                                 data-redirectUrl="<?= $storeUrl ?>cart"
                                 <?= $disableAdd ? 'disabled' : '' ?>>
-                                <?= $inCartInitial ? 'Already in Cart' : (($maxQty !== "Unlimited" && (int)$maxQty <= 0) ? 'Out of Stock' : 'Add to Cart') ?>
+                                <?= ($maxQty !== "Unlimited" && (int)$maxQty <= 0) ? 'Out of Stock' : ($inCartInitial ? 'Already in Cart' : 'Add to Cart') ?>
                             </button>
                         </div>
                     </div>
@@ -160,7 +170,37 @@
             </div>
         </div>
     </section>
-    <!-- Footer Start -->
+    <!-- Latest Product Section Start-->
+
+    <section class="py-16 px-4 bg-gray-50">
+        <div class="container mx-auto">
+
+            <!-- Section Heading -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                    Explore our latest and most exciting products
+                </p>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
+                <?php
+                $products = getProducts(); // Fetch all products
+                $counter = 0;
+
+                foreach ($products as $product) {
+                    if ($counter >= 10) break; // Stop after 10 products
+                    echo getProductHtml($product["id"], "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col");
+                    $counter++;
+                }
+                ?>
+            </div>
+        </div>
+    </section>
+
+    <!--Latest Product Section End -->
+    <!-- Footer Start-->
     <footer class="bg-pink-50 relative overflow-hidden py-10">
         <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
 
@@ -210,6 +250,7 @@
                     </a>
                 </div>
             </div>
+
         </div>
 
         <!-- Disclaimer Section -->
@@ -231,29 +272,23 @@
     <?php include_once __DIR__ . "/includes/footer_link.php"; ?>
 
     <script>
-        // Preload cart variants for this product
         const cartVariants = <?= json_encode($cartVariants) ?>;
 
-        // Variant click - change main image & update add-to-cart variant
         document.querySelectorAll('.variant-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                // Highlight
                 document.querySelectorAll('.variant-btn').forEach(x => x.classList.remove('ring-2', 'ring-pink-400'));
                 this.classList.add('ring-2', 'ring-pink-400');
 
-                // Update main image
                 const variantImage = this.dataset.variantImage;
                 if (variantImage) document.getElementById('mainProductImage').src = variantImage;
 
-                // Update add-to-cart variant
                 const addBtn = document.querySelector('.addToCartBtn');
                 if (addBtn) {
                     const variantId = this.dataset.variantId;
                     addBtn.dataset.variant = variantId;
 
-                    // Update button text based on cart
-                    if (cartVariants.includes(variantId)) {
-                        addBtn.textContent = 'Already in Cart';
+                    if ((<?= (int)$maxQty ?> <= 0 && "<?= $unlimited_stock ?>" != "1") || cartVariants.includes(variantId)) {
+                        addBtn.textContent = cartVariants.includes(variantId) ? 'Already in Cart' : 'Out of Stock';
                         addBtn.disabled = true;
                         addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
                         addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
