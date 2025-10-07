@@ -6,3 +6,4 @@
     <script src="<?= APP_URL ?>shop/javascripts/common-wishlist.js"></script>
     <script src="<?= APP_URL ?>assets/js/global.js"></script>
     <script src="<?= APP_URL ?>assets/js/theme3/app.js"></script>
+    <script src="<?= APP_URL ?>shop/javascripts/cart.js"></script>

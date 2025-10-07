@@ -217,8 +217,12 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
                 <?php
                 $products = getProducts(); // Fetch all products
+                $counter = 0;
+
                 foreach ($products as $product) {
+                    if ($counter >= 10) break; // Stop after 10 products
                     echo getProductHtml($product["id"], "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col");
+                    $counter++;
                 }
                 ?>
             </div>
