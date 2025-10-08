@@ -42,39 +42,53 @@
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
     <?php
-    if (isset($_GET['slug']) && getData("id", "seller_products", "slug = '{$_GET['slug']}' AND (visibility = 'publish' OR (visibility = 'schedule' AND schedule_date <= NOW())) AND seller_id = '$sellerId' AND status = 1")) {
+    // Check product exists
+    if (!isset($_GET['slug'])) redirect($storeUrl);
+    $slug = $_GET['slug'];
 
-        $slug = $_GET['slug'];
-        $id = getData("id", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $product_id = getData("product_id", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $name = getData("name", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $variation = getData("variation", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $price = getData("price", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $mrp_price = getData("mrp_price", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $description = getData("description", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
-        $image = getData("image", "seller_products", "slug = '{$_GET['slug']}' AND seller_id = '$sellerId'");
+    $productQuery = $db->prepare("SELECT * FROM seller_products WHERE slug=? AND seller_id=? AND status=1 AND (visibility='publish' OR (visibility='schedule' AND schedule_date<=NOW()))");
+    $productQuery->execute([$slug, $sellerId]);
+    $product = $productQuery->fetch(PDO::FETCH_ASSOC);
+    if (!$product) redirect($storeUrl);
 
-        $unlimited_stock = getData("unlimited_stock", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
-        $total_stocks = getData("total_stocks", "seller_products", "slug = '{$slug}' AND seller_id = '$sellerId'");
-        $maxQty = ($unlimited_stock == 1) ? "Unlimited" : (int)$total_stocks;
+    $id = $product['id'];
+    $product_id = $product['product_id'];
+    $name = $product['name'];
+    $variation = $product['variation'];
+    $price = $product['price'];
+    $mrp_price = $product['mrp_price'];
+    $description = $product['description'];
+    $image = $product['image'];
+    $unlimited_stock = $product['unlimited_stock'];
+    $total_stocks = $product['total_stocks'];
+    $maxQty = ($unlimited_stock == 1) ? "Unlimited" : (int)$total_stocks;
 
-        $initialVariantId = isset($_GET['variation']) && $_GET['variation'] != '' && $_GET['variation'] !== 'main' ? $_GET['variation'] : null;
+    $initialVariantId = isset($_GET['variation']) && $_GET['variation'] != '' && $_GET['variation'] !== 'main' ? $_GET['variation'] : null;
 
-        $db->prepare("UPDATE seller_products SET visitors = visitors+1 WHERE id = :id")->execute(['id' => $id]);
-        $visitors = getData("visitors", "seller_products", "id = '$id'");
+    // Update visitors
+    $db->prepare("UPDATE seller_products SET visitors=visitors+1 WHERE id=?")->execute([$id]);
+    $visitors = $product['visitors'] + 1;
 
-        $variantsData = readData("*", "seller_product_advanced_variants", "product_id = '$product_id'");
-        $basicVariants = readData("*", "seller_product_variants", "product_id = '$product_id'");
+    // Fetch variants
+    $basicVariants = readData("*", "seller_product_variants", "product_id='$product_id'");
 
-        // Cart variants (using 'other' column)
-        $cartVariants = readData("other", "customer_cart", "customer_id = '$cookie_id' AND product_id = '$id'")->fetchAll(PDO::FETCH_COLUMN);
-        $cartVariants = array_map(function ($v) {
-            return ($v === "" || $v === null) ? 'main' : $v;
-        }, $cartVariants);
+    // Cart variants
+    $cartVariantsQuery = readData("other", "customer_cart", "customer_id='$cookie_id' AND product_id='$id'");
+    $cartVariants = $cartVariantsQuery->fetchAll(PDO::FETCH_COLUMN);
+    $cartVariants = array_map(function ($v) {
+        return ($v == "" || $v === null) ? 'main' : $v;
+    }, $cartVariants);
 
-        $inCartInitial = $initialVariantId === null ? in_array('main', $cartVariants) : in_array($initialVariantId, $cartVariants);
-    } else {
-        redirect($storeUrl);
+    $inCartInitial = $initialVariantId === null ? in_array('main', $cartVariants) : in_array($initialVariantId, $cartVariants);
+
+    // Variant stocks
+    $variantStocks = [];
+    if ($basicVariants && $basicVariants->rowCount() > 0) {
+        $basicVariants->execute();
+        while ($bv = $basicVariants->fetch()) {
+            $vStock = ($bv['unlimited_stock'] ?? 0) == 1 ? 'Unlimited' : (int)($bv['total_stocks'] ?? 0);
+            $variantStocks[$bv['id']] = $vStock;
+        }
     }
     ?>
 
@@ -89,7 +103,7 @@
                         <div id="thumbnailContainer" class="flex lg:flex-col gap-3 max-h-[360px] overflow-x-auto lg:overflow-y-auto order-2 lg:order-1">
                             <?php
                             $html = '<img src="' . UPLOADS_URL . $image . '" class="thumbnail w-16 h-16 object-cover rounded-lg cursor-pointer border-2 border-pink-500 transition" onclick="document.getElementById(\'mainProductImage\').src=this.src">';
-                            $data = readData("*", "seller_product_additional_images", "product_id = '$product_id'");
+                            $data = readData("*", "seller_product_additional_images", "product_id='$product_id'");
                             while ($row = $data->fetch()) {
                                 $html .= '<img src="' . UPLOADS_URL . $row['image'] . '" class="thumbnail w-16 h-16 object-cover rounded-lg cursor-pointer border-2 border-gray-200 transition" onclick="document.getElementById(\'mainProductImage\').src=this.src">';
                             }
@@ -107,30 +121,32 @@
                         <p class="text-base sm:text-lg md:text-xl text-gray-600 mb-4"><?= htmlspecialchars($variation) ?></p>
 
                         <!-- Variant Buttons -->
-                        <?php if ($basicVariants && $basicVariants->rowCount() > 0) : ?>
+                        <?php if ($basicVariants && $basicVariants->rowCount() > 0): ?>
                             <div class="flex flex-wrap gap-2 mb-4">
                                 <?php $basicVariants->execute(); ?>
-                                <!-- Main variant button -->
+                                <!-- Main variant -->
                                 <button class="variant-btn px-3 py-1 border rounded-lg text-sm hover:bg-pink-100 <?= $initialVariantId === null ? 'ring-2 ring-pink-400' : '' ?>"
                                     data-variant-id="main"
                                     data-variant-image="<?= UPLOADS_URL . $image ?>"
                                     data-price="<?= $price ?>"
                                     data-mrp="<?= $mrp_price ?>"
+                                    data-stock="<?= $maxQty ?>"
                                     data-in-cart="<?= in_array('main', $cartVariants) ? 1 : 0 ?>">
                                     <?= htmlspecialchars(!empty($variation) ? $variation : $name) ?>
                                 </button>
 
-                                <?php while ($bv = $basicVariants->fetch()) : ?>
-                                    <?php
+                                <?php while ($bv = $basicVariants->fetch()):
                                     $variantLabel = $bv['variation'] ?? $bv['variant'] ?? ($bv['name'] ?? "Variant " . $bv['id']);
                                     $variantId = $bv['id'];
+                                    $vStock = ($bv['unlimited_stock'] ?? 0) == 1 ? 'Unlimited' : (int)($bv['total_stocks'] ?? 0);
                                     $isInCart = in_array($variantId, $cartVariants);
-                                    ?>
+                                ?>
                                     <button class="variant-btn px-3 py-1 border rounded-lg text-sm hover:bg-pink-100 <?= $initialVariantId == $variantId ? 'ring-2 ring-pink-400' : '' ?>"
                                         data-variant-id="<?= $variantId ?>"
                                         data-variant-image="<?= UPLOADS_URL . ($bv['image'] ?? $image) ?>"
                                         data-price="<?= $bv['price'] ?>"
                                         data-mrp="<?= $bv['mrp_price'] ?>"
+                                        data-stock="<?= $vStock ?>"
                                         data-in-cart="<?= $isInCart ? 1 : 0 ?>">
                                         <?= htmlspecialchars($variantLabel) ?>
                                     </button>
@@ -138,20 +154,17 @@
                             </div>
                         <?php endif; ?>
 
-                        <!-- Price & Ratings -->
+                        <!-- Price & Stock -->
                         <div class="flex items-center gap-3 mb-6">
                             <span class="text-2xl font-bold text-pink-600 productPrice"><?= currencyToSymbol($storeCurrency) . $price ?></span>
-                            <?php if ($mrp_price) : ?>
+                            <?php if ($mrp_price): ?>
                                 <span class="text-gray-400 line-through productMrp"><?= currencyToSymbol($storeCurrency) . $mrp_price ?></span>
                             <?php endif; ?>
                         </div>
 
-                        <p class="text-gray-700 leading-relaxed mb-4"><?= $description ?></p>
-
                         <p id="stock" class="font-semibold mt-2 <?= ($maxQty !== "Unlimited" && ((int)$maxQty) <= 5) ? 'text-red-500' : 'text-green-500' ?>">
                             <?= ($maxQty === "Unlimited") ? "Unlimited stock" : (((int)$maxQty <= 0) ? "Out of Stock" : ((int)$maxQty . " left")) ?>
                         </p>
-
                         <p class="text-xs text-gray-400 mt-1">Viewed <?= (int)$visitors ?> times</p>
 
                         <!-- Add to Cart -->
@@ -167,7 +180,6 @@
                                 <?= $disableAdd ? 'disabled' : '' ?>>
                                 <?= ($maxQty !== "Unlimited" && (int)$maxQty <= 0) ? 'Out of Stock' : ($inCartInitial ? 'Already in Cart' : 'Add to Cart') ?>
                             </button>
-
                             <?php if (isLoggedIn()) : ?>
                                 <button id="wishlistBtn" data-id="<?= $id ?>" class="wishlistBtn px-3 py-2 rounded-lg border <?= $wishlistExists ? 'bg-rose-500 text-white' : 'bg-white text-pink-500' ?> font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
                                     <i class="<?= $wishlistExists ? 'fas' : 'far' ?> fa-heart"></i>
@@ -182,6 +194,7 @@
                             </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -208,41 +221,51 @@
     <?php include_once __DIR__ . "/includes/footer_link.php"; ?>
 
     <script>
-        // Variant buttons click
+        const variantStocks = <?php echo json_encode($variantStocks); ?>;
         document.querySelectorAll('.variant-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.variant-btn').forEach(x => x.classList.remove('ring-2', 'ring-pink-400'));
                 this.classList.add('ring-2', 'ring-pink-400');
 
+                let variantId = this.dataset.variantId;
                 const variantImage = this.dataset.variantImage;
                 const variantPrice = this.dataset.price;
                 const variantMrp = this.dataset.mrp;
-                let variantId = this.dataset.variantId;
+                const stock = this.dataset.stock;
                 const inCart = this.dataset.inCart == 1;
-
-                // main variant should send empty string
                 variantId = variantId === 'main' ? '' : variantId;
 
-                // Update main image
                 if (variantImage) document.getElementById('mainProductImage').src = variantImage;
-
-                // Update price & MRP
                 const priceEl = document.querySelector('.productPrice');
                 const mrpEl = document.querySelector('.productMrp');
                 if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + parseFloat(variantPrice).toLocaleString();
                 if (mrpEl) mrpEl.textContent = (variantMrp && variantMrp > variantPrice) ? "<?= currencyToSymbol($storeCurrency) ?>" + parseFloat(variantMrp).toLocaleString() : '';
 
-                // Update Add to Cart button
+                const stockEl = document.getElementById('stock');
+                if (stockEl) {
+                    if (stock === 'Unlimited') {
+                        stockEl.textContent = "Unlimited stock";
+                        stockEl.className = "font-semibold mt-2 text-green-500";
+                    } else if (parseInt(stock) <= 0) {
+                        stockEl.textContent = "Out of Stock";
+                        stockEl.className = "font-semibold mt-2 text-red-500";
+                    } else {
+                        stockEl.textContent = stock + " left";
+                        stockEl.className = "font-semibold mt-2 " + (parseInt(stock) <= 5 ? 'text-red-500' : 'text-green-500');
+                    }
+                }
+
                 const addBtn = document.querySelector('.addToCartBtn');
                 if (addBtn) {
                     addBtn.dataset.variant = variantId;
-                    addBtn.disabled = inCart;
-                    addBtn.classList.toggle('bg-gray-300', inCart);
-                    addBtn.classList.toggle('cursor-not-allowed', inCart);
-                    addBtn.classList.toggle('bg-gradient-to-r', !inCart);
-                    addBtn.classList.toggle('from-pink-400', !inCart);
-                    addBtn.classList.toggle('to-pink-600', !inCart);
-                    addBtn.textContent = inCart ? 'Already in Cart' : 'Add to Cart';
+                    const disableAdd = (stock !== 'Unlimited' && parseInt(stock) <= 0) || inCart;
+                    addBtn.disabled = disableAdd;
+                    addBtn.classList.toggle('bg-gray-300', disableAdd);
+                    addBtn.classList.toggle('cursor-not-allowed', disableAdd);
+                    addBtn.classList.toggle('bg-gradient-to-r', !disableAdd);
+                    addBtn.classList.toggle('from-pink-400', !disableAdd);
+                    addBtn.classList.toggle('to-pink-600', !disableAdd);
+                    addBtn.textContent = disableAdd ? (inCart ? 'Already in Cart' : 'Out of Stock') : 'Add to Cart';
                 }
             });
         });
