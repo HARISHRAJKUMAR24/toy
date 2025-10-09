@@ -16,22 +16,21 @@ function addToCartSection($id, $product_id, $cookie_id, $advancedVariant, $total
                     <button class="increaseQtyBtn text-lg font-bold px-2" data-id="' . $id . '" data-advancedVariant="' . $advancedVariant . '">+</button>
                   </div>';
     } else {
-        // Button disabled by default; will enable on selection
-        $html .= ($totalStocks || !getData("id", "seller_products", "id='$id' AND unlimited_stock=0"))
-            ? '<button type="button" class="addToCartBtn relative overflow-hidden bg-gradient-to-r from-pink-200 to-pink-300 
-                      text-pink-700 px-4 py-2 rounded-md shadow transition-all duration-500 
-                      bg-[length:200%_100%] bg-left hover:bg-right uppercase font-semibold text-sm sm:text-base flex items-center justify-center w-full mt-1" 
-                      data-id="' . $id . '" data-variant="" data-advancedVariant="' . $advancedVariant . '">
-                        <span class="mgc_shopping_bag_3_line mr-1"></span> Add
-               </button>'
-            : '<button type="button" class="bg-gray-100 text-gray-500 rounded-md h-11 flex items-center justify-center px-3 font-medium w-full transition cursor-not-allowed" disabled>Out of Stock</button>';
+        // Default Add button
+        $isOutOfStock = (!$totalStocks && !getData("id", "seller_products", "id='$id' AND unlimited_stock=1"));
+        $btnClass = $isOutOfStock
+            ? 'bg-gray-100 text-pink-700 cursor-not-allowed'
+            : 'bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 hover:from-pink-300 hover:to-pink-400';
+        $btnText = $isOutOfStock ? 'Out of Stock' : 'Add';
+        $html .= '<button type="button" class="addToCartBtn relative overflow-hidden px-4 py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center ' . $btnClass . '" 
+                    data-id="' . $id . '" data-variant="" data-advancedVariant="' . $advancedVariant . '" ' . ($isOutOfStock ? 'disabled' : '') . '>
+                    <span class="mgc_shopping_bag_3_line mr-1"></span> ' . $btnText . '
+                  </button>';
     }
 
-    $html .= '</div>'; // Closing the main wrapper
+    $html .= '</div>'; // Closing wrapper
     return $html;
 }
-
-
 
 // =====================
 // PRODUCT CARD FUNCTION
@@ -40,7 +39,7 @@ function getProductHtml($id)
 {
     global $storeCurrency, $storeUrl, $customerId, $cookie_id;
 
-    $product_id = getData("product_id", "seller_products", "id='$id'") ?: die("Product ID not found for $id");
+    $product_id = getData("product_id", "seller_products", "id='$id'") ?: die("Product ID not found");
     $slug       = getData("slug", "seller_products", "id='$id'") ?: die("Slug not found");
     $name       = getData("name", "seller_products", "id='$id'") ?: die("Product name not found");
     $image      = getData("image", "seller_products", "id='$id'") ?: die("Product image not found");
@@ -53,15 +52,7 @@ function getProductHtml($id)
     $variation  = getData("variation", "seller_products", "id='$id'");
     $advancedVariant = "";
 
-    if (empty($variation)) $variation = $unit . $unit_type;
-
-    // Calculate save %
-    $savePercent = 0;
-    if ($badge === "Save" && $mrp_price && $mrp_price > $price) {
-        $savePercent = round((($mrp_price - $price) / $mrp_price) * 100);
-    }
-
-    // Wishlist Button
+    // Wishlist
     $wishlistClass = "bg-white/95 text-pink-600";
     if (isLoggedIn() && getData("id", "customer_wishlists", "customer_id='$customerId' AND product_id='$id'")) {
         $wishlistClass = "bg-pink-500 text-white";
@@ -84,8 +75,18 @@ function getProductHtml($id)
     $rating = getData("rating", "product_ratings", "product_id='$id'") ?: 0;
     $stars = '';
     for ($i = 1; $i <= 5; $i++) {
-        if ($i <= $rating) $stars .= '<span class="mgc_star_fill text-yellow-400"></span>';
-        else $stars .= '<span class="mgc_star_line text-gray-300"></span>';
+        $stars .= $i <= $rating ? '<span class="mgc_star_fill text-yellow-400"></span>' : '<span class="mgc_star_line text-gray-300"></span>';
+    }
+
+    // Fetch variant stocks
+    $variantData = readData("*", "seller_product_variants", "product_id='$product_id'");
+    $variantStocks = [];
+    while ($row = $variantData->fetch(PDO::FETCH_ASSOC)) {
+        if (($row['unlimited_stock'] ?? 0) == 1) {
+            $variantStocks[$row['id']] = "Unlimited stock";
+        } else {
+            $variantStocks[$row['id']] = (int)$row['stock'];
+        }
     }
 
     // Start HTML
@@ -93,40 +94,37 @@ function getProductHtml($id)
                 <div class="relative">
                     <a href="' . $storeUrl . 'product/' . $slug . '">
                         <img src="' . UPLOADS_URL . $image . '" alt="' . htmlspecialchars($name) . '" class="productImage w-full h-64 sm:h-72 md:h-64 lg:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
-                    </a>';
-
-    // Badge
-    if ($badge || $savePercent > 0) {
-        $html .= '<div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 bg-gradient-to-b from-red-600 to-red-800 text-white rounded shadow-lg border-2 border-red-300 border-opacity-50 text-[6px] sm:text-[8px] font-bold uppercase text-center">
-                    <span>' . strtoupper($badge ?: 'SAVE') . '</span>' .
-            ($savePercent > 0 ? '<span class="text-sm font-black leading-none">' . $savePercent . '%</span>' : '') . '
-                  </div>';
-    }
-
-    $html .= $wishlist . '</div>';
+                    </a>' . $wishlist . '</div>';
 
     // Product Info
     $html .= '<div class="p-4 flex flex-col flex-grow">
                 <h3 class="text-base sm:text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">' . htmlspecialchars($name) . '</h3>
                 <div class="flex items-center mb-3">' . $stars . '</div>';
 
-    $variantData = readData("*", "seller_product_variants", "product_id='$product_id' AND (stock>0 OR unlimited_stock=1)");
-    if ($variantData && $variantData->rowCount()) {
+    // Variant dropdown
+    if ($variantStocks) {
         $html .= '<div class="mb-3">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Select Variant:</label>
                     <div class="relative">
                         <select class="variantSelect block w-full appearance-none border border-gray-300 rounded-lg bg-white px-4 py-2 pr-10 text-gray-700 text-sm">
                             <option value="" selected disabled>Select</option>
-                            <!-- Main product option -->
-                            <option value="main" data-image="' . UPLOADS_URL . $image . '" data-price="' . $price . '" data-mrp="' . $mrp_price . '">
-                                ' . htmlspecialchars(!empty($variation) ? $variation : $name) . '
+                            <option value="main" data-image="' . UPLOADS_URL . $image . '" data-price="' . $price . '" data-mrp="' . $mrp_price . '" data-stock="' . $totalStocks . '" data-unlimited="' . (getData("unlimited_stock", "seller_products", "id='$id'") ?? 0) . '">'
+            . htmlspecialchars(!empty($variation) ? $variation : $name) . '
                             </option>';
-        while ($row = $variantData->fetch(PDO::FETCH_ASSOC)) {
-            $html .= '<option value="' . $row['id'] . '" 
-                            data-image="' . UPLOADS_URL . $row['image'] . '" 
-                            data-price="' . $row['price'] . '" 
-                            data-mrp="' . $row['mrp_price'] . '">' . htmlspecialchars($row['variation']) . '</option>';
+        foreach ($variantStocks as $vid => $stock) {
+            $vQuery = readData("*", "seller_product_variants", "id='$vid'");
+            $vData = $vQuery->fetch(PDO::FETCH_ASSOC);
+            if (!$vData) continue;
+
+            $html .= '<option value="' . $vid . '" 
+        data-image="' . UPLOADS_URL . ($vData['image'] ?? $image) . '" 
+        data-price="' . $vData['price'] . '" 
+        data-mrp="' . $vData['mrp_price'] . '" 
+        data-stock="' . $stock . '" 
+        data-unlimited="' . ($vData['unlimited_stock'] ?? 0) . '">'
+                . htmlspecialchars($vData['variation']) . '</option>';
         }
+
         $html .= '</select>
                   <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,39 +147,51 @@ function getProductHtml($id)
     return $html;
 }
 ?>
-<!-- ===================== -->
-<!-- VARIANT & PRICE JS -->
-<!-- ===================== -->
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.variantSelect').forEach(select => {
-        select.addEventListener('change', function() {
-            const selected = this.options[this.selectedIndex];
-            const card = this.closest('.group');
-            const addBtn = card.querySelector('.addToCartBtn');
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.variantSelect').forEach(select => {
+            select.addEventListener('change', function() {
+                const selected = this.options[this.selectedIndex];
+                const card = this.closest('.group');
+                const addBtn = card.querySelector('.addToCartBtn');
 
-            if (!selected.value) {
-                if (addBtn) addBtn.disabled = true;
-                return;
-            }
+                if (!selected.value) {
+                    if (addBtn) addBtn.disabled = true;
+                    return;
+                }
 
-            // Update image, price, mrp
-            const img = selected.dataset.image;
-            const price = selected.dataset.price;
-            const mrp = selected.dataset.mrp;
-            const imageEl = card.querySelector('.productImage');
-            const priceEl = card.querySelector('.productPrice');
-            const mrpEl = card.querySelector('.productMrp');
+                const img = selected.dataset.image;
+                const price = selected.dataset.price;
+                const mrp = selected.dataset.mrp;
+                const stock = Number(selected.dataset.stock) || 0;
+                const unlimited = Number(selected.dataset.unlimited) || 0;
 
-            if (imageEl) imageEl.src = img;
-            if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + parseFloat(price).toLocaleString();
-            if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ? "<?= currencyToSymbol($storeCurrency) ?>" + parseFloat(mrp).toLocaleString() : '';
+                const imageEl = card.querySelector('.productImage');
+                const priceEl = card.querySelector('.productPrice');
+                const mrpEl = card.querySelector('.productMrp');
 
-            if (addBtn) {
-                addBtn.disabled = false; 
-                addBtn.dataset.variant = selected.value === "main" ? "" : selected.value;
-            }
+                if (imageEl) imageEl.src = img;
+                if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(price).toLocaleString();
+                if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ? "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString() : '';
+
+                if (addBtn) {
+                    const isOutOfStock = stock <= 0 && unlimited !== 1;
+                    addBtn.disabled = isOutOfStock;
+                    addBtn.dataset.variant = selected.value === "main" ? "" : selected.value;
+                    addBtn.textContent = isOutOfStock ? "Out of Stock" : "Add";
+
+                    // Clear previous classes
+                    addBtn.classList.remove('bg-gray-300', 'cursor-not-allowed', 'bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
+
+                    // Apply new classes based on stock
+                    if (isOutOfStock) {
+                        addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-00');
+                    } else {
+                        addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+                    }
+                }
+            });
         });
     });
-});
 </script>

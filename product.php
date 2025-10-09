@@ -191,6 +191,7 @@
                             <button class="px-5 py-2 rounded-lg <?= $btnClass ?> text-white font-semibold shadow-lg transition transform hover:scale-105 addToCartBtn text-sm sm:text-base"
                                 data-id="<?= $id ?>"
                                 data-variant="<?= $initialVariantId ?? '' ?>"
+
                                 <?= $disableAdd ? 'disabled' : '' ?>>
                                 <?= $btnText ?>
                             </button>
@@ -299,6 +300,7 @@
                 }
             });
         });
+        
     </script>
 
 </body>
