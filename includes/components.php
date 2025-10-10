@@ -2,24 +2,25 @@
 // =====================
 // ADD TO CART FUNCTION
 // =====================
-function addToCartSection($id, $product_id, $cookie_id, $advancedVariant, $totalStocks, $variant = "", $currentQty = 0)
+function addToCartSection($id, $product_id, $cookie_id, $advancedVariant, $totalStocks, $variant = "")
 {
     $html = '<div class="addToCartWrapper" data-id="' . $id . '" id="addCart-' . $product_id . '" data-variant="' . $variant . '">';
 
     // Check if item is in cart
     $cartData = getData("id", "customer_cart", "customer_id='$cookie_id' AND product_id='$id' AND other='$variant'");
 
-    // Default Add button
+    // Determine if out of stock
     $isOutOfStock = (!$totalStocks && !getData("id", "seller_products", "id='$id' AND unlimited_stock=1"));
     $btnClass = $isOutOfStock
         ? 'bg-gray-100 text-pink-700 cursor-not-allowed'
         : 'bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 hover:from-pink-300 hover:to-pink-400';
     $btnText = $isOutOfStock ? 'Out of Stock' : 'Add';
-    $html .= '<button type="button" class="addToCartBtn relative overflow-hidden px-4 py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center ' . $btnClass . '" 
-                    data-id="' . $id . '" data-variant="" data-advancedVariant="' . $advancedVariant . '" ' . ($isOutOfStock ? 'disabled' : '') . '>
-                    <span class="mgc_shopping_bag_3_line mr-1"></span> ' . $btnText . '
-                  </button>';
 
+    // Add button (no quantity controls)
+    $html .= '<button type="button" class="addToCartBtn relative overflow-hidden px-4 py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center ' . $btnClass . '" 
+                data-id="' . $id . '" data-variant="' . $variant . '" data-advancedVariant="' . $advancedVariant . '" ' . ($isOutOfStock ? 'disabled' : '') . '>
+                <span class="mgc_shopping_bag_3_line mr-1"></span> ' . $btnText . '
+              </button>';
 
     $html .= '</div>'; // Closing wrapper
     return $html;
