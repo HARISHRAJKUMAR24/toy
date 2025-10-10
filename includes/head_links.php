@@ -9,3 +9,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <!-- Js Style Package Import-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css" />
+    <style>
+        /* Hide horizontal scrollbar */
+        body {
+            overflow-x: hidden;
+            /* hides horizontal scroll */
+            overflow-y: auto;
+            /* keeps vertical scroll if needed */
+        }
+    </style>

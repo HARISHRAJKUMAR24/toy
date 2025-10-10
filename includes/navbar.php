@@ -66,11 +66,22 @@
                 <a href="./wishlist.html" class="inline-block hover:text-pink-500 transition-all duration-300">
                     <i class='bx bx-user text-2xl cursor-pointer'></i>
                 </a>
-                <a href="./signup.html" class="inline-block hover:text-pink-500 transition-all duration-300">
+
+                <a href="<?= $storeUrl ?>wishlists" class="hover:bg-rose-500/20 transition w-11 h-11 flex items-center justify-center rounded-md relative">
+                    <!-- Keep your current icon -->
                     <i class='bx bx-heart text-2xl cursor-pointer'></i>
+
+                    <!-- Badge for wishlist count -->
+                    <span class="w-[19px] h-[19px] rounded-full bg-rose-500 text-white flex items-center justify-center text-[12px] absolute -top-1 -right-1 font-medium wishlistItemsCount"></span>
                 </a>
-                <a href="./forgotpass.html" class="inline-block hover:text-pink-500 transition-all duration-300">
+
+
+                <a href="<?= $storeUrl ?>cart" class=" hover:bg-green-500/20 transition w-11 h-11 flex items-center justify-center rounded-md relative">
+                    <!-- Keep your current icon -->
                     <i class='bx bx-cart text-2xl cursor-pointer'></i>
+
+                    <!-- Badge for cart count -->
+                    <span class="w-[19px] h-[19px] rounded-full bg-green-500 text-white flex items-center justify-center text-[12px] absolute -top-1 -right-1 font-medium cartItemsCount"></span>
                 </a>
 
                 <!-- Mobile Burger Icon-->

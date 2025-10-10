@@ -8,25 +8,18 @@ function addToCartSection($id, $product_id, $cookie_id, $advancedVariant, $total
 
     // Check if item is in cart
     $cartData = getData("id", "customer_cart", "customer_id='$cookie_id' AND product_id='$id' AND other='$variant'");
-    if ($cartData) {
-        $currentQty = getData("quantity", "customer_cart", "customer_id='$cookie_id' AND product_id='$id' AND other='$variant'");
-        $html .= '<div class="qtySwitcher flex items-center justify-between border border-gray-300 rounded-md px-2 py-1 mt-1">
-                    <button class="decreaseQtyBtn text-lg font-bold px-2" data-id="' . $id . '" data-advancedVariant="' . $advancedVariant . '">−</button>
-                    <span class="text-base font-medium text-center currentQty">' . $currentQty . '</span>
-                    <button class="increaseQtyBtn text-lg font-bold px-2" data-id="' . $id . '" data-advancedVariant="' . $advancedVariant . '">+</button>
-                  </div>';
-    } else {
-        // Default Add button
-        $isOutOfStock = (!$totalStocks && !getData("id", "seller_products", "id='$id' AND unlimited_stock=1"));
-        $btnClass = $isOutOfStock
-            ? 'bg-gray-100 text-pink-700 cursor-not-allowed'
-            : 'bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 hover:from-pink-300 hover:to-pink-400';
-        $btnText = $isOutOfStock ? 'Out of Stock' : 'Add';
-        $html .= '<button type="button" class="addToCartBtn relative overflow-hidden px-4 py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center ' . $btnClass . '" 
+
+    // Default Add button
+    $isOutOfStock = (!$totalStocks && !getData("id", "seller_products", "id='$id' AND unlimited_stock=1"));
+    $btnClass = $isOutOfStock
+        ? 'bg-gray-100 text-pink-700 cursor-not-allowed'
+        : 'bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 hover:from-pink-300 hover:to-pink-400';
+    $btnText = $isOutOfStock ? 'Out of Stock' : 'Add';
+    $html .= '<button type="button" class="addToCartBtn relative overflow-hidden px-4 py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center ' . $btnClass . '" 
                     data-id="' . $id . '" data-variant="" data-advancedVariant="' . $advancedVariant . '" ' . ($isOutOfStock ? 'disabled' : '') . '>
                     <span class="mgc_shopping_bag_3_line mr-1"></span> ' . $btnText . '
                   </button>';
-    }
+
 
     $html .= '</div>'; // Closing wrapper
     return $html;

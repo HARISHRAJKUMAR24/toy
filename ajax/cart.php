@@ -88,14 +88,13 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                             <span class="font-bold text-lg text-gray-900"><?= currencyToSymbol($storeCurrency) . number_format($cart['price'] * $cart['quantity']) ?></span>
 
                             <?php if ($cart['savedAmount'] > 0): ?>
-                                <div class="flex items-center justify-between bg-pink-50 text-pink-600 rounded-lg px-3 py-1 mt-1 text-sm">
-                                    <span class="flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        You saved
-                                    </span>
-                                    <span class="font-semibold"><?= currencyToSymbol($storeCurrency) . number_format($cart['savedAmount']) ?></span>
+                                <div class="inline-flex items-center gap-2 bg-pink-50 text-pink-600 rounded-lg px-3 py-1 mt-1 text-sm font-medium">
+                                    <!-- Check Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <!-- Text -->
+                                    <span>You saved <?= currencyToSymbol($storeCurrency) . number_format($cart['savedAmount']) ?></span>
                                 </div>
                             <?php endif; ?>
                         </div>
