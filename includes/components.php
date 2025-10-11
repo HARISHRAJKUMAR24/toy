@@ -45,15 +45,30 @@ function getProductHtml($id)
     $variation  = getData("variation", "seller_products", "id='$id'");
     $advancedVariant = "";
 
-    // Wishlist
-    $wishlistClass = "bg-white/95 text-pink-600";
-    if (isLoggedIn() && getData("id", "customer_wishlists", "customer_id='$customerId' AND product_id='$id'")) {
-        $wishlistClass = "bg-pink-500 text-white";
+
+
+    // Check if product is in wishlist
+    $inWishlist = false;
+    if (isLoggedIn()) {
+        $inWishlist = getData("id", "customer_wishlists", "customer_id='$customerId' AND product_id='$id'") ? true : false;
     }
-    $wishlist = '<button class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center 
-                        rounded-full shadow-lg transition transform hover:scale-110 handleWishlist ' . $wishlistClass . '" data-id="' . $id . '">
-                        <i class="fa-solid fa-heart"></i>
-                 </button>';
+
+    // Set button and icon classes based on state
+    $btnBg   = $inWishlist ? "bg-white" : "bg-gray-500";
+    $btnText = $inWishlist ? "text-rose-500" : "text-white";
+
+    $wishlist = '<button class="absolute top-2 right-2 
+        w-8 h-8 md:w-7 md:h-7
+        flex items-center justify-center 
+        rounded-full shadow-lg transition transform 
+        hover:scale-110 handleWishlist ' . $btnBg . '" 
+        data-id="' . $id . '">
+        <i class="fa-solid fa-heart 
+        text-sm md:text-base ' . $btnText . '"></i>  
+     </button>';
+
+
+
 
     // Advanced Variant
     if ($advVar = getData("id", "seller_product_advanced_variants", "product_id='$product_id'")) {
@@ -144,15 +159,12 @@ function getProductHtml($id)
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.variantSelect').forEach(select => {
+
+            // Handle variant change
             select.addEventListener('change', function() {
                 const selected = this.options[this.selectedIndex];
                 const card = this.closest('.group');
                 const addBtn = card.querySelector('.addToCartBtn');
-
-                if (!selected.value) {
-                    if (addBtn) addBtn.disabled = true;
-                    return;
-                }
 
                 const img = selected.dataset.image;
                 const price = selected.dataset.price;
@@ -164,27 +176,88 @@ function getProductHtml($id)
                 const priceEl = card.querySelector('.productPrice');
                 const mrpEl = card.querySelector('.productMrp');
 
+                // Update image and prices
                 if (imageEl) imageEl.src = img;
                 if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(price).toLocaleString();
-                if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ? "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString() : '';
+                if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ?
+                    "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString() :
+                    '';
 
+                // Handle Add button
                 if (addBtn) {
                     const isOutOfStock = stock <= 0 && unlimited !== 1;
                     addBtn.disabled = isOutOfStock;
                     addBtn.dataset.variant = selected.value === "main" ? "" : selected.value;
                     addBtn.textContent = isOutOfStock ? "Out of Stock" : "Add";
 
-                    // Clear previous classes
-                    addBtn.classList.remove('bg-gray-300', 'cursor-not-allowed', 'bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
+                    // Reset styles
+                    addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-00', 'bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
 
-                    // Apply new classes based on stock
+                    // Apply styles
                     if (isOutOfStock) {
-                        addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-00');
+                        addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
                     } else {
                         addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                     }
                 }
             });
+        });
+
+        // --- Reset dropdowns on page load/refresh ---
+        function resetVariantSelects() {
+            document.querySelectorAll('.variantSelect').forEach(select => {
+                const card = select.closest('.group');
+                const mainOption = select.querySelector('option[value="main"]');
+                const addBtn = card.querySelector('.addToCartBtn');
+                const imageEl = card.querySelector('.productImage');
+                const priceEl = card.querySelector('.productPrice');
+                const mrpEl = card.querySelector('.productMrp');
+
+                if (select.querySelector('option[value=""]')) {
+                    select.value = ""; // reset dropdown to "Select"
+                } else {
+                    select.selectedIndex = 0;
+                }
+
+                // --- Show main product details ---
+                if (mainOption) {
+                    const img = mainOption.dataset.image;
+                    const price = mainOption.dataset.price;
+                    const mrp = mainOption.dataset.mrp;
+                    const stock = Number(mainOption.dataset.stock) || 0;
+                    const unlimited = Number(mainOption.dataset.unlimited) || 0;
+
+                    if (imageEl) imageEl.src = img;
+                    if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(price).toLocaleString();
+                    if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ?
+                        "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString() :
+                        '';
+
+                    // Update Add to Cart button for main product
+                    if (addBtn) {
+                        const isOutOfStock = stock <= 0 && unlimited !== 1;
+                        addBtn.disabled = isOutOfStock;
+                        addBtn.dataset.variant = "";
+                        addBtn.textContent = isOutOfStock ? "Out of Stock" : "Add";
+
+                        // Reset and apply button classes
+                        addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-00', 'bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
+                        if (isOutOfStock) {
+                            addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
+                        } else {
+                            addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+                        }
+                    }
+                }
+            });
+        }
+
+        // Run after load
+        setTimeout(resetVariantSelects, 0);
+
+        // Also handle browser back/forward cache restore
+        window.addEventListener('pageshow', function() {
+            setTimeout(resetVariantSelects, 50);
         });
     });
 </script>

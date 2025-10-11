@@ -73,100 +73,58 @@
 
             <!-- Right Side: Wishlist Products -->
             <div class="w-full md:w-3/4">
-                <h2 class="text-xl sm:text-2xl md:text-2xl lg:text-2xl font-bold text-gray-800 mb-1">Your Favorite
-                    Items</h2>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Your Favorite Items</h2>
                 <p class="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mb-4">
                     Quick grab! These products are waiting for you to bring them home.
                 </p>
 
+                <div class="p-5 bg-white rounded-lg w-full min-h-[60vh] flex items-center justify-center">
+                    <?php
+                    $productsStmt = getWishlists();
+                    $products = $productsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-                <div class="col-span-12 p-5 bg-white rounded-lg lg:col-span-8">
-                    <div class="grid grid-cols-2 gap-5 lg:grid-cols-3 sm:grid-cols-3">
-                        <?php
-
-                        $products = getWishlists();
-                        foreach ($products as $key => $product) {
+                    if (!empty($products)) {
+                        echo '<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-5 w-full">';
+                        foreach ($products as $product) {
                             echo getProductHtml($product['product_id']);
                         }
+                        echo '</div>';
+                    } else {
+                    ?>
+                        <!-- Empty Wishlist (Centered & Responsive) -->
+                        <div class="flex flex-col items-center justify-center text-center px-4 py-10">
+                            <img
+                                src="<?= APP_URL ?>assets/image/empty-wishlist.png"
+                                alt="Empty Wishlist"
+                                class="opacity-80 w-[100px] sm:w-[100px] md:w-[120px] lg:w-[150px] mb-6 object-contain">
 
-                        ?>
-                    </div>
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3">
+                                Your Wishlist is Empty
+                            </h3>
+
+                            <p class="text-gray-400 text-sm sm:text-base md:text-lg leading-relaxed max-w-md mb-6">
+                                Looks like you haven't added any products yet.
+                            </p>
+
+                            <a href="<?= $storeUrl ?>"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-pink-500 hover:bg-rose-600 
+                           text-white font-semibold rounded-full transition transform hover:scale-105 shadow-lg">
+                                <i class="fa-solid fa-shop text-base"></i>
+                                <span>Go to Shop</span>
+                            </a>
+                        </div>
+                    <?php
+                    }
+                    ?>
                 </div>
             </div>
+
         </div>
     </div>
     <!-- My Wishlist Container End -->
 
-    <!-- Footer Start -->
-    <footer class="bg-pink-50 relative overflow-hidden py-10">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
-
-            <!-- Logo & Small Address -->
-            <div class="flex flex-col gap-3 md:w-1/3">
-                <div class="flex items-center gap-2">
-                    <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="h-10 w-10">
-                    <span class="font-extrabold text-xl text-pink-600">ToyShop</span>
-                </div>
-                <p class="text-gray-600 text-sm mt-2">
-                    1Milestone Technology Solution Pvt Ltd<br>
-                    123 Business Street, City<br>
-                    Pin: 560001 | GSTIN: 29ABCDE1234F1Z5
-                </p>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="flex flex-col gap-2 md:w-1/3">
-                <h3 class="font-semibold text-gray-800">Quick Links</h3>
-                <ul class="space-y-1 text-gray-600 text-sm">
-                    <li><a href="#" class="hover:text-pink-500 transition">Terms & Conditions</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Shipping Policy</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Track Order</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Blogs</a></li>
-                </ul>
-            </div>
-
-            <!-- Social Icons -->
-            <div class="flex flex-col gap-3 md:w-1/3">
-                <h3 class="font-semibold text-gray-800">Follow Us</h3>
-                <div class="flex gap-3">
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-facebook text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-instagram text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-twitter text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-linkedin text-pink-500 text-lg'></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Disclaimer Section -->
-        <div class="mt-8 px-6">
-            <h3 class="text-gray-800 font-semibold text-sm mb-2">Disclaimer:</h3>
-            <p class="text-gray-500 text-xs">
-                Ztorespot.com, a brand of 1Milestone Technology Solution Pvt Ltd, is not liable for product sales. We
-                provide a DIY platform connecting Merchants & Buyers. All transactions are the responsibility of
-                respective parties. Exercise caution.
-            </p>
-        </div>
-
-        <!-- Decorative floating shapes -->
-        <div class="absolute -top-10 -left-10 w-40 h-40 bg-pink-100 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-100 rounded-full blur-3xl pointer-events-none">
-        </div>
-    </footer>
-    <!-- Footer End -->
-
-    <?php include_once __DIR__ . "/includes/footer_link.php"; ?>
+    <!--Footer File Includes that file has all JS Files includes links-->
+    <?php include_once __DIR__ . "/includes/footer.php"; ?>
 
 
 </body>

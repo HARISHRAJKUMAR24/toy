@@ -727,77 +727,9 @@
     </div>
     <!--Product Category End -->
 
-    <!-- Footer Start -->
-    <footer class="bg-pink-50 relative overflow-hidden py-10">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
-
-            <!-- Logo & Small Address -->
-            <div class="flex flex-col gap-3 md:w-1/3">
-                <div class="flex items-center gap-2">
-                    <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="h-10 w-10">
-                    <span class="font-extrabold text-xl text-pink-600">ToyShop</span>
-                </div>
-                <p class="text-gray-600 text-sm mt-2">
-                    1Milestone Technology Solution Pvt Ltd<br>
-                    123 Business Street, City<br>
-                    Pin: 560001 | GSTIN: 29ABCDE1234F1Z5
-                </p>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="flex flex-col gap-2 md:w-1/3">
-                <h3 class="font-semibold text-gray-800">Quick Links</h3>
-                <ul class="space-y-1 text-gray-600 text-sm">
-                    <li><a href="#" class="hover:text-pink-500 transition">Terms & Conditions</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Shipping Policy</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Track Order</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition">Blogs</a></li>
-                </ul>
-            </div>
-
-            <!-- Social Icons -->
-            <div class="flex flex-col gap-3 md:w-1/3">
-                <h3 class="font-semibold text-gray-800">Follow Us</h3>
-                <div class="flex gap-3">
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-facebook text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-instagram text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-twitter text-pink-500 text-lg'></i>
-                    </a>
-                    <a href="#"
-                        class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                        <i class='bx bxl-linkedin text-pink-500 text-lg'></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Disclaimer Section -->
-        <div class="mt-8 px-6">
-            <h3 class="text-gray-800 font-semibold text-sm mb-2">Disclaimer:</h3>
-            <p class="text-gray-500 text-xs">
-                Ztorespot.com, a brand of 1Milestone Technology Solution Pvt Ltd, is not liable for product sales. We
-                provide a DIY platform connecting Merchants & Buyers. All transactions are the responsibility of
-                respective parties. Exercise caution.
-            </p>
-        </div>
-
-        <!-- Decorative floating shapes -->
-        <div class="absolute -top-10 -left-10 w-40 h-40 bg-pink-100 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-100 rounded-full blur-3xl pointer-events-none">
-        </div>
-    </footer>
-    <!-- Footer End-->
-
-    <!--JS File Include -->
-    <script src="<?= APP_URL ?>themes/theme9/js/script.js"></script>
+    <!--Footer File Includes that file has all JS Files includes links-->
+    <?php include_once __DIR__ . "/includes/footer.php"; ?>
+    
 </body>
 
 </html>

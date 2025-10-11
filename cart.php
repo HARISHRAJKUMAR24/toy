@@ -239,8 +239,9 @@
         </div>
     </footer>
     <!--  Footer End -->
-    <?php include_once __DIR__ . "/includes/footer_link.php"; ?>
-    <!--JS File Include -->
+
+    <!--Footer File Includes that file has all JS Files includes links-->
+    <?php include_once __DIR__ . "/includes/footer.php"; ?>
 
 
 </body>
