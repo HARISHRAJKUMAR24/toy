@@ -4,7 +4,7 @@
 <html lang="en">
 
 <head>
-   <?php include_once __DIR__ . "/includes/head_links.php"; ?>
+    <?php include_once __DIR__ . "/includes/head_links.php"; ?>
     <style>
         /*<==========> CSS Styles <==========>*/
 
@@ -78,110 +78,85 @@
     <section class="py-12 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4">
             <!--Heading-->
-            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2 text-center">Shop by
-                Age</h2>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2 text-center">Shop by Age</h2>
 
             <!-- Scroll Container for Mobile/Tablet -->
-            <div
-                class="scroll-container flex gap-6 md:gap-8 overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 lg:justify-center">
-                <div class="flex gap-6 md:gap-8 lg:grid lg:grid-cols-6 justify-start min-w-max md:min-w-max lg:min-w-0">
+            <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 lg:overflow-hidden -mx-4 lg:mx-0">
+                <div class="flex lg:grid lg:grid-cols-6 gap-6 md:gap-8 min-w-max lg:min-w-0">
 
                     <!-- Age Circle 1 -->
-                    <div class="relative w-32 h-32 flex-shrink-0">
-                        <div
-                            class="absolute inset-0 rounded-full border-4 border-dashed border-pink-400 animate-spin-slow">
+                    <div class="relative w-32 h-32 flex-shrink-0 snap-start">
+                        <div class="absolute inset-0 rounded-full border-4 border-dashed border-pink-400 animate-spin-slow"></div>
+                        <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
+                            <img src="https://wallpaper-house.com/data/out/10/wallpaper2you_427142.jpg" alt="0-12 Months" class="w-full h-full object-cover">
                         </div>
-                        <div
-                            class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
-                            <img src="./images/board.jpe" alt="0-12 Months" class="w-full h-full object-cover">
-                        </div>
-
-                        <div
-                            class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-pink-500 text-white text-xs font-bold rounded-lg shadow-lg whitespace-nowrap">
+                        <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-pink-500 text-white text-xs font-bold rounded-lg shadow-lg text-center break-words max-w-[90%]">
                             0 - 12 Months
                         </div>
                     </div>
 
                     <!-- Age Circle 2 -->
-                    <div class="relative w-32 h-32 flex-shrink-0">
-                        <div
-                            class="absolute inset-0 rounded-full border-4 border-dashed border-blue-400 animate-spin-slow">
+                    <div class="relative w-32 h-32 flex-shrink-0 snap-start">
+                        <div class="absolute inset-0 rounded-full border-4 border-dashed border-blue-400 animate-spin-slow"></div>
+                        <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
+                            <img src="https://wallpaper-house.com/data/out/10/wallpaper2you_427142.jpg" alt="1-3 Years" class="w-full h-full object-cover">
                         </div>
-                        <div
-                            class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
-                            <img src="https://wallpaper-house.com/data/out/10/wallpaper2you_427142.jpg"
-                                alt="0-12 Months" class="w-full h-full object-cover">
-                        </div>
-                        <div
-                            class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg whitespace-nowrap">
+                        <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg text-center break-words max-w-[90%]">
                             1 - 3 Years
                         </div>
                     </div>
 
                     <!-- Age Circle 3 -->
-                    <div class="relative w-32 h-32 flex-shrink-0">
-                        <div
-                            class="absolute inset-0 rounded-full border-4 border-dashed border-green-400 animate-spin-slow">
+                    <div class="relative w-32 h-32 flex-shrink-0 snap-start">
+                        <div class="absolute inset-0 rounded-full border-4 border-dashed border-green-400 animate-spin-slow"></div>
+                        <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
+                            <img src="https://wallpaper-house.com/data/out/10/wallpaper2you_427142.jpg" alt="4-7 Years" class="w-full h-full object-cover">
                         </div>
-                        <div
-                            class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
-                            <img src="./images/board.jpe" alt="0-12 Months" class="w-full h-full object-cover">
-                        </div>
-                        <div
-                            class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg whitespace-nowrap">
-                            4 - 7 Years
+                        <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg text-center break-words max-w-[90%]">
+                            xl
                         </div>
                     </div>
 
                     <!-- Age Circle 4 -->
-                    <div class="relative w-32 h-32 flex-shrink-0">
-                        <div
-                            class="absolute inset-0 rounded-full border-4 border-dashed border-yellow-400 animate-spin-slow">
+                    <div class="relative w-32 h-32 flex-shrink-0 snap-start">
+                        <div class="absolute inset-0 rounded-full border-4 border-dashed border-pink-400 animate-spin-slow"></div>
+                        <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
+                            <img src="https://wallpaper-house.com/data/out/10/wallpaper2you_427142.jpg" alt="0-12 Months" class="w-full h-full object-cover">
                         </div>
-                        <div
-                            class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
-                            <img src="./images/board.jpe" alt="0-12 Months" class="w-full h-full object-cover">
-                        </div>
-                        <div
-                            class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-yellow-500 text-white text-xs font-bold rounded-lg shadow-lg whitespace-nowrap">
-                            4 - 7 Years
+                        <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-pink-500 text-white text-xs font-bold rounded-lg shadow-lg text-center break-words max-w-[90%]">
+                            0 - 12 Months
                         </div>
                     </div>
 
                     <!-- Age Circle 5 -->
-                    <div class="relative w-32 h-32 flex-shrink-0">
-                        <div
-                            class="absolute inset-0 rounded-full border-4 border-dashed border-purple-400 animate-spin-slow">
+                    <div class="relative w-32 h-32 flex-shrink-0 snap-start">
+                        <div class="absolute inset-0 rounded-full border-4 border-dashed border-purple-400 animate-spin-slow"></div>
+                        <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
+                            <img src="https://wallpaper-house.com/data/out/10/wallpaper2you_427142.jpg" alt="11-14 Years" class="w-full h-full object-cover">
                         </div>
-                        <div
-                            class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
-                            <img src="./images/board.jpe" alt="0-12 Months" class="w-full h-full object-cover">
-                        </div>
-                        <div
-                            class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-purple-500 text-white text-xs font-bold rounded-lg shadow-lg whitespace-nowrap">
+                        <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-purple-500 text-white text-xs font-bold rounded-lg shadow-lg text-center break-words max-w-[90%]">
                             11 - 14 Years
                         </div>
                     </div>
 
                     <!-- Age Circle 6 -->
-                    <div class="relative w-32 h-32 flex-shrink-0">
-                        <div
-                            class="absolute inset-0 rounded-full border-4 border-dashed border-pink-600 animate-spin-slow">
+                    <div class="relative w-32 h-32 flex-shrink-0 snap-start">
+                        <div class="absolute inset-0 rounded-full border-4 border-dashed border-pink-600 animate-spin-slow"></div>
+                        <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
+                            <img src="https://wallpaper-house.com/data/out/10/wallpaper2you_427142.jpg" alt="14+ Years" class="w-full h-full object-cover">
                         </div>
-                        <div
-                            class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-gray-200 flex items-center justify-center">
-                            <img src="./images/board.jpe" alt="0-12 Months" class="w-full h-full object-cover">
-                        </div>
-                        <div
-                            class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-pink-600 text-white text-xs font-bold rounded-lg shadow-lg whitespace-nowrap">
+                        <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-pink-600 text-white text-xs font-bold rounded-lg shadow-lg text-center break-words max-w-[90%]">
                             14+ Years
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </section>
     <!--Shop By Age End-->
+
+
 
     <!--Product Category Start -->
     <div class="py-16 px-4 bg-gray-50">
@@ -729,7 +704,7 @@
 
     <!--Footer File Includes that file has all JS Files includes links-->
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
-    
+
 </body>
 
 </html>

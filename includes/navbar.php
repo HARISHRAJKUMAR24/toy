@@ -27,7 +27,7 @@
                 <!-- Shop All Dropdown -->
                 <li class="relative">
                     <button class="flex items-center gap-1 hover:text-pink-500 focus:outline-none shop-toggle">
-                        <span>Shop All</span>
+                        <a href="<?= $storeUrl ?>shop-all"> <span>Shop All</span> </a>
                         <i class="bx bx-chevron-down transition-transform duration-300"></i>
                     </button>
 
