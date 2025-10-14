@@ -1,9 +1,11 @@
+<!--The Problem Is == {Equal To} -->
+
+
 <?php
 
 include __DIR__ . "/partials/header.php";
 
-// FIXED: Corrected theme condition
-if (!in_array($storeTheme, ["theme7", "theme8", "theme9"])) {
+if ($storeTheme != "theme7" && $storeTheme != "theme8"  && $storeTheme != "theme9") {
     redirect('banners');
 }
 
@@ -111,7 +113,7 @@ if (isset($_GET['delete'])) {
                                         <h4 class="card-title border-bottom pb-3 mb-3">Website Banners</h4>
 
                                         <div>
-                                            <?php if (in_array($storeTheme, ["grocery", "theme4", "theme6"])) : ?>
+                                            <?php if ($storeTheme == "grocery" || $storeTheme == "theme4" || $storeTheme === "theme6") : ?>
                                                 <div class="row">
                                                     <div class="mb-3 col-md-2">
                                                         <label class="form-label">Homepage banner & link</label>
@@ -138,11 +140,11 @@ if (isset($_GET['delete'])) {
                                                 </div>
                                             <?php endif ?>
 
-                                            <?php if (in_array($storeTheme, ["theme3", "theme5", "theme7", "theme8", "theme9"])) : ?>
+                                            <?php if ($storeTheme == "theme3" || $storeTheme == "theme5" || $storeTheme == "theme7" || $storeTheme == "theme8" || $storeTheme == "theme9") : ?>
                                                 <div class="row">
                                                     <div class="mb-3 col-md-2">
                                                         <label class="form-label">Homepage banner & link</label>
-                                                        <small>Recommended size <?= (in_array($storeTheme, ["theme7", "theme8", "theme9"])) ? '1600x500'  : '825x480' ?></small>
+                                                        <small>Recommended size <?= ($storeTheme == "theme7" || $storeTheme == "theme8" || $storeTheme == "theme9") ? '1600x500'  : '825x480' ?></small>
                                                     </div>
 
                                                     <div class="mb-3 col-md-5">
@@ -167,7 +169,7 @@ if (isset($_GET['delete'])) {
                                                 <div class="row">
                                                     <div class="mb-3 col-md-2">
                                                         <label class="form-label">Homepage banner & link 2</label>
-                                                        <small>Recommended size <?= (in_array($storeTheme, ["theme7", "theme8", "theme9"])) ? '1600x500'  : '390x213' ?></small>
+                                                        <small>Recommended size <?= ($storeTheme == "theme7" || $storeTheme == "theme8" || $storeTheme == "theme9") ? '1600x500'  : '390x213' ?></small>
                                                     </div>
 
                                                     <div class="mb-3 col-md-5">
@@ -192,7 +194,7 @@ if (isset($_GET['delete'])) {
                                                 <div class="row">
                                                     <div class="mb-3 col-md-2">
                                                         <label class="form-label">Homepage banner & link 3</label>
-                                                        <small>Recommended size <?= (in_array($storeTheme, ["theme7", "theme8", "theme9"])) ? '1600x500'  : '390x213' ?></small>
+                                                        <small>Recommended size <?= ($storeTheme == "theme7" || $storeTheme == "theme8" || $storeTheme == "theme9") ? '1600x500'  : '390x213' ?></small>
                                                     </div>
 
                                                     <div class="mb-3 col-md-5">
@@ -217,7 +219,7 @@ if (isset($_GET['delete'])) {
                                                 <div class="row">
                                                     <div class="mb-3 col-md-2">
                                                         <label class="form-label">Homepage banner & link 4</label>
-                                                        <small>Recommended size <?= (in_array($storeTheme, ["theme7", "theme8", "theme9"])) ? '1600x500'  : '614x282' ?></small>
+                                                        <small>Recommended size <?= ($storeTheme == "theme7" || $storeTheme == "theme8" || $storeTheme == "theme9") ? '1600x500'  : '614x282' ?></small>
                                                     </div>
 
                                                     <div class="mb-3 col-md-5">
@@ -239,7 +241,7 @@ if (isset($_GET['delete'])) {
                                                     </div>
                                                 </div>
 
-                                                <?php if (!in_array($storeTheme, ["theme7", "theme8", "theme9"])) : ?>
+                                                <?php if ($storeTheme != "theme7" || $storeTheme != "theme8" || $storeTheme != "theme9") : ?>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-2">
                                                             <label class="form-label">Homepage banner & link 5</label>
@@ -278,7 +280,7 @@ if (isset($_GET['delete'])) {
 
 
                         <!-- Offer Banners -->
-                        <?php if (in_array($storeTheme, ["theme7", "theme8", "theme9"])) : ?>
+                        <?php if ($storeTheme == "theme7" || $storeTheme == "theme8" || $storeTheme == "theme9") : ?>
                             <div class="row">
                                 <div class="col-xl-12">
                                     <div class="card">
@@ -347,7 +349,7 @@ if (isset($_GET['delete'])) {
 
 
 
-                <?php if (in_array($storeTheme, ["theme7", "theme8", "theme9"])) : ?>
+                <?php if ($storeTheme == "theme7" || $storeTheme == "theme8" || $storeTheme == "theme9") : ?>
                     <div data-tabname="Mobile" class="bg-primary p-1">
                         <form id="mobile">
                             <div class="row">
@@ -648,72 +650,74 @@ if (isset($_GET['delete'])) {
                         </form>
                     </div>
 
-                <?php endif ?>
+                    <!-- Advance Category -->
+                    <?php if ($storeTheme == "theme9") : ?>
+                        <!-- Advance Category -->
+                        <div data-tabname="Advanced Categories" class="bg-primary p-1">
+                            <form id="advanceCategories">
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4 class="card-title border-bottom pb-3 mb-3">Advanced Product Categories</h4>
 
-                <!-- Advance Product Category Start -->
-                <?php if ($storeTheme == "theme9") : ?>
-                    <div data-tabname="Advanced Categories" class="bg-primary p-1">
-                        <form id="advanceCategories">
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h4 class="card-title border-bottom pb-3 mb-3">Advanced Product Categories</h4>
-
-                                            <div class="mb-4">
-                                                <label class="form-label">Main Heading</label>
-                                                <input type="text" class="form-control" name="advance_category_main_heading" id="advance_category_main_heading"
-                                                    placeholder="Example: Shop by Category"
-                                                    value="<?= $advance_category_main_heading ?>">
-                                            </div>
-
-                                            <?php for ($i = 1; $i <= 6; $i++) : ?>
-                                                <div class="row mb-4">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Category Image <?= $i ?></label>
-                                                        <small>Recommended size : 300x300</small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-4">
-                                                        <input class="form-control" type="file" name="advance_category_image_<?= $i ?>" id="advance_category_image_<?= $i ?>">
-
-                                                        <?php if (!empty(${"advance_category_image_$i"})) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=advance_category_image_<?= $i ?>" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-                                                                <img src="<?= UPLOADS_URL . ${"advance_category_image_$i"} ?>" alt="" style="max-width: 100%; max-height: 300px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-3">
-                                                        <input class="form-control" type="text" name="advance_category_name_<?= $i ?>" id="advance_category_name_<?= $i ?>"
-                                                            placeholder="Category name" value="<?= ${"advance_category_name_$i"} ?>"
-                                                            oninvalid="this.setCustomValidity('Please enter category name')"
-                                                            oninput="setCustomValidity('')">
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-3">
-                                                        <input class="form-control" type="url" name="advance_category_link_<?= $i ?>" id="advance_category_link_<?= $i ?>"
-                                                            placeholder="https://example.com/category" value="<?= ${"advance_category_link_$i"} ?>"
-                                                            oninvalid="this.setCustomValidity('Please enter a valid URL')"
-                                                            oninput="setCustomValidity('')">
-                                                    </div>
+                                                <div class="mb-4">
+                                                    <label class="form-label">Main Heading</label>
+                                                    <input type="text" class="form-control" name="advance_category_main_heading" id="advance_category_main_heading"
+                                                        placeholder="Example: Shop by Category"
+                                                        value="<?= $advance_category_main_heading ?>">
                                                 </div>
-                                            <?php endfor; ?>
 
+                                                <?php for ($i = 1; $i <= 6; $i++) : ?>
+                                                    <div class="row mb-4">
+                                                        <div class="mb-3 col-md-2">
+                                                            <label class="form-label">Category Image <?= $i ?></label>
+                                                            <small>Recommended size : 300x300</small>
+                                                        </div>
+
+                                                        <div class="mb-3 col-md-4">
+                                                            <input class="form-control" type="file" name="advance_category_image_<?= $i ?>" id="advance_category_image_<?= $i ?>">
+
+                                                            <?php if (!empty(${"advance_category_image_$i"})) : ?>
+                                                                <div class="position-relative mt-2">
+                                                                    <a href="website-banners?delete=advance_category_image_<?= $i ?>" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
+                                                                        <i class="ri-close-line"></i>
+                                                                    </a>
+                                                                    <img src="<?= UPLOADS_URL . ${"advance_category_image_$i"} ?>" alt="" style="max-width: 100%; max-height: 300px;">
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
+
+                                                        <div class="mb-3 col-md-3">
+                                                            <input class="form-control" type="text" name="advance_category_name_<?= $i ?>" id="advance_category_name_<?= $i ?>"
+                                                                placeholder="Category name" value="<?= ${"advance_category_name_$i"} ?>"
+                                                                oninvalid="this.setCustomValidity('Please enter category name')"
+                                                                oninput="setCustomValidity('')">
+                                                        </div>
+
+                                                        <div class="mb-3 col-md-3">
+                                                            <input class="form-control" type="url" name="advance_category_link_<?= $i ?>" id="advance_category_link_<?= $i ?>"
+                                                                placeholder="https://example.com/category" value="<?= ${"advance_category_link_$i"} ?>"
+                                                                oninvalid="this.setCustomValidity('Please enter a valid URL')"
+                                                                oninput="setCustomValidity('')">
+                                                        </div>
+                                                    </div>
+                                                <?php endfor; ?>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="main-content footer d-flex justify-content-end align-items-center" style="position: fixed; bottom: 0; left: 0; z-index: 99;">
-                                <button type="submit" name="save" class="btn btn-primary waves-effect waves-light">Save</button>
-                            </div>
-                        </form>
-                    </div>
+                                <div class="main-content footer d-flex justify-content-end align-items-center" style="position: fixed; bottom: 0; left: 0; z-index: 99;">
+                                    <button type="submit" name="save" class="btn btn-primary waves-effect waves-light">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    <?php endif; ?>
+
                 <?php endif ?>
+
 
             </div>
             <!-- wrapper end -->
@@ -735,7 +739,7 @@ if (isset($_GET['delete'])) {
     <!-- Ajax -->
     <script src="javascripts/website-banners.js"></script>
 
-    <?php if (in_array($storeTheme, ["theme7", "theme8", "theme9"])) : ?>
+    <?php if ($storeTheme == "theme7" || $storeTheme == "theme8" || $storeTheme == "theme9") : ?>
         <script>
             function asTabs(node) {
                 var tabs = [];
@@ -801,6 +805,7 @@ if (isset($_GET['delete'])) {
     <?php include __DIR__ . "/partials/footer.php"; ?>
 
 
+
     <!--Theme-9 Condtion for Hide Mobile button and In Feature Shoe 3 Upload Image only -->
     <?php if ($storeTheme == "theme9") : ?>
         <style>
@@ -826,36 +831,3 @@ if (isset($_GET['delete'])) {
             });
         </script>
     <?php endif; ?>
-</div>
-
-
-
-
-
-<script>
-    // ===============================
-    // Save Advanced Product Categories
-    // ===============================
-    $('#advanceCategories').on('submit', function(e) {
-        e.preventDefault();
-
-        var formData = new FormData(this);
-        formData.append('action', 'updateAdvanceCategories');
-
-        $.ajax({
-            url: 'ajax/website-banners.php', // same file used for other forms
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                toastr.success('Advanced categories updated successfully!');
-                console.log(response);
-            },
-            error: function(xhr) {
-                toastr.error('Something went wrong while saving.');
-                console.error(xhr.responseText);
-            }
-        });
-    });
-</script>

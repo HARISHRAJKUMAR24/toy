@@ -157,6 +157,7 @@ $stmt = $stmt->execute([
 
     
 
+// <---------------------> This is SQL Query For tabel insert Field in Selelr_banner tabel <---------------------> 
 //     ALTER TABLE `seller_banners`
 // ADD COLUMN `advance_category_main_heading` VARCHAR(255) DEFAULT NULL AFTER `mobile_offer_image_2`,
 // ADD COLUMN `advance_category_image_1` VARCHAR(255) DEFAULT NULL,

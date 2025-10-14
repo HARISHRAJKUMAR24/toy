@@ -116,7 +116,22 @@
             <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-100 rounded-full blur-3xl pointer-events-none"></div>
         </footer>
         <!-- Footer End-->
-
+        <script>
+            $(document).on("click", ".searchBtn", function(e) {
+                e.preventDefault();
+                console.log('ssss');
+                const searchInput = $(".searchInput");
+                const searchCategory = $(".searchCategory");
+                let url = '';
+                console.log('searchCategory ' + searchCategory.val());
+                if (searchCategory.val() == "undefined") {
+                    url = '<?= $storeUrl ?>search/' + searchInput.val();
+                } else {
+                    url = '<?= $storeUrl ?>search/' + searchInput.val() + "?category=" + searchCategory.val();
+                }
+                if (searchInput.val() !== "") window.location.href = url;
+            });
+        </script>
         <!--JS File Include -->
 
         <!--This File For my Customise Js For my Theme 9-->

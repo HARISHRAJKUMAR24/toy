@@ -537,50 +537,51 @@
     <!-- Video Popup Start End-->
 
 
-    <!-- About Section Start -->
-    <?php
-    // Fetch data
-    $aboutContent = $sellerId ? getData("about_content", "homepage_settings", "(seller_id = '$sellerId')") : '';
-    $aboutImage = $sellerId ? getData("about_image", "homepage_settings", "(seller_id = '$sellerId')") : '';
+<!-- About Section Start -->
+<?php
+// Fetch data
+$aboutContent = $sellerId ? getData("about_content", "homepage_settings", "(seller_id = '$sellerId')") : '';
+$aboutImage = $sellerId ? getData("about_image", "homepage_settings", "(seller_id = '$sellerId')") : '';
+?>
 
-    // Hide section if both are empty
-    if (empty($aboutContent) && empty($aboutImage)) return;
-    ?>
-    <section class="py-16 px-4 bg-gray-50 bg-gradient-to-r from-pink-200 via-white to-pink-200">
-        <div class="container mx-auto flex flex-col md:flex-row items-center gap-6
-            <?= empty($aboutImage) ? 'justify-center text-center' : '' ?>">
+<?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
+<section class="py-16 px-4 bg-gray-50 bg-gradient-to-r from-pink-200 via-white to-pink-200">
+    <div class="container mx-auto flex flex-col md:flex-row items-center gap-6
+        <?= empty($aboutImage) ? 'justify-center text-center' : '' ?>">
 
-            <!-- Left: Image -->
-            <?php if (!empty($aboutImage)) : ?>
-                <div class="<?= !empty($aboutContent) ? 'w-full md:w-1/2' : 'w-full flex justify-center' ?>">
-                    <div class="relative rounded-2xl shadow-2xl overflow-hidden 
-                    w-11/12 sm:w-10/12 md:w-4/5 lg:w-4/5  <!-- increased width on desktop -->
-                    h-64 sm:h-80 md:h-64 lg:h-80  <!-- slightly taller for desktop -->
-                    aspect-[16/9]">
-                        <img src="<?= UPLOADS_URL . $aboutImage ?>" alt="About Us"
-                            class="w-full h-full object-cover object-center">
-                    </div>
+        <!-- Left: Image -->
+        <?php if (!empty($aboutImage)) : ?>
+            <div class="<?= !empty($aboutContent) ? 'w-full md:w-1/2' : 'w-full flex justify-center' ?>">
+                <div class="relative rounded-2xl shadow-2xl overflow-hidden 
+                w-11/12 sm:w-10/12 md:w-4/5 lg:w-4/5  <!-- increased width on desktop -->
+                h-64 sm:h-80 md:h-64 lg:h-80  <!-- slightly taller for desktop -->
+                aspect-[16/9]">
+                    <img src="<?= UPLOADS_URL . $aboutImage ?>" alt="About Us"
+                        class="w-full h-full object-cover object-center">
                 </div>
-            <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
-            <!-- Right: Text Content -->
-            <?php if (!empty($aboutContent)) : ?>
-                <div class="<?= !empty($aboutImage) ? 'w-full md:w-1/2' : 'w-full' ?> flex flex-col justify-center">
-                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2
-                   <?= empty($aboutImage) ? 'text-center' : 'text-left md:text-left' ?>">
-                        About <?= $storeName ?? 'Our Brand' ?>
-                    </h2>
-                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto
-                  <?= empty($aboutImage) ? 'text-center' : 'md:mx-0 text-left' ?>
-                  leading-relaxed">
-                        <?= htmlspecialchars($aboutContent) ?>
-                    </p>
-                </div>
-            <?php endif; ?>
+        <!-- Right: Text Content -->
+        <?php if (!empty($aboutContent)) : ?>
+            <div class="<?= !empty($aboutImage) ? 'w-full md:w-1/2' : 'w-full' ?> flex flex-col justify-center">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2
+               <?= empty($aboutImage) ? 'text-center' : 'text-left md:text-left' ?>">
+                    About <?= $storeName ?? 'Our Brand' ?>
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto
+              <?= empty($aboutImage) ? 'text-center' : 'md:mx-0 text-left' ?>
+              leading-relaxed">
+                    <?= htmlspecialchars($aboutContent) ?>
+                </p>
+            </div>
+        <?php endif; ?>
 
-        </div>
-    </section>
-    <!-- About Section End -->
+    </div>
+</section>
+<?php endif; ?>
+<!-- About Section End -->
+
 
     <!--Footer File Includes that file has all JS Files includes links-->
     <?php include_once __DIR__ . "/includes/footer.php"; ?>

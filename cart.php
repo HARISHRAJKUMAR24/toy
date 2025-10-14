@@ -84,14 +84,14 @@
                             <label class="block text-gray-700 mb-2 font-semibold">Have a promo code?</label>
 
                             <!-- Input + Button Row (always row style) -->
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 flex-nowrap">
                                 <input type="text" placeholder="Enter code"
-                                    class="flex-1 px-2.5 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
-                                <button
-                                    class="px-4 py-2 bg-pink-500 text-white text-sm rounded-lg font-semibold hover:bg-pink-600 transition">
+                                    class="flex-1 min-w-0 px-2.5 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
+                                <button class="px-4 py-2 bg-pink-500 text-white text-sm rounded-lg font-semibold hover:bg-pink-600 transition flex-shrink-0">
                                     Apply
                                 </button>
                             </div>
+
 
                             <!-- Suggested Coupons -->
                             <div class="mt-3 flex flex-wrap gap-2">
