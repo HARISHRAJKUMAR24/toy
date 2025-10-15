@@ -149,3 +149,8 @@
 
         <!--This File For Cart Page View-->
         <script src="<?= APP_URL ?>shop/javascripts/cart.js"></script>
+
+
+        <!-- Checkout.js -->
+        <script src="<?= APP_URL ?>assets/js/theme3/checkout.js"></script>
+        <script src="<?= APP_URL ?>shop/javascripts/checkout.js"></script>

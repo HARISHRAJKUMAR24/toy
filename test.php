@@ -1,829 +1,413 @@
 <?php
+$cartItems = getCartData()->fetchAll(PDO::FETCH_ASSOC);
 
-include __DIR__ . "/partials/header.php";
+foreach ($cartItems as $key => $cart) { // NO & reference here
+    // Default product image
+    $image = getData("image", "seller_products", "id='{$cart['product_id']}'");
 
-// FIXED: Corrected theme condition
-if (!in_array($storeTheme, ["theme7", "theme8", "theme9"])) {
-    redirect('banners');
+    // Variant image
+    $variantId = $cart['other'] ?? null;
+    if (!empty($variantId)) {
+        $variantImage = getData("image", "seller_product_variants", "id='{$variantId}'");
+        if ($variantImage) $image = $variantImage;
+    }
+
+    // Advanced variant image
+    $advVarId = $cart['advanced_variant'] ?? null;
+    if (!empty($advVarId)) {
+        $advImage = getData("image", "seller_product_advanced_variants", "id='{$advVarId}'");
+        if ($advImage) $image = $advImage;
+    }
+
+    // Product name
+    $productName = getData("name", "seller_products", "id='{$cart['product_id']}'");
+
+    // Variant text
+    $variationParts = [];
+    $baseVar = getData("variation", "seller_products", "id='{$cart['product_id']}'");
+    if ($baseVar) $variationParts[] = $baseVar;
+
+    if (!empty($variantId)) {
+        $simpleVar = getData("variation", "seller_product_variants", "id='{$variantId}'");
+        if ($simpleVar) $variationParts[] = $simpleVar;
+    }
+
+    if (!empty($advVarId)) {
+        $size = getData("size", "seller_product_advanced_variants", "id='{$advVarId}'");
+        $colorId = getData("color", "seller_product_advanced_variants", "id='{$advVarId}'");
+        $color = $colorId ? getData("color_name", "product_colors", "id='$colorId'") : '';
+        if ($size) $variationParts[] = "Size: $size";
+        if ($color) $variationParts[] = "Color: $color";
+    }
+
+    // Assign modified data back to cart array
+    $cartItems[$key]['variation_text'] = implode(" | ", $variationParts);
+    $cartItems[$key]['image'] = $image;
+    $cartItems[$key]['product_name'] = $productName;
+    $cartItems[$key]['mrp_price'] = $cart['mrp_price'] ?? $cart['price'];
+    $cartItems[$key]['savedAmount'] = max(0, ($cartItems[$key]['mrp_price'] - $cart['price']) * $cart['quantity']);
 }
-
-$homepage_banner = getData("homepage_banner", "seller_banners", "seller_id = '$userId'");
-$mobile_homepage_banner = getData("mobile_homepage_banner", "seller_banners", "seller_id = '$userId'");
-$homepage_banner_link = getData("homepage_banner_link", "seller_banners", "seller_id = '$userId'");
-
-
-$homepage_banner_2 = getData("homepage_banner_2", "seller_banners", "seller_id = '$userId'");
-$mobile_homepage_banner_2 = getData("mobile_homepage_banner_2", "seller_banners", "seller_id = '$userId'");
-$homepage_banner_link_2 = getData("homepage_banner_link_2", "seller_banners", "seller_id = '$userId'");
-
-$homepage_banner_3 = getData("homepage_banner_3", "seller_banners", "seller_id = '$userId'");
-$mobile_homepage_banner_3 = getData("mobile_homepage_banner_3", "seller_banners", "seller_id = '$userId'");
-$homepage_banner_link_3 = getData("homepage_banner_link_3", "seller_banners", "seller_id = '$userId'");
-
-$homepage_banner_4 = getData("homepage_banner_4", "seller_banners", "seller_id = '$userId'");
-$mobile_homepage_banner_4 = getData("mobile_homepage_banner_4", "seller_banners", "seller_id = '$userId'");
-$homepage_banner_link_4 = getData("homepage_banner_link_4", "seller_banners", "seller_id = '$userId'");
-
-$homepage_banner_5 = getData("homepage_banner_5", "seller_banners", "seller_id = '$userId'");
-$mobile_homepage_banner_5 = getData("mobile_homepage_banner_5", "seller_banners", "seller_id = '$userId'");
-$homepage_banner_link_5 = getData("homepage_banner_link_5", "seller_banners", "seller_id = '$userId'");
-
-$featured_image_1 = getData("featured_image_1", "seller_banners", "seller_id = '$userId'");
-$featured_image_link_1 = getData("featured_image_link_1", "seller_banners", "seller_id = '$userId'");
-
-$featured_image_2 = getData("featured_image_2", "seller_banners", "seller_id = '$userId'");
-$featured_image_link_2 = getData("featured_image_link_2", "seller_banners", "seller_id = '$userId'");
-
-$featured_image_3 = getData("featured_image_3", "seller_banners", "seller_id = '$userId'");
-$featured_image_link_3 = getData("featured_image_link_3", "seller_banners", "seller_id = '$userId'");
-
-$featured_image_4 = getData("featured_image_4", "seller_banners", "seller_id = '$userId'");
-$featured_image_link_4 = getData("featured_image_link_4", "seller_banners", "seller_id = '$userId'");
-
-$offer_image_1 = getData("offer_image_1", "seller_banners", "seller_id = '$userId'");
-$offer_image_2 = getData("offer_image_2", "seller_banners", "seller_id = '$userId'");
-
-$mobile_offer_image_1 = getData("mobile_offer_image_1", "seller_banners", "seller_id = '$userId'");
-$mobile_offer_image_2 = getData("mobile_offer_image_2", "seller_banners", "seller_id = '$userId'");
-
-$advance_category_main_heading = getData("advance_category_main_heading", "seller_banners", "seller_id = '$userId'");
-
-for ($i = 1; $i <= 6; $i++) {
-    ${"advance_category_image_$i"} = getData("advance_category_image_$i", "seller_banners", "seller_id = '$userId'");
-    ${"advance_category_name_$i"} = getData("advance_category_name_$i", "seller_banners", "seller_id = '$userId'");
-    ${"advance_category_link_$i"} = getData("advance_category_link_$i", "seller_banners", "seller_id = '$userId'");
-}
-
-
-if (isset($_GET['delete'])) {
-    $delete = $_GET['delete'];
-    $res = $db->prepare("UPDATE seller_banners SET $delete = ? WHERE seller_id = ?")->execute([NULL, $userId]);
-    redirect("website-banners");
-}
-
-
-
 ?>
+<div class="max-w-6xl mx-auto px-4">
+    <!-- Your Cart Section Heading -->
+    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2 text-center">Your Cart
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Side: Cart Items -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-gray-50 p-6 rounded-3xl shadow-lg space-y-4">
 
-<!-- select2 css -->
-<link href="assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+                <div class="py-10">
+                    <div class="px-2 sm:container lg:container-fluid">
 
-<!-- toastr -->
-<link rel="stylesheet" type="text/css" href="assets/libs/toastr/build/toastr.min.css">
+                        <div class="flex flex-col gap-6 lg:flex-colum">
 
-<!-- ============================================================== -->
-<!-- Start right Content here -->
-<!-- ============================================================== -->
-<div class="main-content">
+                            <div class="flex flex-col gap-6 lg:flex-colum">
+                                <?php if (!empty($cartItems)): ?>
+                                    <?php foreach ($cartItems as $cart): ?>
+                                        <div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 flex gap-4">
+                                            <!-- Delete Button -->
+                                            <button class="absolute top-3 right-3 border border-gray-300 px-2 py-1 rounded-md hover:border-red-600 hover:text-red-600 transition bg-white shadow-sm removeQtyBtn"
+                                                data-id="<?= $cart['product_id'] ?>"
+                                                data-variant="<?= $cart['other'] ?? '' ?>"
+                                                data-advancedVariant="<?= $cart['advanced_variant'] ?? '' ?>">
+                                                <i class="fas fa-trash-alt text-sm"></i>
+                                            </button>
 
-    <div class="page-content">
-        <div class="container-fluid">
+                                            <!-- Product Image -->
+                                            <img src="<?= UPLOADS_URL . $cart['image'] ?>" alt="<?= htmlspecialchars($cart['product_name']) ?>" class="w-24 h-24 object-cover rounded-xl">
 
-            <!-- start page title -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Banners</h4>
+                                            <!-- Product Details -->
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-gray-800 hover:text-pink-600 transition">
+                                                    <?= limit_characters($cart['product_name'], 30) ?>
+                                                </h3>
+                                                <?php if (!empty($cart['variation_text'])): ?>
+                                                    <p class="text-gray-500 text-sm"><?= $cart['variation_text'] ?></p>
+                                                <?php endif; ?>
 
-                        <div class="page-title-right">
-                            <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a href="<?= APP_URL ?>">Dashboard</a></li>
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
-                                <li class="breadcrumb-item"><a href="settings">Settings</a></li>
-                                <li class="breadcrumb-item active">Banners</li>
-                            </ol>
+                                                <!-- Quantity Controls -->
+                                                <div class="mt-2 flex flex-wrap items-center gap-4">
+                                                    <div class="flex items-center border rounded-lg overflow-hidden addToCartWrapper" data-id="<?= $cart['product_id'] ?>">
+                                                        <button class="px-3 py-1 text-gray-600 hover:text-pink-600 decreaseQtyBtn" data-id="<?= $cart['product_id'] ?>" data-variant="<?= $cart['other'] ?? '' ?>" data-advancedVariant="<?= $cart['advanced_variant'] ?? '' ?>">-</button>
+                                                        <span class="px-3 py-1 text-gray-800 font-medium currentQty"><?= $cart['quantity'] ?></span>
+                                                        <button class="px-3 py-1 text-gray-600 hover:text-pink-600 increaseQtyBtn" data-id="<?= $cart['product_id'] ?>" data-variant="<?= $cart['other'] ?? '' ?>" data-advancedVariant="<?= $cart['advanced_variant'] ?? '' ?>">+</button>
+                                                    </div>
+
+                                                    <!-- Price Info -->
+                                                    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
+                                                        <span class="line-through text-gray-400 text-sm"><?= currencyToSymbol($storeCurrency) . number_format($cart['mrp_price'] * $cart['quantity']) ?></span>
+                                                        <span class="font-bold text-lg text-gray-900"><?= currencyToSymbol($storeCurrency) . number_format($cart['price'] * $cart['quantity']) ?></span>
+
+                                                        <?php if ($cart['savedAmount'] > 0): ?>
+                                                            <div class="inline-flex items-center gap-2 bg-pink-50 text-pink-600 rounded-lg px-3 py-1 mt-1 text-sm font-medium">
+                                                                <!-- Check Icon -->
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                                <!-- Text -->
+                                                                <span>You saved <?= currencyToSymbol($storeCurrency) . number_format($cart['savedAmount']) ?></span>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="text-center py-12">
+                                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Your cart is empty</h3>
+                                        <p class="text-gray-500 mb-6">Looks like you haven't added any products yet.</p>
+                                        <a href="<?= APP_URL ?>" class="inline-flex items-center px-5 py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition">
+                                            Continue Shopping
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-
                     </div>
                 </div>
-            </div>
-            <!-- end page title -->
-
-            <div id="wrapper">
-
-
-                <div data-tabname="Desktop" class="bg-primary p-1">
-                    <form id="form">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title border-bottom pb-3 mb-3">Website Banners</h4>
-
-                                        <div>
-                                            <?php if (in_array($storeTheme, ["grocery", "theme4", "theme6"])) : ?>
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Homepage banner & link</label>
-                                                        <small>Recommended size <?= ($storeTheme == "theme4" || $storeTheme == "theme6") ? '1213x585' : '1344x330' ?></small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="homepage_banner" id="homepage_banner">
-
-                                                        <?php if (!empty($homepage_banner)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="banners?delete=homepage_banner" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $homepage_banner ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="homepage_banner_link" id="homepage_banner_link" placeholder="https://example.com/category/fresh-vegetables" value="<?= $homepage_banner_link ?>">
-                                                    </div>
-                                                </div>
-                                            <?php endif ?>
-
-                                            <?php if (in_array($storeTheme, ["theme3", "theme5", "theme7", "theme8", "theme9"])) : ?>
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Homepage banner & link</label>
-                                                        <small>Recommended size <?= (in_array($storeTheme, ["theme7", "theme8", "theme9"])) ? '1600x500'  : '825x480' ?></small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="homepage_banner" id="homepage_banner">
-
-                                                        <?php if (!empty($homepage_banner)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=homepage_banner" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $homepage_banner ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="homepage_banner_link" id="homepage_banner_link" placeholder="https://example.com/category/fresh-vegetables" value="<?= $homepage_banner_link ?>">
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Homepage banner & link 2</label>
-                                                        <small>Recommended size <?= (in_array($storeTheme, ["theme7", "theme8", "theme9"])) ? '1600x500'  : '390x213' ?></small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="homepage_banner_2" id="homepage_banner_2">
-
-                                                        <?php if (!empty($homepage_banner_2)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=homepage_banner_2" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $homepage_banner_2 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="homepage_banner_link_2" id="homepage_banner_link_2" placeholder="https://example.com/category/fresh-vegetables" value="<?= $homepage_banner_link_2 ?>">
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Homepage banner & link 3</label>
-                                                        <small>Recommended size <?= (in_array($storeTheme, ["theme7", "theme8", "theme9"])) ? '1600x500'  : '390x213' ?></small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="homepage_banner_3" id="homepage_banner_3">
-
-                                                        <?php if (!empty($homepage_banner_3)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=homepage_banner_3" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $homepage_banner_3 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="homepage_banner_link_3" id="homepage_banner_link_3" placeholder="https://example.com/category/fresh-vegetables" value="<?= $homepage_banner_link_3 ?>">
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Homepage banner & link 4</label>
-                                                        <small>Recommended size <?= (in_array($storeTheme, ["theme7", "theme8", "theme9"])) ? '1600x500'  : '614x282' ?></small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="homepage_banner_4" id="homepage_banner_4">
-
-                                                        <?php if (!empty($homepage_banner_4)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=homepage_banner_4" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $homepage_banner_4 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="homepage_banner_link_4" id="homepage_banner_link_4" placeholder="https://example.com/category/fresh-vegetables" value="<?= $homepage_banner_link_4 ?>">
-                                                    </div>
-                                                </div>
-
-                                                <?php if (!in_array($storeTheme, ["theme7", "theme8", "theme9"])) : ?>
-                                                    <div class="row">
-                                                        <div class="mb-3 col-md-2">
-                                                            <label class="form-label">Homepage banner & link 5</label>
-                                                            <small>Recommended size 614x282</small>
-                                                        </div>
-
-                                                        <div class="mb-3 col-md-5">
-                                                            <input class="form-control" type="file" name="homepage_banner_5" id="homepage_banner_5">
-
-                                                            <?php if (!empty($homepage_banner_5)) : ?>
-                                                                <div class="position-relative mt-2">
-                                                                    <a href="website-banners?delete=homepage_banner_5" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                        <i class="ri-close-line"></i>
-                                                                    </a>
-
-                                                                    <img src="<?= UPLOADS_URL . $homepage_banner_5 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                                </div>
-                                                            <?php endif; ?>
-                                                        </div>
-
-                                                        <div class="mb-3 col-md-5">
-                                                            <input class="form-control" type="url" name="homepage_banner_link_5" id="homepage_banner_link_5" placeholder="https://example.com/category/fresh-vegetables" value="<?= $homepage_banner_link_4 ?>">
-                                                        </div>
-                                                    </div>
-                                                <?php endif ?>
-                                            <?php endif ?>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div> <!-- end col -->
-                        </div>
-                        <!-- end row -->
-
-
-
-
-                        <!-- Offer Banners -->
-                        <?php if (in_array($storeTheme, ["theme7", "theme8", "theme9"])) : ?>
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h4 class="card-title border-bottom pb-3 mb-3">Offer Banners</h4>
-                                            <div class="row">
-                                                <div class="mb-3 col-md-2">
-                                                    <label class="form-label">Offer banner 1</label>
-                                                    <small>Recommended size 1600x230</small>
-                                                </div>
-
-                                                <div class="mb-3 col-md-5">
-                                                    <input class="form-control" type="file" name="offer_image_1" id="offer_image_1">
-
-                                                    <?php if (!empty($offer_image_1)) : ?>
-                                                        <div class="position-relative mt-2">
-                                                            <a href="website-banners?delete=offer_image_1" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                <i class="ri-close-line"></i>
-                                                            </a>
-
-                                                            <img src="<?= UPLOADS_URL . $offer_image_1 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="mb-3 col-md-2">
-                                                    <label class="form-label">Offer banner 2</label>
-                                                    <small>Recommended size 1600x230</small>
-                                                </div>
-
-                                                <div class="mb-3 col-md-5">
-                                                    <input class="form-control" type="file" name="offer_image_2" id="offer_image_2">
-
-                                                    <?php if (!empty($offer_image_2)) : ?>
-                                                        <div class="position-relative mt-2">
-                                                            <a href="website-banners?delete=offer_image_2" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                <i class="ri-close-line"></i>
-                                                            </a>
-
-                                                            <img src="<?= UPLOADS_URL . $offer_image_2 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endif ?>
-
-
-
-                        <div class="main-content footer d-flex justify-content-end align-items-center" style="position: fixed; bottom: 0; left: 0; z-index: 99;">
-                            <button type="submit" name="save" class="btn btn-primary waves-effect waves-light">
-                                Save
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-
-
-
-                <?php if (in_array($storeTheme, ["theme7", "theme8", "theme9"])) : ?>
-                    <div data-tabname="Mobile" class="bg-primary p-1">
-                        <form id="mobile">
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h4 class="card-title border-bottom pb-3 mb-3">Mobile Home Page Banners</h4>
-
-                                            <div class="row">
-                                                <div class="mb-3 col-md-2">
-                                                    <label class="form-label">Mobile Homepage banner</label>
-                                                    <small>Recommended size 500x350</small>
-                                                </div>
-
-                                                <div class="mb-3 col-md-5">
-                                                    <input class="form-control" type="file" name="mobile_homepage_banner" id="mobile_homepage_banner">
-
-                                                    <?php if (!empty($mobile_homepage_banner)) : ?>
-                                                        <div class="position-relative mt-2">
-                                                            <a href="website-banners?delete=mobile_homepage_banner" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                <i class="ri-close-line"></i>
-                                                            </a>
-
-                                                            <img src="<?= UPLOADS_URL . $mobile_homepage_banner ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="mb-3 col-md-2">
-                                                    <label class="form-label">Mobile Homepage banner 2</label>
-                                                    <small>Recommended size 500x350</small>
-                                                </div>
-
-                                                <div class="mb-3 col-md-5">
-                                                    <input class="form-control" type="file" name="mobile_homepage_banner_2" id="mobile_homepage_banner_2">
-
-                                                    <?php if (!empty($mobile_homepage_banner_2)) : ?>
-                                                        <div class="position-relative mt-2">
-                                                            <a href="website-banners?delete=mobile_homepage_banner_2" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                <i class="ri-close-line"></i>
-                                                            </a>
-
-                                                            <img src="<?= UPLOADS_URL . $mobile_homepage_banner_2 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="mb-3 col-md-2">
-                                                    <label class="form-label">Mobile Homepage banner 3</label>
-                                                    <small>Recommended size 500x350</small>
-                                                </div>
-
-                                                <div class="mb-3 col-md-5">
-                                                    <input class="form-control" type="file" name="mobile_homepage_banner_3" id="mobile_homepage_banner_3">
-
-                                                    <?php if (!empty($mobile_homepage_banner_3)) : ?>
-                                                        <div class="position-relative mt-2">
-                                                            <a href="website-banners?delete=mobile_homepage_banner_3" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                <i class="ri-close-line"></i>
-                                                            </a>
-
-                                                            <img src="<?= UPLOADS_URL . $mobile_homepage_banner_3 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="mb-3 col-md-2">
-                                                    <label class="form-label">Mobile Homepage banner 4</label>
-                                                    <small>Recommended size 500x350</small>
-                                                </div>
-
-                                                <div class="mb-3 col-md-5">
-                                                    <input class="form-control" type="file" name="mobile_homepage_banner_4" id="mobile_homepage_banner_4">
-
-                                                    <?php if (!empty($mobile_homepage_banner_4)) : ?>
-                                                        <div class="position-relative mt-2">
-                                                            <a href="website-banners?delete=mobile_homepage_banner_4" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                <i class="ri-close-line"></i>
-                                                            </a>
-
-                                                            <img src="<?= UPLOADS_URL . $mobile_homepage_banner_4 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-
-
-                            <!--Mobile Offer Banners -->
-
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h4 class="card-title border-bottom pb-3 mb-3">Mobile Offer Banners</h4>
-                                            <div class="row">
-                                                <div class="mb-3 col-md-2">
-                                                    <label class="form-label">Mobile Offer banner 1</label>
-                                                    <small>Recommended size 375x145</small>
-                                                </div>
-
-                                                <div class="mb-3 col-md-5">
-                                                    <input class="form-control" type="file" name="mobile_offer_image_1" id="mobile_offer_image_1">
-
-                                                    <?php if (!empty($mobile_offer_image_1)) : ?>
-                                                        <div class="position-relative mt-2">
-                                                            <a href="website-banners?delete=mobile_offer_image_1" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                <i class="ri-close-line"></i>
-                                                            </a>
-
-                                                            <img src="<?= UPLOADS_URL . $mobile_offer_image_1 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="row">
-                                                <div class="mb-3 col-md-2">
-                                                    <label class="form-label">Mobile Offer banner 2</label>
-                                                    <small>Recommended size 375x145</small>
-                                                </div>
-
-                                                <div class="mb-3 col-md-5">
-                                                    <input class="form-control" type="file" name="mobile_offer_image_2" id="mobile_offer_image_2">
-
-                                                    <?php if (!empty($mobile_offer_image_2)) : ?>
-                                                        <div class="position-relative mt-2">
-                                                            <a href="website-banners?delete=mobile_offer_image_2" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                <i class="ri-close-line"></i>
-                                                            </a>
-
-                                                            <img src="<?= UPLOADS_URL . $mobile_offer_image_2 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="main-content footer d-flex justify-content-end align-items-center" style="position: fixed; bottom: 0; left: 0; z-index: 99;">
-                                <button type="submit" name="save" class="btn btn-primary waves-effect waves-light">
-                                    Save
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-
-                    <!--Featured Images -->
-                    <div data-tabname="Featured Images" class="bg-primary p-1">
-                        <!-- Featured Images -->
-                        <form id="featured">
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h4 class="card-title border-bottom pb-3 mb-3">Featured Images</h4>
-                                            <div>
-
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Featured Image 1</label>
-                                                        <small>Recommended size : 250x250</small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="featured_image_1" id="featured_image_1">
-
-                                                        <?php if (!empty($featured_image_1)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=featured_image_1" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $featured_image_1 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="featured_image_link_1" id="featured_image_link_1" placeholder="https://example.com/category/fresh-vegetables" value="<?= $featured_image_link_1 ?>">
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Featured Image 2</label>
-                                                        <small>Recommended size : 250x250</small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="featured_image_2" id="featured_image_2">
-
-                                                        <?php if (!empty($featured_image_2)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=featured_image_2" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $featured_image_2 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="featured_image_link_2" id="featured_image_link_2" placeholder="https://example.com/category/fresh-vegetables" value="<?= $featured_image_link_2 ?>">
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Featured Image 3</label>
-                                                        <small>Recommended size : 250x250</small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="featured_image_3" id="featured_image_1">
-
-                                                        <?php if (!empty($featured_image_3)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=featured_image_3" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $featured_image_3 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="featured_image_link_3" id="featured_image_link_3" placeholder="https://example.com/category/fresh-vegetables" value="<?= $featured_image_link_3 ?>">
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Featured Image 4</label>
-                                                        <small>Recommended size : 250x250</small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="file" name="featured_image_4" id="featured_image_4">
-
-                                                        <?php if (!empty($featured_image_4)) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=featured_image_4" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-
-                                                                <img src="<?= UPLOADS_URL . $featured_image_4 ?>" alt="" style="max-width: 100%; max-height: 330px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-5">
-                                                        <input class="form-control" type="url" name="featured_image_link_4" id="featured_image_link_4" placeholder="https://example.com/category/fresh-vegetables" value="<?= $featured_image_link_4 ?>">
-                                                    </div>
-                                                </div>
-
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div> <!-- end col -->
-                            </div>
-                            <!-- end row -->
-
-
-
-
-                            <div class="main-content footer d-flex justify-content-end align-items-center" style="position: fixed; bottom: 0; left: 0; z-index: 99;">
-                                <button type="submit" name="save" class="btn btn-primary waves-effect waves-light">
-                                    Save
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                <?php endif ?>
-
-                <!-- Advance Product Category Start -->
-                <?php if ($storeTheme == "theme9") : ?>
-                    <div data-tabname="Advanced Categories" class="bg-primary p-1">
-                        <form id="advanceCategories">
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h4 class="card-title border-bottom pb-3 mb-3">Advanced Product Categories</h4>
-
-                                            <div class="mb-4">
-                                                <label class="form-label">Main Heading</label>
-                                                <input type="text" class="form-control" name="advance_category_main_heading" id="advance_category_main_heading"
-                                                    placeholder="Example: Shop by Category"
-                                                    value="<?= $advance_category_main_heading ?>">
-                                            </div>
-
-                                            <?php for ($i = 1; $i <= 6; $i++) : ?>
-                                                <div class="row mb-4">
-                                                    <div class="mb-3 col-md-2">
-                                                        <label class="form-label">Category Image <?= $i ?></label>
-                                                        <small>Recommended size : 300x300</small>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-4">
-                                                        <input class="form-control" type="file" name="advance_category_image_<?= $i ?>" id="advance_category_image_<?= $i ?>">
-
-                                                        <?php if (!empty(${"advance_category_image_$i"})) : ?>
-                                                            <div class="position-relative mt-2">
-                                                                <a href="website-banners?delete=advance_category_image_<?= $i ?>" class="btn btn-sm btn-danger" style="position: absolute; top: 0;">
-                                                                    <i class="ri-close-line"></i>
-                                                                </a>
-                                                                <img src="<?= UPLOADS_URL . ${"advance_category_image_$i"} ?>" alt="" style="max-width: 100%; max-height: 300px;">
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-3">
-                                                        <input class="form-control" type="text" name="advance_category_name_<?= $i ?>" id="advance_category_name_<?= $i ?>"
-                                                            placeholder="Category name" value="<?= ${"advance_category_name_$i"} ?>"
-                                                            oninvalid="this.setCustomValidity('Please enter category name')"
-                                                            oninput="setCustomValidity('')">
-                                                    </div>
-
-                                                    <div class="mb-3 col-md-3">
-                                                        <input class="form-control" type="url" name="advance_category_link_<?= $i ?>" id="advance_category_link_<?= $i ?>"
-                                                            placeholder="https://example.com/category" value="<?= ${"advance_category_link_$i"} ?>"
-                                                            oninvalid="this.setCustomValidity('Please enter a valid URL')"
-                                                            oninput="setCustomValidity('')">
-                                                    </div>
-                                                </div>
-                                            <?php endfor; ?>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="main-content footer d-flex justify-content-end align-items-center" style="position: fixed; bottom: 0; left: 0; z-index: 99;">
-                                <button type="submit" name="save" class="btn btn-primary waves-effect waves-light">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                <?php endif ?>
 
             </div>
-            <!-- wrapper end -->
-
         </div>
-        <!-- container-fluid -->
+
+
+
+        <!-- Right Side: Sticky Order Summary -->
+        <div class="lg:col-span-1">
+            <div class="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition sticky top-20">
+                <!-- Header -->
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-shopping-cart text-pink-600"></i> Summary
+                </h2>
+
+                <?php
+
+
+                // Initialize totals
+                $subTotal = 0.0;
+                $subTotalMrp = 0.0;
+                $subTotalWithTax = 0.0;
+                $gstAmount = 0.0;
+
+                // Loop through cart items and normalize fields safely
+                foreach ($cartItems as $key => $cart) {
+                    // ensure numeric quantity & price
+                    $quantity = isset($cart['quantity']) ? (int)$cart['quantity'] : 1;
+                    $price = isset($cart['price']) ? (float)$cart['price'] : 0.0;
+                    $mrp_price = isset($cart['mrp_price']) && $cart['mrp_price'] !== '' ? (float)$cart['mrp_price'] : $price;
+
+                    // Default product image
+                    $image = getData("image", "seller_products", "id='{$cart['product_id']}'");
+
+                    // Variant image (simple variant)
+                    $variantId = $cart['other'] ?? null;
+                    if (!empty($variantId)) {
+                        $variantImage = getData("image", "seller_product_variants", "id='{$variantId}'");
+                        if (!empty($variantImage)) $image = $variantImage;
+                    }
+
+                    // Advanced variant image
+                    $advVarId = $cart['advanced_variant'] ?? null;
+                    if (!empty($advVarId)) {
+                        $advImage = getData("image", "seller_product_advanced_variants", "id='{$advVarId}'");
+                        if (!empty($advImage)) $image = $advImage;
+                    }
+
+                    // Product name & variation text
+                    $productName = getData("name", "seller_products", "id='{$cart['product_id']}'") ?: '';
+                    $variationParts = [];
+                    $baseVar = getData("variation", "seller_products", "id='{$cart['product_id']}'");
+                    if (!empty($baseVar)) $variationParts[] = $baseVar;
+
+                    if (!empty($variantId)) {
+                        $simpleVar = getData("variation", "seller_product_variants", "id='{$variantId}'");
+                        if (!empty($simpleVar)) $variationParts[] = $simpleVar;
+                    }
+
+                    if (!empty($advVarId)) {
+                        $size = getData("size", "seller_product_advanced_variants", "id='{$advVarId}'");
+                        $colorId = getData("color", "seller_product_advanced_variants", "id='{$advVarId}'");
+                        $color = $colorId ? getData("color_name", "product_colors", "id='$colorId'") : '';
+                        if (!empty($size)) $variationParts[] = "Size: $size";
+                        if (!empty($color)) $variationParts[] = "Color: $color";
+                    }
+
+                    // Put normalized fields back so template can use them
+                    $cartItems[$key]['variation_text'] = implode(" | ", $variationParts);
+                    $cartItems[$key]['image'] = $image ?: '';
+                    $cartItems[$key]['product_name'] = $productName;
+                    $cartItems[$key]['mrp_price'] = $mrp_price;
+                    $cartItems[$key]['savedAmount'] = max(0, ($mrp_price - $price) * $quantity);
+
+                    // Totals calculation
+                    $subTotal += ($price * $quantity);
+                    $subTotalMrp += ($mrp_price * $quantity);
+
+                    // GST calculation: reuse your app helper if available; fallback to 0% if no gst defined
+                    $gstPercentage = getData("gst_percentage", "seller_products", "id = '{$cart['product_id']}'");
+                    if ($gstPercentage !== null && $gstPercentage !== '') {
+                        $gstCalc = calculateGst((int)$price * $quantity, $gstPercentage); // returns ['getPrice','gstAmount'] in your earlier code
+                    } else {
+                        $gstCalc = calculateGst((int)$price * $quantity); // assume default behavior of your helper
+                    }
+                    // protect against helper returning unexpected
+                    $subTotalWithTax += isset($gstCalc['getPrice']) ? $gstCalc['getPrice'] : ($price * $quantity);
+                    $gstAmount += isset($gstCalc['gstAmount']) ? $gstCalc['gstAmount'] : 0;
+                }
+
+
+                // Final total
+                $total = $subTotalWithTax;
+
+                // Optional: format numbers later in the template using number_format when echoing
+
+                // End of initialization block
+                ?>
+
+                <!-- Summary -->
+                <div class="space-y-2 mb-4">
+                    <div class="flex justify-between text-gray-500">
+                        <span>Subtotal</span>
+                        <span><?= currencyToSymbol($storeCurrency) . number_format($subTotal, 2) ?></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-base text-gray-500">Tax</span>
+                        <span class="text-base text-gray-500" id="gstTax">
+                            <?= getSettings("gst_tax_type") == "inclusive" ? currencyToSymbol($storeCurrency) . "0.00" : currencyToSymbol($storeCurrency) . number_format($gstAmount, 2) ?>
+                        </span>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-3 flex justify-between text-gray-800 font-bold text-lg">
+                        <span>Total</span>
+                        <span><?= currencyToSymbol($storeCurrency) . number_format($total, 2) ?></span>
+                    </div>
+                </div>
+
+
+                <!-- Promo Code -->
+                <div class="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
+                    <label class="block text-gray-700 mb-2 font-semibold">Have a promo code?</label>
+
+                    <!-- Input + Button Row -->
+                    <div class="flex items-center gap-2 flex-nowrap">
+                        <input type="text" id="couponCode" placeholder="Enter code"
+                            class="flex-1 min-w-0 px-2.5 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
+                        <button id="applyCoupon"
+                            class="px-4 py-2 bg-pink-500 text-white text-sm rounded-lg font-semibold hover:bg-pink-600 transition flex-shrink-0">
+                            Apply
+                        </button>
+                    </div>
+
+                    <!-- Heading below input -->
+                    <p class="mt-2 text-sm text-gray-600 font-medium">Click a coupon below to automatically apply</p>
+
+                    <!-- Suggested Coupons -->
+                    <div class="mt-3 flex flex-wrap gap-2 couponSuggestions">
+                        <?php
+                        $discounts = getDiscounts(); // fetch from backend
+                        foreach ($discounts as $discount):
+                        ?>
+                            <span class="flex items-center gap-1.5 bg-pink-50 text-pink-600 text-xs font-semibold px-3 py-1 rounded-full border border-pink-200 couponItem"
+                                data-code="<?= htmlspecialchars($discount['code']) ?>">
+                                <!-- Glowing Dot -->
+                                <span class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.7)] animate-pulse glowDot"></span>
+                                <?= htmlspecialchars($discount['code']) ?>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+<script>
+const couponInput = document.getElementById('couponCode');
+const applyBtn = document.getElementById('applyCoupon');
+const subTotalEl = document.querySelector('.bg-white .space-y-2 .flex.justify-between span:nth-child(2)');
+const gstEl = document.getElementById('gstTax');
+const totalEl = document.querySelector('.border-t span:last-child');
+
+// Example: coupon discounts from backend (replace with your dynamic PHP backend if needed)
+const couponDiscounts = {
+    "SAVE200": 200,       // flat 200 off
+    "NEWUSER100": 100,    // flat 100 off
+    "FREESHIP": 50        // example discount for shipping
+};
+
+function applyCoupon(code) {
+    const originalSubTotal = <?= $subTotal ?>;
+    const originalGst = <?= $gstAmount ?>;
+    let discount = couponDiscounts[code] || 0;
+
+    // update subtotal visually
+    let newSubTotal = originalSubTotal - discount;
+    if(newSubTotal < 0) newSubTotal = 0;
+
+    // optionally recalc tax if needed
+    let newGst = originalGst; // or recalc based on your rules
+
+    // total = subtotal + gst
+    let newTotal = newSubTotal + newGst;
+
+    // Update DOM
+    subTotalEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + newSubTotal.toFixed(2);
+    gstEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + newGst.toFixed(2);
+    totalEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + newTotal.toFixed(2);
+}
+
+// Apply coupon when button clicked
+applyBtn.addEventListener('click', () => {
+    const code = couponInput.value.trim();
+    if (!code) return;
+    applyCoupon(code);
+});
+
+// Click on coupon suggestion applies it
+document.querySelectorAll('.couponItem').forEach(item => {
+    item.addEventListener('click', () => {
+        const code = item.dataset.code;
+        couponInput.value = code;
+        applyCoupon(code);
+
+        // Show as applied visually
+        document.querySelectorAll('.couponItem').forEach(el => el.classList.remove('appliedCoupon'));
+        item.classList.add('appliedCoupon');
+    });
+});
+</script>
+
+
+                <style>
+                    /* Applied coupon looks like "Apply" button */
+                    .appliedCoupon {
+                        background-color: #ec4899 !important;
+                        /* pink-500 */
+                        color: #fff !important;
+                        border-color: #ec4899 !important;
+                        cursor: default;
+                    }
+
+                    /* Glow dot effect */
+                    .appliedCoupon .glowDot {
+                        box-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+                        transform: scale(1.2);
+                    }
+
+                    /* Coupon hover cursor */
+                    .couponItem:hover {
+                        cursor: pointer;
+                        opacity: 0.9;
+                    }
+                </style>
+
+
+
+
+
+                <!-- Payment Methods -->
+                <div class="mb-4">
+                    <h3 class="text-gray-700 font-semibold mb-3">Pay with</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <!-- Razorpay -->
+                        <div
+                            class="w-14 h-14 rounded-full border flex items-center justify-center overflow-hidden bg-white hover:shadow-md cursor-pointer transition">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Razorpay_logo.png"
+                                alt="Razorpay" class="w-8 h-8 object-contain" />
+                        </div>
+
+                        <!-- PhonePe -->
+                        <div
+                            class="w-14 h-14 rounded-full border flex items-center justify-center overflow-hidden bg-white hover:shadow-md cursor-pointer transition">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/PhonePe_Logo.png"
+                                alt="PhonePe" class="w-8 h-8 object-contain" />
+                        </div>
+
+                        <!-- UPI -->
+                        <div
+                            class="w-14 h-14 rounded-full border flex items-center justify-center overflow-hidden bg-white hover:shadow-md cursor-pointer transition">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/UPI_Logo.svg"
+                                alt="UPI" class="w-8 h-8 object-contain" />
+                        </div>
+
+                        <!-- Bank -->
+                        <div
+                            class="w-14 h-14 rounded-full border flex items-center justify-center bg-white hover:shadow-md cursor-pointer transition">
+                            <i class="fas fa-university text-pink-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Checkout Button -->
+                <button
+                    class="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 shadow-lg transition">
+                    Checkout Now
+                </button>
+
+                <!-- Security Note -->
+                <p class="mt-4 text-gray-500 flex items-center gap-2 text-sm">
+                    <i class="fas fa-shield-alt text-pink-600"></i> 100% Secure Payment
+                </p>
+            </div>
+        </div>
+
     </div>
-    <!-- End Page-content -->
-
-    <!-- jQuery -->
-    <script src="assets/libs/jquery/jquery.min.js"></script>
-
-    <!-- select 2 plugin -->
-    <script src="assets/libs/select2/js/select2.min.js"></script>
-
-    <!-- toastr plugin -->
-    <script src="assets/libs/toastr/build/toastr.min.js"></script>
-
-    <!-- Ajax -->
-    <script src="javascripts/website-banners.js"></script>
-
-    <?php if (in_array($storeTheme, ["theme7", "theme8", "theme9"])) : ?>
-        <script>
-            function asTabs(node) {
-                var tabs = [];
-                for (var i = 0; i < node.childNodes.length; i++) {
-                    var child = node.childNodes[i];
-                    if (child.nodeType == document.ELEMENT_NODE)
-                        tabs.push(child);
-                }
-                var tabList = document.createElement("div");
-                tabs.forEach(function(tab, i) {
-                    var button = document.createElement("button");
-                    button.textContent = tab.getAttribute("data-tabname");
-                    button.addEventListener("click", function() {
-                        selectTab(i);
-                    });
-                    button.classList.add("btn");
-                    button.classList.add("btn-primary");
-                    button.classList.add("m-2");
-                    tabList.appendChild(button);
-                });
-                node.insertBefore(tabList, node.firstChild);
-
-                function selectTab(n) {
-                    tabs.forEach(function(tab, i) {
-                        if (i == n)
-                            tab.style.display = "block";
-                        else
-                            tab.style.display = "none";
-                    });
-
-                }
-                selectTab(0);
-            }
-            asTabs(document.querySelector("#wrapper"));
-            // ===============================
-            // Save Advanced Product Categories
-            // ===============================
-            $('#advanceCategories').on('submit', function(e) {
-                e.preventDefault();
-
-                var formData = new FormData(this);
-                formData.append('action', 'updateAdvanceCategories');
-
-                $.ajax({
-                    url: 'ajax/website-banners.php', // same file used for other forms
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        toastr.success('Advanced categories updated successfully!');
-                        console.log(response);
-                    },
-                    error: function(xhr) {
-                        toastr.error('Something went wrong while saving.');
-                        console.error(xhr.responseText);
-                    }
-                });
-            });
-        </script>
-    <?php endif ?>
-
-    <?php include __DIR__ . "/partials/footer.php"; ?>
-
-
-    <!--Theme-9 Condtion for Hide Mobile button and In Feature Shoe 3 Upload Image only -->
-    <?php if ($storeTheme == "theme9") : ?>
-        <style>
-            /* Hide the entire Mobile section */
-            [data-tabname="Mobile"] {
-                display: none !important;
-            }
-
-            /* Show only the first 3 featured images rows */
-            [data-tabname="Featured Images"] .row:nth-child(n+4) {
-                display: none !important;
-            }
-        </style>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                // Hide the Mobile tab button at the top
-                const tabButtons = document.querySelectorAll('#wrapper > div:first-child button');
-                tabButtons.forEach(button => {
-                    if (button.textContent.trim() === "Mobile") {
-                        button.style.display = "none";
-                    }
-                });
-            });
-        </script>
-    <?php endif; ?>
 </div>
