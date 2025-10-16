@@ -190,7 +190,7 @@
                         <p class="text-xs text-gray-400 mt-1">
                             <span class="text-red-500 animate-pulse [animation-duration:2.5s]">❤️</span>
                             Viewed <?= (int)$visitors ?> times
-                            
+
                         </p>
 
 
