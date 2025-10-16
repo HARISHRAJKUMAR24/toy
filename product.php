@@ -187,7 +187,13 @@
                             <?= $mainStockDisplay ?>
                         </p>
 
-                        <p class="text-xs text-gray-400 mt-1">Viewed <?= (int)$visitors ?> times</p>
+                        <p class="text-xs text-gray-400 mt-1">
+                            <span class="text-red-500 animate-pulse [animation-duration:2.5s]">❤️</span>
+                            Viewed <?= (int)$visitors ?> times
+                            
+                        </p>
+
+
 
                         <!-- Add to Cart -->
                         <div class="flex flex-wrap gap-4 mb-6 items-center mt-4">
@@ -298,6 +304,7 @@
             const productKey = "selectedVariant_<?= $id ?>";
 
             function selectVariant(btn) {
+                // Highlight selected variant
                 variantButtons.forEach(b => b.classList.remove('ring-2', 'ring-pink-400'));
                 btn.classList.add('ring-2', 'ring-pink-400');
 
@@ -309,12 +316,22 @@
                 const inCart = btn.dataset.inCart == 1;
                 const variantName = btn.dataset.variantName;
 
+                // Update image
                 if (variantImage) mainImage.src = variantImage;
+
+                // Update price
                 if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + variantPrice.toLocaleString();
                 if (mrpEl) mrpEl.textContent = (variantMrp && variantMrp > variantPrice) ? "<?= currencyToSymbol($storeCurrency) ?>" + variantMrp.toLocaleString() : '';
+
+                // Update stock
                 if (stockEl) {
                     stockEl.textContent = stockText;
-                    if (stockText.toLowerCase().includes('unlimited') || parseInt(stockText) > 0) {
+
+                    // Determine numeric stock
+                    let stockNumber = parseInt(stockText);
+                    if (stockText.toLowerCase().includes('unlimited')) stockNumber = Infinity;
+
+                    if (stockNumber > 0) {
                         stockEl.classList.remove('text-red-500');
                         stockEl.classList.add('text-green-500');
                     } else {
@@ -323,11 +340,16 @@
                     }
                 }
 
+                // Update variant name
                 if (variantNameEl) variantNameEl.textContent = variantName;
 
+                // Update Add to Cart / Out of Stock button
                 if (addBtn && viewBtn) {
                     addBtn.dataset.variant = variantId;
-                    const isOutOfStock = stockText.toLowerCase().includes('0') || stockText.toLowerCase().includes('out of stock');
+
+                    let stockNumber = parseInt(stockText);
+                    if (stockText.toLowerCase().includes('unlimited')) stockNumber = Infinity;
+                    const isOutOfStock = stockNumber < 1;
 
                     if (inCart) {
                         addBtn.classList.add('hidden');
@@ -335,20 +357,21 @@
                     } else if (isOutOfStock) {
                         addBtn.disabled = true;
                         addBtn.textContent = 'Out of Stock';
-                        addBtn.classList.remove('hidden');
-                        addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
                         addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
+                        addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
                         viewBtn.classList.add('hidden');
+                        addBtn.classList.remove('hidden');
                     } else {
                         addBtn.disabled = false;
                         addBtn.textContent = 'Add to Cart';
-                        addBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
                         addBtn.classList.add('bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
-                        addBtn.classList.remove('hidden');
+                        addBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
                         viewBtn.classList.add('hidden');
+                        addBtn.classList.remove('hidden');
                     }
                 }
 
+                // Save selected variant
                 localStorage.setItem(productKey, btn.dataset.variantId);
             }
 
@@ -362,8 +385,10 @@
                 selectVariant(variantButtons[0]);
             }
 
+            // Add click event to variant buttons
             variantButtons.forEach(btn => btn.addEventListener('click', () => selectVariant(btn)));
 
+            // Add to cart
             addBtn.addEventListener('click', function() {
                 const productId = this.dataset.id;
                 const variantId = this.dataset.variant;
@@ -381,6 +406,7 @@
             });
         });
     </script>
+
 
 </body>
 

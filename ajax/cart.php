@@ -204,81 +204,6 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
 
                 </div>
 
-
-                <!-- Promo Code -->
-                <div class="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
-                    <label class="block text-gray-700 mb-2 font-semibold">Have a promo code?</label>
-
-                    <!-- Input + Button Row -->
-                    <div class="flex items-center gap-2 flex-nowrap">
-                        <input type="text" id="couponCode" placeholder="Enter code"
-                            class="flex-1 min-w-0 px-2.5 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
-                        <button id="applyCoupon"
-                            class="px-4 py-2 bg-pink-500 text-white text-sm rounded-lg font-semibold hover:bg-pink-600 transition flex-shrink-0">
-                            Apply
-                        </button>
-                    </div>
-
-                    <!-- Heading below input -->
-                    <p class="mt-2 text-sm text-gray-600 font-medium">Click a coupon below to automatically apply</p>
-
-                    <!-- Suggested Coupons -->
-                    <div class="mt-3 flex flex-wrap gap-2 couponSuggestions">
-                        <?php
-                        $discounts = getDiscounts(); // fetch from backend
-                        foreach ($discounts as $discount):
-                        ?>
-                            <span class="flex items-center gap-1.5 bg-pink-50 text-pink-600 text-xs font-semibold px-3 py-1 rounded-full border border-pink-200 copyCoupon"
-                                data-code="<?= htmlspecialchars($discount['code']) ?>">
-                                <!-- Glowing Dot -->
-                                <span class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.7)] animate-pulse glowDot"></span>
-                                <?= htmlspecialchars($discount['code']) ?>
-                            </span>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-                <script>
-                    {
-                        const coupons = document.querySelectorAll('.copyCoupon');
-
-                        coupons.forEach(coupon => {
-                            coupon.addEventListener('mouseenter', () => {
-                                coupon.style.cursor = 'pointer';
-                            });
-
-                            coupon.addEventListener('mouseleave', () => {
-                                coupon.style.cursor = 'default';
-                            });
-                        });
-                    }
-                </script>
-
-
-                <style>
-                    /* Applied coupon looks like "Apply" button */
-                    .appliedCoupon {
-                        background-color: #ec4899 !important;
-                        /* pink-500 */
-                        color: #fff !important;
-                        border-color: #ec4899 !important;
-                        cursor: default;
-                    }
-
-                    /* Glow dot effect */
-                    .appliedCoupon .glowDot {
-                        box-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
-                        transform: scale(1.2);
-                    }
-
-                    /* Coupon hover cursor */
-                    .couponItem:hover {
-                        cursor: pointer;
-                        opacity: 0.9;
-                    }
-                </style>
-
-
                 <!-- Payment Methods -->
                 <div class="mb-4">
                     <h3 class="text-gray-700 font-semibold mb-3">Pay with</h3>
@@ -326,11 +251,37 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
 
 
                 <!-- Checkout Button -->
-                <button
-                    onclick="window.location.href='<?= $storeUrl ?>checkout';"
-                    class="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 shadow-lg transition">
-                    Checkout Now
-                </button>
+                <?php
+                $minimumOrder = (int)getSettings("minimum_order_amount");
+                ?>
+
+
+                <!-- Checkout Section -->
+                <div class="mt-4">
+                    <?php if (!empty($minimumOrder) && $subTotal < $minimumOrder): ?>
+                        <!-- Stylish Marketing-Themed Minimum Order Message -->
+                        <div class="py-3 px-4 rounded-xl text-center bg-gradient-to-r from-pink-50 to-pink-100 border border-pink-200 shadow-sm">
+                            <p class="text-pink-700 font-semibold text-sm">
+                                Minimum order is
+                                <span class="font-bold text-pink-600">
+                                    <?= currencyToSymbol($storeCurrency) . number_format($minimumOrder, 2) ?>
+                                </span>.
+                            </p>
+                            <p class="text-xs text-pink-500 mt-1 italic">
+                                Great deals await when you checkout!
+                            </p>
+                        </div>
+                    <?php else: ?>
+                        <!-- Checkout Button -->
+                        <button
+                            onclick="window.location.href='<?= $storeUrl ?>checkout';"
+                            class="w-full py-3 mt-3 rounded-xl font-semibold text-white bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 shadow-lg transition">
+                            Checkout Now
+                        </button>
+                    <?php endif; ?>
+                </div>
+
+
 
 
                 <!-- Security Note -->

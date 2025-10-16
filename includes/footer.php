@@ -151,6 +151,11 @@
         <script src="<?= APP_URL ?>shop/javascripts/cart.js"></script>
 
 
-        <!-- Checkout.js -->
+        <!--This File For Checkout -->
         <script src="<?= APP_URL ?>assets/js/theme3/checkout.js"></script>
         <script src="<?= APP_URL ?>shop/javascripts/checkout.js"></script>
+
+
+        <!-- Datatable JS -->
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script src="<?= APP_URL ?>shop/javascripts/orders.js"></script>
