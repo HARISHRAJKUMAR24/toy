@@ -67,7 +67,19 @@
     $visitors = $product['visitors'] + 1;
 
     // Fetch variants
-    $basicVariants = readData("*", "seller_product_variants", "product_id='$product_id'");
+
+    // Check if advanced variants exist
+    $advancedVariantsCheck = readData("*", "seller_product_advanced_variants", "product_id='$product_id'");
+    if ($advancedVariantsCheck && $advancedVariantsCheck->rowCount() > 0) {
+        // Use advanced variants
+        $basicVariants = readData("*", "seller_product_advanced_variants", "product_id='$product_id'");
+        $isAdvanced = true;
+    } else {
+        // Fallback to basic variants
+        $basicVariants = readData("*", "seller_product_variants", "product_id='$product_id'");
+        $isAdvanced = false;
+    }
+
 
     // Cart variants
     $cartVariantsQuery = readData("other", "customer_cart", "customer_id='$cookie_id' AND product_id='$id'");
@@ -154,13 +166,29 @@
                                     <?= htmlspecialchars(!empty($variation) ? $variation : $name) ?>
                                 </button>
 
-                                <?php while ($bv = $basicVariants->fetch()):
-                                    $variantLabel = $bv['variation'] ?? $bv['variant'] ?? ($bv['name'] ?? "Variant " . $bv['id']);
+                                <?php while ($bv = $basicVariants->fetch()): ?>
+                                    <?php
                                     $variantId = $bv['id'];
-                                    $vStock = $variantStocksDisplay[$variantId];
                                     $isInCart = in_array($variantId, $cartVariants);
-                                ?>
-                                    <button class="variant-btn px-3 py-1 border rounded-lg text-sm hover:bg-pink-100 <?= $initialVariantId == $variantId ? 'ring-2 ring-pink-400' : '' ?>"
+
+                                    // Stock text
+                                    $vStock = ($bv['unlimited_stock'] ?? 0) == 1 ? "Unlimited stock" : (($bv['stock'] ?? 0) . " " . ($bv['unit_type'] ?? $unit_type));
+
+                                    if ($isAdvanced) {
+                                        // Advanced variant: size + color
+                                        $size = $bv['size'] ?? '';
+                                        $colorId = $bv['color'] ?? '';
+                                        $colorName = getData("color_name", "product_colors", "id='$colorId'");
+                                        $colorCode = getData("color_code", "product_colors", "id='$colorId'") ?? '#ccc';
+
+                                        $variantLabel = $size ? "Size: $size" : '';
+                                    } else {
+                                        // Basic variant
+                                        $variantLabel = $bv['variation'] ?? $bv['variant'] ?? ($bv['name'] ?? "Variant " . $variantId);
+                                        $colorCode = null; // No color for basic variant
+                                    }
+                                    ?>
+                                    <button class="variant-btn flex items-center gap-1 px-2 py-1 border rounded-lg hover:ring-2 hover:ring-pink-400 <?= $initialVariantId == $variantId ? 'ring-2 ring-pink-400' : '' ?>"
                                         data-variant-id="<?= $variantId ?>"
                                         data-variant-image="<?= UPLOADS_URL . ($bv['image'] ?? $image) ?>"
                                         data-variant-name="<?= htmlspecialchars($variantLabel) ?>"
@@ -168,11 +196,21 @@
                                         data-mrp="<?= $bv['mrp_price'] ?>"
                                         data-stock="<?= $vStock ?>"
                                         data-in-cart="<?= $isInCart ? 1 : 0 ?>">
-                                        <?= htmlspecialchars($variantLabel) ?>
+
+                                        <?php if ($colorCode): ?>
+                                            <!-- Color square -->
+                                            <span class="w-4 h-4 rounded border" style="background-color: <?= $colorCode ?>;"></span>
+                                        <?php endif; ?>
+
+                                        <?php if ($variantLabel): ?>
+                                            <span class="text-sm"><?= htmlspecialchars($variantLabel) ?></span>
+                                        <?php endif; ?>
                                     </button>
                                 <?php endwhile; ?>
                             </div>
                         <?php endif; ?>
+
+
 
                         <!-- Price -->
                         <div class="flex items-center gap-3 mb-6">
@@ -203,7 +241,7 @@
                             $btnClass = $disableAdd
                                 ? 'bg-gray-300 cursor-not-allowed'
                                 : 'bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700';
-                            $btnText = $inCartInitial ? 'Already in Cart' : ($isOutOfStock ? 'Out of Stock' : 'Add to Cart');
+                            $btnText = $inCartInitial ? 'Already in Cart' : ($isOutOfStock ? 'Sold Out' : 'Add to Cart');
                             ?>
                             <button id="addCartBtn" class="px-5 py-2 rounded-lg <?= $btnClass ?> text-white font-semibold shadow-lg transition transform hover:scale-105 addToCartBtn text-sm sm:text-base <?= $inCartInitial ? 'hidden' : '' ?>"
                                 data-id="<?= $id ?>"
@@ -309,6 +347,7 @@
                 btn.classList.add('ring-2', 'ring-pink-400');
 
                 const variantId = btn.dataset.variantId === 'main' ? '' : btn.dataset.variantId;
+                addBtn.dataset.variant = variantId; 
                 const variantImage = btn.dataset.variantImage;
                 const variantPrice = parseFloat(btn.dataset.price);
                 const variantMrp = parseFloat(btn.dataset.mrp);
@@ -356,7 +395,7 @@
                         viewBtn.classList.remove('hidden');
                     } else if (isOutOfStock) {
                         addBtn.disabled = true;
-                        addBtn.textContent = 'Out of Stock';
+                        addBtn.textContent = 'Sold Out';
                         addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
                         addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
                         viewBtn.classList.add('hidden');

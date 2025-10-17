@@ -54,22 +54,18 @@
         }
     </style>
     <style>
-        /* Applied coupon looks like "Apply" button */
         .appliedCoupon {
             background-color: #ec4899 !important;
-            /* pink-500 */
             color: #fff !important;
             border-color: #ec4899 !important;
             cursor: default;
         }
 
-        /* Glow dot effect */
         .appliedCoupon .glowDot {
             box-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
             transform: scale(1.2);
         }
 
-        /* Coupon hover cursor */
         .couponItem:hover {
             cursor: pointer;
             opacity: 0.9;
@@ -316,22 +312,42 @@
                     </div>
 
                     <div class="lg:w-2/5 flex flex-col gap-6">
-                        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5 shadow-sm">
-                            <label class="block mb-2 font-semibold text-gray-700">Have a promo code?</label>
-                            <div class="flex gap-2">
-                                <input type="text" id="couponCode" placeholder="Enter code" class="flex-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
-                                <button id="applyCoupon" type="button" class="px-4 py-2 bg-pink-500 text-white rounded-lg font-semibold hover:bg-pink-600 transition">Apply</button>
+                        <!-- Promo Code -->
+                        <div class="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
+                            <label class="block text-gray-700 mb-2 font-semibold">Have a promo code?</label>
+
+                            <!-- Input + Button Row -->
+                            <div class="flex items-center gap-2 flex-nowrap">
+                                <input type="text" id="couponCode" placeholder="Enter code"
+                                    class="flex-1 min-w-0 px-2.5 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
+                                <button id="applyCoupon" type="button"
+                                    class="px-4 py-2 bg-pink-500 text-white text-sm rounded-lg font-semibold hover:bg-pink-600 transition flex-shrink-0">
+                                    Apply
+                                </button>
                             </div>
+
+                            <!-- Heading below input -->
                             <p class="mt-2 text-sm text-gray-600 font-medium">Click a coupon below to automatically apply</p>
+
+                            <!-- Suggested Coupons -->
                             <div class="mt-3 flex flex-wrap gap-2 couponSuggestions">
                                 <?php
-                                $discounts = getDiscounts();
+                                $discounts = getDiscounts(); // fetch from backend
                                 foreach ($discounts as $discount):
                                 ?>
-                                    <button type="button" class="px-3 py-1 text-sm border border-primary-500 rounded-full hover:bg-primary-500 hover:text-white transition applyCouponBtn" data-code="<?= $discount['code'] ?>"><?= $discount['code'] ?></button>
-                                <?php endforeach ?>
+                                    <span class="flex items-center gap-1.5 bg-pink-50 text-pink-600 text-xs font-semibold px-3 py-1 rounded-full border border-pink-200 copyCoupon"
+                                        data-code="<?= htmlspecialchars($discount['code']) ?>">
+                                        <span class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.7)] animate-pulse glowDot"></span>
+                                        <?= htmlspecialchars($discount['code']) ?>
+                                    </span>
+                                <?php endforeach; ?>
                             </div>
                         </div>
+
+
+
+
+
 
                         <div class="p-5 bg-white rounded-2xl shadow-sm">
                             <label for="gst_number" class="block mb-2 font-medium text-gray-700">Display my GSTIN number on invoice</label>
@@ -614,14 +630,19 @@
                     </div>
                 </div>
             <?php } else { ?>
-                <div class="p-[30px] w-full">
-                    <img alt="" src="<?= APP_URL ?>/assets/img/empty-bag.svg" width="216" height="126" decoding="async" data-nimg="1" class="mx-auto mt-[38px]" loading="lazy" style="color: transparent">
-                    <h3 class="leading-[17px] text-[20px] font-[700] text-center mt-5">
+                <div class="p-[30px] w-full text-center">
+                    <img alt="" src="<?= APP_URL ?>assets/img/empty-bag.svg" width="216" height="126" class="mx-auto mt-[38px]">
+                    <h3 class="leading-[17px] text-[20px] font-[700] mt-5">
                         Your bag is empty
                     </h3>
-                    <p class="text-[#CCCCCC] leading-[25px] text-[16px] font-[400] text-center mt-3">
+                    <p class="text-[#CCCCCC] leading-[25px] text-[16px] font-[400] mt-3">
                         Looks like you haven't made your choice yet.
                     </p>
+
+                    <!-- Go to Shop button -->
+                    <a href="<?= $storeUrl ?>" class="mt-6 inline-flex items-center px-6 py-3 bg-primary-500 hover:bg-rose-600 text-white font-semibold rounded-full transition transform hover:scale-105 shadow-lg">
+                        <i class="fa-solid fa-shop mr-2"></i> Go to Shop
+                    </a>
                 </div>
             <?php } ?>
         </div>
