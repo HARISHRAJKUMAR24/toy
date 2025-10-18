@@ -1,3 +1,4 @@
+
 <?php include_once __DIR__ . "/includes/files_includes.php"; ?>
 
 <!DOCTYPE html>
@@ -264,7 +265,8 @@
                                 </a>
                             <?php endif; ?>
 
-                            <button id="reportBtn" class="report-btn px-3 py-2 sm:px-4 sm:py-2 md:px-4 md:py-2 rounded-lg bg-red-500 text-white shadow hover:bg-red-600 transition transform hover:scale-105 flex items-center justify-center text-sm sm:text-base">
+                            <!-- Report Button -->
+                            <button type="button" id="reportThisProduct" class="px-3 py-2 sm:px-4 sm:py-2 md:px-4 md:py-2 rounded-lg bg-red-500 text-white shadow hover:bg-red-600 transition transform hover:scale-105 flex items-center justify-center text-sm sm:text-base">
                                 <i class="fas fa-flag"></i>
                             </button>
                         </div>
@@ -275,26 +277,41 @@
         </div>
     </section>
 
-    <!-- Report Modal Start -->
-    <div id="reportModal" class="fixed inset-0 bg-black/50 flex items-center justify-center opacity-0 invisible transition-opacity duration-300 z-50 p-4">
+
+    <!-- Report Modal / Content -->
+    <div id="reportProductContent" class="fixed inset-0 bg-black/50 flex items-center justify-center opacity-0 invisible transition-opacity duration-300 z-50 p-4">
         <div class="bg-white rounded-xl w-full max-w-xs md:max-w-md lg:max-w-sm p-6 relative shadow-lg">
-            <button id="closeReportModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            <!-- Close button -->
+            <button id="closeReportProductContent" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+
             <div class="text-center mb-6">
                 <div class="text-4xl mb-2">😢</div>
                 <h2 class="text-2xl font-bold text-gray-800">Report This Product</h2>
                 <p class="text-gray-600 mt-1 text-sm">Please let us know why you want to report it</p>
             </div>
-            <form id="reportForm" class="flex flex-col gap-4">
-                <input type="text" placeholder="Your Name" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
-                <input type="email" placeholder="Your Email" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
-                <textarea placeholder="Reason" rows="3" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none resize-none"></textarea>
-                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-red-400 to-red-600 text-white font-semibold rounded-lg shadow hover:from-red-500 hover:to-red-700 transition transform hover:scale-105">
-                    Submit Report
+
+            <!-- Pre-built Form -->
+            <form id="reportForm" class="flex flex-col gap-4" method="post">
+                <input type="hidden" name="product_id" value="<?= $id ?>">
+
+                <input type="text" name="name" placeholder="Enter your name" required
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none"
+                    value="<?= customer('name') ?>">
+
+                <input type="email" name="email" placeholder="Enter your email" required
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none"
+                    value="<?= customer('email') ?>">
+
+                <textarea name="reason" placeholder="Enter reason" rows="3" required
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none resize-none"></textarea>
+
+                <button type="submit" class="px-6 py-3 bg-primary-500 text-white font-semibold rounded-lg shadow hover:bg-primary-600 transition transform hover:scale-105">
+                    Send
                 </button>
             </form>
         </div>
     </div>
-    <!-- Report Modal End -->
+
 
     <!-- Latest Product Section Start-->
     <section class="py-16 px-4 bg-gray-50">
@@ -347,7 +364,7 @@
                 btn.classList.add('ring-2', 'ring-pink-400');
 
                 const variantId = btn.dataset.variantId === 'main' ? '' : btn.dataset.variantId;
-                addBtn.dataset.variant = variantId; 
+                addBtn.dataset.variant = variantId;
                 const variantImage = btn.dataset.variantImage;
                 const variantPrice = parseFloat(btn.dataset.price);
                 const variantMrp = parseFloat(btn.dataset.mrp);
@@ -442,6 +459,81 @@
                     .then(res => res.text())
                     .then(() => location.reload())
                     .catch(err => console.error(err));
+            });
+        });
+
+        // Open modal
+        document.getElementById('reportThisProduct').addEventListener('click', function() {
+            const modal = document.getElementById('reportProductContent');
+            modal.classList.remove('opacity-0', 'invisible');
+            modal.classList.add('opacity-100', 'visible');
+        });
+
+        // Close modal
+        document.getElementById('closeReportProductContent').addEventListener('click', function() {
+            const modal = document.getElementById('reportProductContent');
+            modal.classList.add('opacity-0', 'invisible');
+            modal.classList.remove('opacity-100', 'visible');
+        });
+
+        // Close modal on click outside content
+        document.getElementById('reportProductContent').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('opacity-0', 'invisible');
+                this.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        // // AJAX Form Submission
+        // // Show/Hide report modal
+        // $("#reportThisProduct").on("click", function() {
+        //     $("#reportProductContent").fadeToggle();
+        // });
+
+        // AJAX Report Form Submission
+        $("#reportForm").on("submit", function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            $.ajax({
+                url: "shop/ajax/report-product.php",
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function(result) {
+                    let response = null;
+                    try {
+                        response = JSON.parse(result);
+                    } catch (err) {
+                        console.error("Invalid JSON:", result);
+                        return;
+                    }
+
+                    if (response) {
+                        if (response.success) {
+                            // Optional: small success toast or inline message
+                            $("#reportProductContent").fadeOut(); // close modal
+                            $("#reportForm")[0].reset(); // reset form
+                            $("<div class='bg-green-500 text-white px-4 py-2 rounded fixed top-5 right-5 z-50'>Report sent successfully!</div>")
+                                .appendTo("body")
+                                .delay(3000)
+                                .fadeOut(500, function() {
+                                    $(this).remove();
+                                });
+                        } else {
+                            $("<div class='bg-red-500 text-white px-4 py-2 rounded fixed top-5 right-5 z-50'>" + response.message + "</div>")
+                                .appendTo("body")
+                                .delay(3000)
+                                .fadeOut(500, function() {
+                                    $(this).remove();
+                                });
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                }
             });
         });
     </script>
