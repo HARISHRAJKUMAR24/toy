@@ -2,24 +2,36 @@
 // =====================
 // ADD TO CART FUNCTION
 // =====================
-function addToCartSection($id, $product_id, $cookie_id, $advancedVariant, $totalStocks, $variant = "", $currentQty = 0)
+function addToCartSection($id, $product_id, $cookie_id, $advancedVariant, $totalStocks, $variant = "", $currentQty = 0, $hasAdvancedVariants = false)
 {
     $html = '<div class="addToCartWrapper" data-id="' . $id . '" id="addCart-' . $product_id . '" data-variant="' . $variant . '">';
 
+    // Check if advanced variants exist - if yes, main product should be disabled
+    $isMainProductDisabled = $hasAdvancedVariants && $variant === "" && $advancedVariant === "";
+    
     // Check if item is in cart
     $cartData = getData("id", "customer_cart", "customer_id='$cookie_id' AND product_id='$id' AND other='$variant'");
 
     // Default Add button
     $isOutOfStock = (!$totalStocks && !getData("id", "seller_products", "id='$id' AND unlimited_stock=1"));
-    $btnClass = $isOutOfStock
-        ? 'bg-gray-100 text-pink-700 cursor-not-allowed'
-        : 'bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 hover:from-pink-300 hover:to-pink-400';
-    $btnText = $isOutOfStock ? 'Out of Stock' : 'Add';
+    
+    // If main product has advanced variants, disable it and show "Select Color and Size"
+    if ($isMainProductDisabled) {
+        $btnClass = 'bg-gray-300 cursor-not-allowed';
+        $btnText = 'Select Color and Size';
+        $disabled = 'disabled';
+    } else {
+        $btnClass = $isOutOfStock
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            : 'bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 hover:from-pink-300 hover:to-pink-400';
+        $btnText = $isOutOfStock ? 'Out of Stock' : 'Add';
+        $disabled = $isOutOfStock ? 'disabled' : '';
+    }
+    
     $html .= '<button type="button" class="addToCartBtn relative overflow-hidden px-4 py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center ' . $btnClass . '" 
-                    data-id="' . $id . '" data-variant="" data-advancedVariant="' . $advancedVariant . '" ' . ($isOutOfStock ? 'disabled' : '') . '>
+                    data-id="' . $id . '" data-variant="' . $variant . '" data-advancedVariant="' . $advancedVariant . '" ' . $disabled . '>
                     <span class="mgc_shopping_bag_3_line mr-1"></span> ' . $btnText . '
                   </button>';
-
 
     $html .= '</div>'; // Closing wrapper
     return $html;
@@ -45,7 +57,8 @@ function getProductHtml($id)
     $variation  = getData("variation", "seller_products", "id='$id'");
     $advancedVariant = "";
 
-
+    // Check if advanced variants exist
+    $hasAdvancedVariants = getData("id", "seller_product_advanced_variants", "product_id='$product_id'");
 
     // Check if product is in wishlist
     $inWishlist = false;
@@ -67,34 +80,14 @@ function getProductHtml($id)
         text-sm md:text-base ' . $btnText . '"></i>  
      </button>';
 
-
-
-
-    // Advanced Variant
-    if ($advVar = getData("id", "seller_product_advanced_variants", "product_id='$product_id'")) {
-        $advancedVariant = $advVar;
-        $price = getData("price", "seller_product_advanced_variants", "product_id='$product_id'") ?: $price;
-        $mrp_price = getData("mrp_price", "seller_product_advanced_variants", "product_id='$product_id'") ?: $mrp_price;
-        $image = getData("image", "seller_product_advanced_variants", "product_id='$product_id'") ?: $image;
-        $totalStocks = getData("stock", "seller_product_advanced_variants", "product_id='$product_id'") ?: $totalStocks;
-    }
+    // Check if basic variants exist
+    $hasBasicVariants = getData("id", "seller_product_variants", "product_id='$product_id'");
 
     // Rating stars
     $rating = getData("rating", "product_ratings", "product_id='$id'") ?: 0;
     $stars = '';
     for ($i = 1; $i <= 5; $i++) {
         $stars .= $i <= $rating ? '<span class="mgc_star_fill text-yellow-400"></span>' : '<span class="mgc_star_line text-gray-300"></span>';
-    }
-
-    // Fetch variant stocks
-    $variantData = readData("*", "seller_product_variants", "product_id='$product_id'");
-    $variantStocks = [];
-    while ($row = $variantData->fetch(PDO::FETCH_ASSOC)) {
-        if (($row['unlimited_stock'] ?? 0) == 1) {
-            $variantStocks[$row['id']] = "Unlimited stock";
-        } else {
-            $variantStocks[$row['id']] = (int)$row['stock'];
-        }
     }
 
     // Start HTML
@@ -109,28 +102,64 @@ function getProductHtml($id)
                 <h3 class="text-base sm:text-lg font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1">' . htmlspecialchars($name) . '</h3>
                 <div class="flex items-center mb-3">' . $stars . '</div>';
 
-    // Variant dropdown
-    if ($variantStocks) {
+    // Variant dropdown - Show if any variants exist
+    if ($hasAdvancedVariants || $hasBasicVariants) {
         $html .= '<div class="mb-3">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Variant:</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Option:</label>
                     <div class="relative">
                         <select class="variantSelect block w-full appearance-none border border-gray-300 rounded-lg bg-white px-4 py-2 pr-10 text-gray-700 text-sm">
-                            <option value="" selected disabled>Select</option>
-                            <option value="main" data-image="' . UPLOADS_URL . $image . '" data-price="' . $price . '" data-mrp="' . $mrp_price . '" data-stock="' . $totalStocks . '" data-unlimited="' . (getData("unlimited_stock", "seller_products", "id='$id'") ?? 0) . '">'
-            . htmlspecialchars(!empty($variation) ? $variation : $name) . '
-                            </option>';
-        foreach ($variantStocks as $vid => $stock) {
-            $vQuery = readData("*", "seller_product_variants", "id='$vid'");
-            $vData = $vQuery->fetch(PDO::FETCH_ASSOC);
-            if (!$vData) continue;
+                            <option value="" selected disabled>Select Option</option>';
 
-            $html .= '<option value="' . $vid . '" 
-        data-image="' . UPLOADS_URL . ($vData['image'] ?? $image) . '" 
-        data-price="' . $vData['price'] . '" 
-        data-mrp="' . $vData['mrp_price'] . '" 
-        data-stock="' . $stock . '" 
-        data-unlimited="' . ($vData['unlimited_stock'] ?? 0) . '">'
-                . htmlspecialchars($vData['variation']) . '</option>';
+        // Only show main product option if NO advanced variants exist (only basic variants)
+        if (!$hasAdvancedVariants) {
+            $html .= '<option value="main" data-image="' . UPLOADS_URL . $image . '" data-price="' . $price . '" data-mrp="' . $mrp_price . '" data-stock="' . $totalStocks . '" data-unlimited="' . (getData("unlimited_stock", "seller_products", "id='$id'") ?? 0) . '" data-variant-type="main">'
+                . htmlspecialchars(!empty($variation) ? $variation : $name) . '
+                            </option>';
+        }
+
+        // Add basic variants
+        if ($hasBasicVariants) {
+            $basicVariants = readData("*", "seller_product_variants", "product_id='$product_id'");
+            while ($bv = $basicVariants->fetch(PDO::FETCH_ASSOC)) {
+                $stock = ($bv['unlimited_stock'] ?? 0) == 1 ? "Unlimited" : (int)($bv['stock'] ?? 0);
+                $html .= '<option value="' . $bv['id'] . '" 
+                    data-image="' . UPLOADS_URL . ($bv['image'] ?? $image) . '" 
+                    data-price="' . $bv['price'] . '" 
+                    data-mrp="' . $bv['mrp_price'] . '" 
+                    data-stock="' . $stock . '" 
+                    data-unlimited="' . ($bv['unlimited_stock'] ?? 0) . '" 
+                    data-variant-type="basic">
+                    ' . htmlspecialchars($bv['variation'] ?? $bv['name'] ?? "Variant") . '
+                </option>';
+            }
+        }
+
+        // Add advanced variants
+        if ($hasAdvancedVariants) {
+            $advancedVariants = readData("*", "seller_product_advanced_variants", "product_id='$product_id'");
+            while ($av = $advancedVariants->fetch(PDO::FETCH_ASSOC)) {
+                $size = $av['size'] ?? '';
+                $colorId = $av['color'] ?? '';
+                $colorName = getData("color_name", "product_colors", "id='$colorId'") ?? '';
+                $colorCode = getData("color_code", "product_colors", "id='$colorId'") ?? '#ccc';
+                
+                $variantLabel = '';
+                if ($size) $variantLabel .= "Size: $size";
+                if ($colorName) $variantLabel .= ($variantLabel ? " - " : "") . "Color: $colorName";
+                if (!$variantLabel) $variantLabel = "Variant";
+                
+                $stock = ($av['unlimited_stock'] ?? 0) == 1 ? "Unlimited" : (int)($av['stock'] ?? 0);
+                
+                $html .= '<option value="' . $av['id'] . '" 
+                    data-image="' . UPLOADS_URL . ($av['image'] ?? $image) . '" 
+                    data-price="' . $av['price'] . '" 
+                    data-mrp="' . $av['mrp_price'] . '" 
+                    data-stock="' . $stock . '" 
+                    data-unlimited="' . ($av['unlimited_stock'] ?? 0) . '" 
+                    data-variant-type="advanced">
+                    ' . htmlspecialchars($variantLabel) . '
+                </option>';
+            }
         }
 
         $html .= '</select>
@@ -149,7 +178,8 @@ function getProductHtml($id)
         (($mrp_price && $mrp_price > $price) ? '<span class="productMrp text-sm text-gray-400 line-through">' . currencyToSymbol($storeCurrency) . number_format($mrp_price) . '</span>' : '') .
         '</div>';
 
-    $html .= addToCartSection($id, $product_id, $cookie_id, $advancedVariant, $totalStocks, $variation);
+    // FIXED: Pass empty variant for main product, not $variation
+    $html .= addToCartSection($id, $product_id, $cookie_id, "", $totalStocks, "", 0, $hasAdvancedVariants);
     $html .= '</div></div></div>';
 
     return $html;
@@ -171,6 +201,8 @@ function getProductHtml($id)
                 const mrp = selected.dataset.mrp;
                 const stock = Number(selected.dataset.stock) || 0;
                 const unlimited = Number(selected.dataset.unlimited) || 0;
+                const variantType = selected.dataset.variantType;
+                const variantValue = selected.value;
 
                 const imageEl = card.querySelector('.productImage');
                 const priceEl = card.querySelector('.productPrice');
@@ -186,12 +218,24 @@ function getProductHtml($id)
                 // Handle Add button
                 if (addBtn) {
                     const isOutOfStock = stock <= 0 && unlimited !== 1;
+                    
+                    // Set the correct data attributes based on variant type
+                    if (variantType === 'main') {
+                        addBtn.dataset.variant = "";
+                        addBtn.dataset.advancedVariant = "";
+                    } else if (variantType === 'advanced') {
+                        addBtn.dataset.advancedVariant = variantValue;
+                        addBtn.dataset.variant = "";
+                    } else {
+                        addBtn.dataset.variant = variantValue;
+                        addBtn.dataset.advancedVariant = "";
+                    }
+                    
                     addBtn.disabled = isOutOfStock;
-                    addBtn.dataset.variant = selected.value === "main" ? "" : selected.value;
                     addBtn.textContent = isOutOfStock ? "Out of Stock" : "Add";
 
                     // Reset styles
-                    addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-00', 'bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
+                    addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-400', 'bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700', 'bg-gray-300');
 
                     // Apply styles
                     if (isOutOfStock) {
@@ -238,10 +282,11 @@ function getProductHtml($id)
                         const isOutOfStock = stock <= 0 && unlimited !== 1;
                         addBtn.disabled = isOutOfStock;
                         addBtn.dataset.variant = "";
+                        addBtn.dataset.advancedVariant = "";
                         addBtn.textContent = isOutOfStock ? "Out of Stock" : "Add";
 
                         // Reset and apply button classes
-                        addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-00', 'bg-gradient-to-r', 'from-pink-400', 'to-pink-600');
+                        addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-400', 'bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700', 'bg-gray-300');
                         if (isOutOfStock) {
                             addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
                         } else {
