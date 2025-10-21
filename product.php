@@ -1,4 +1,3 @@
-
 <?php include_once __DIR__ . "/includes/files_includes.php"; ?>
 
 <!DOCTYPE html>
@@ -81,13 +80,29 @@
         $isAdvanced = false;
     }
 
+    // Cart variants - Fix to track both main and variant products
+    $cartVariantsQuery = $db->prepare("SELECT other, advanced_variant FROM customer_cart WHERE customer_id=? AND product_id=?");
+    $cartVariantsQuery->execute([$cookie_id, $id]);
+    $cartItems = $cartVariantsQuery->fetchAll(PDO::FETCH_ASSOC);
 
-    // Cart variants
-    $cartVariantsQuery = readData("other", "customer_cart", "customer_id='$cookie_id' AND product_id='$id'");
-    $cartVariants = $cartVariantsQuery->fetchAll(PDO::FETCH_COLUMN);
-    $cartVariants = array_map(fn($v) => ($v == "" || $v === null) ? 'main' : $v, $cartVariants);
+    $cartVariants = [];
+    foreach ($cartItems as $item) {
+        if (!empty($item['advanced_variant'])) {
+            $cartVariants[] = $item['advanced_variant'];
+        } else if (!empty($item['other'])) {
+            $cartVariants[] = $item['other'];
+        } else {
+            $cartVariants[] = 'main';
+        }
+    }
 
-    $inCartInitial = $initialVariantId === null ? in_array('main', $cartVariants) : in_array($initialVariantId, $cartVariants);
+    // Determine if initial variant is in cart
+    $inCartInitial = false;
+    if ($initialVariantId === null) {
+        $inCartInitial = in_array('main', $cartVariants);
+    } else {
+        $inCartInitial = in_array($initialVariantId, $cartVariants);
+    }
 
     // Stock for main product
     if ($unlimited_stock == 1) {
@@ -211,7 +226,22 @@
                             </div>
                         <?php endif; ?>
 
-
+                        <div class="mt-2">
+                            <div id="productRatingUI" class="Rating flex items-center gap-2">
+                                <?php
+                                $ratingData = readData("AVG(rating) as avg_rating, COUNT(*) as total_ratings", "product_ratings", "product_id='$id'");
+                                $ratingRow = $ratingData->fetch();
+                                $avgRating = round($ratingRow['avg_rating'] ?? 0, 1);
+                                $totalRatings = $ratingRow['total_ratings'] ?? 0;
+                                ?>
+                                <div class="flex gap-1">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <span class="star cursor-pointer text-xl <?= $i <= round($avgRating) ? 'text-yellow-400' : 'text-gray-400' ?>" data-value="<?= $i ?>">&#9733;</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span id="ratingInfo" class="text-sm text-gray-600">(<?= $avgRating ?> / 5, <?= $totalRatings ?> ratings)</span>
+                            </div>
+                        </div>
 
                         <!-- Price -->
                         <div class="flex items-center gap-3 mb-6">
@@ -229,10 +259,7 @@
                         <p class="text-xs text-gray-400 mt-1">
                             <span class="text-red-500 animate-pulse [animation-duration:2.5s]">❤️</span>
                             Viewed <?= (int)$visitors ?> times
-
                         </p>
-
-
 
                         <!-- Add to Cart -->
                         <div class="flex flex-wrap gap-4 mb-6 items-center mt-4">
@@ -277,7 +304,6 @@
         </div>
     </section>
 
-
     <!-- Report Modal / Content -->
     <div id="reportProductContent" class="fixed inset-0 bg-black/50 flex items-center justify-center opacity-0 invisible transition-opacity duration-300 z-50 p-4">
         <div class="bg-white rounded-xl w-full max-w-xs md:max-w-md lg:max-w-sm p-6 relative shadow-lg">
@@ -312,10 +338,9 @@
         </div>
     </div>
 
-
     <!-- Latest Product Section Start-->
-    <section class="py-16 px-4 bg-gray-50">
-        <div class="container mx-auto">
+    <section class="py-16 bg-gray-50 md:px-4">
+        <div class="container mx-auto md:max-w-none max-w-6xl px-4 md:px-20">
 
             <!-- Section Heading -->
             <div class="text-center mb-8">
@@ -345,263 +370,417 @@
     <!--Footer File Includes that file has all JS Files includes links-->
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const variantButtons = document.querySelectorAll('.variant-btn');
-    const mainImage = document.getElementById('mainProductImage');
-    const priceEl = document.querySelector('.productPrice');
-    const mrpEl = document.querySelector('.productMrp');
-    const stockEl = document.getElementById('stockDisplay');
-    const addBtn = document.getElementById('addToCartBtn');
-    const viewBtn = document.getElementById('viewCartBtn');
-    const variantNameEl = document.getElementById('variantName');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const variantButtons = document.querySelectorAll('.variant-btn');
+            const mainImage = document.getElementById('mainProductImage');
+            const priceEl = document.querySelector('.productPrice');
+            const mrpEl = document.querySelector('.productMrp');
+            const stockEl = document.getElementById('stockDisplay');
+            const addBtn = document.getElementById('addToCartBtn');
+            const viewBtn = document.getElementById('viewCartBtn');
+            const variantNameEl = document.getElementById('variantName');
 
-    const productKey = "selectedVariant_<?= $id ?>";
-    const isAdvanced = <?= $isAdvanced ? 'true' : 'false' ?>;
+            const productKey = "selectedVariant_<?= $id ?>";
+            const isAdvanced = <?= $isAdvanced ? 'true' : 'false' ?>;
 
-    // Store current selected variant info
-    let currentVariantId = '';
-    let currentVariantType = ''; // 'main', 'basic', or 'advanced'
+            // Store current selected variant info
+            let currentVariantId = '';
+            let currentVariantType = ''; // 'main', 'basic', or 'advanced'
 
-    function selectVariant(btn) {
-        // Highlight selected variant
-        variantButtons.forEach(b => b.classList.remove('ring-2', 'ring-pink-400'));
-        btn.classList.add('ring-2', 'ring-pink-400');
+            function selectVariant(btn) {
+                // Highlight selected variant
+                variantButtons.forEach(b => b.classList.remove('ring-2', 'ring-pink-400'));
+                btn.classList.add('ring-2', 'ring-pink-400');
 
-        const variantId = btn.dataset.variantId;
-        const variantImage = btn.dataset.variantImage;
-        const variantPrice = parseFloat(btn.dataset.price);
-        const variantMrp = parseFloat(btn.dataset.mrp);
-        const stockText = btn.dataset.stock;
-        const inCart = btn.dataset.inCart == 1;
-        const variantName = btn.dataset.variantName;
+                const variantId = btn.dataset.variantId;
+                const variantImage = btn.dataset.variantImage;
+                const variantPrice = parseFloat(btn.dataset.price);
+                const variantMrp = parseFloat(btn.dataset.mrp);
+                const stockText = btn.dataset.stock;
+                const inCart = btn.dataset.inCart == 1;
+                const variantName = btn.dataset.variantName;
 
-        // Update current variant info
-        currentVariantId = variantId;
-        if (variantId === 'main') {
-            currentVariantType = 'main';
-        } else {
-            currentVariantType = isAdvanced ? 'advanced' : 'basic';
-        }
+                // Update current variant info
+                currentVariantId = variantId;
+                if (variantId === 'main') {
+                    currentVariantType = 'main';
+                } else {
+                    currentVariantType = isAdvanced ? 'advanced' : 'basic';
+                }
 
-        // Update image
-        if (variantImage) mainImage.src = variantImage;
+                // Update image
+                if (variantImage) mainImage.src = variantImage;
 
-        // Update price
-        if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + variantPrice.toLocaleString();
-        if (mrpEl) mrpEl.textContent = (variantMrp && variantMrp > variantPrice) ? "<?= currencyToSymbol($storeCurrency) ?>" + variantMrp.toLocaleString() : '';
+                // Update price
+                if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + variantPrice.toLocaleString();
+                if (mrpEl) mrpEl.textContent = (variantMrp && variantMrp > variantPrice) ? "<?= currencyToSymbol($storeCurrency) ?>" + variantMrp.toLocaleString() : '';
 
-        // Update stock
-        if (stockEl) {
-            stockEl.textContent = stockText;
+                // Update stock
+                if (stockEl) {
+                    stockEl.textContent = stockText;
 
-            // Determine numeric stock
-            let stockNumber = parseInt(stockText);
-            if (stockText.toLowerCase().includes('unlimited')) stockNumber = Infinity;
+                    // Determine numeric stock
+                    let stockNumber = parseInt(stockText);
+                    if (stockText.toLowerCase().includes('unlimited')) stockNumber = Infinity;
 
-            if (stockNumber > 0) {
-                stockEl.classList.remove('text-red-500');
-                stockEl.classList.add('text-green-500');
-            } else {
-                stockEl.classList.remove('text-green-500');
-                stockEl.classList.add('text-red-500');
+                    if (stockNumber > 0) {
+                        stockEl.classList.remove('text-red-500');
+                        stockEl.classList.add('text-green-500');
+                    } else {
+                        stockEl.classList.remove('text-green-500');
+                        stockEl.classList.add('text-red-500');
+                    }
+                }
+
+                // Update variant name
+                if (variantNameEl) variantNameEl.textContent = variantName;
+
+                // Update Add to Cart / Out of Stock button
+                if (addBtn && viewBtn) {
+                    // Clear all variant data first
+                    addBtn.dataset.variant = '';
+                    addBtn.dataset.advancedVariant = '';
+
+                    // Set the correct data attributes based on variant type
+                    if (currentVariantType === 'main') {
+                        // Main product - no variants
+                        addBtn.dataset.variant = '';
+                        addBtn.dataset.advancedVariant = '';
+                    } else if (currentVariantType === 'advanced') {
+                        // Advanced variant
+                        addBtn.dataset.advancedVariant = currentVariantId;
+                        addBtn.dataset.variant = '';
+                    } else {
+                        // Basic variant
+                        addBtn.dataset.variant = currentVariantId;
+                        addBtn.dataset.advancedVariant = '';
+                    }
+
+                    let stockNumber = parseInt(stockText);
+                    if (stockText.toLowerCase().includes('unlimited')) stockNumber = Infinity;
+                    const isOutOfStock = stockNumber < 1;
+
+                    // Check if main variant is selected but advanced variants exist
+                    const isMainWithAdvanced = (currentVariantType === 'main' && isAdvanced);
+
+                    if (inCart) {
+                        addBtn.classList.add('hidden');
+                        viewBtn.classList.remove('hidden');
+                        addBtn.disabled = true;
+                    } else if (isMainWithAdvanced) {
+                        // Disable add to cart and show "Select Color and Size" message
+                        addBtn.disabled = true;
+                        addBtn.textContent = 'Select Color and Size';
+                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
+                        addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
+                        viewBtn.classList.add('hidden');
+                        addBtn.classList.remove('hidden');
+                    } else if (isOutOfStock) {
+                        addBtn.disabled = true;
+                        addBtn.textContent = 'Sold Out';
+                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
+                        addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
+                        viewBtn.classList.add('hidden');
+                        addBtn.classList.remove('hidden');
+                    } else {
+                        addBtn.disabled = false;
+                        addBtn.textContent = 'Add to Cart';
+                        addBtn.classList.add('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
+                        addBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                        viewBtn.classList.add('hidden');
+                        addBtn.classList.remove('hidden');
+                    }
+                }
+
+                // Save selected variant
+                localStorage.setItem(productKey, btn.dataset.variantId);
             }
-        }
 
-        // Update variant name
-        if (variantNameEl) variantNameEl.textContent = variantName;
-
-        // Update Add to Cart / Out of Stock button
-        if (addBtn && viewBtn) {
-            // Clear all variant data first
-            addBtn.dataset.variant = '';
-            addBtn.dataset.advancedVariant = '';
+            // Load saved variant - Check URL parameter first, then localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlVariant = urlParams.get('variation');
             
-            // Set the correct data attributes based on variant type
-            if (currentVariantType === 'main') {
-                // Main product - no variants
-                addBtn.dataset.variant = '';
-                addBtn.dataset.advancedVariant = '';
-            } else if (currentVariantType === 'advanced') {
-                // Advanced variant
-                addBtn.dataset.advancedVariant = currentVariantId;
-                addBtn.dataset.variant = '';
-            } else {
-                // Basic variant
-                addBtn.dataset.variant = currentVariantId;
-                addBtn.dataset.advancedVariant = '';
+            let savedVariantId = null;
+            
+            // Priority 1: URL parameter
+            if (urlVariant && urlVariant !== 'main') {
+                savedVariantId = urlVariant;
+            } 
+            // Priority 2: localStorage
+            else {
+                savedVariantId = localStorage.getItem(productKey);
             }
 
-            let stockNumber = parseInt(stockText);
-            if (stockText.toLowerCase().includes('unlimited')) stockNumber = Infinity;
-            const isOutOfStock = stockNumber < 1;
-
-            // Check if main variant is selected but advanced variants exist
-            const isMainWithAdvanced = (currentVariantType === 'main' && isAdvanced);
-
-            if (inCart) {
-                addBtn.classList.add('hidden');
-                viewBtn.classList.remove('hidden');
-                addBtn.disabled = true;
-            } else if (isMainWithAdvanced) {
-                // Disable add to cart and show "Select Color and Size" message
-                addBtn.disabled = true;
-                addBtn.textContent = 'Select Color and Size';
-                addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
-                addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
-                viewBtn.classList.add('hidden');
-                addBtn.classList.remove('hidden');
-            } else if (isOutOfStock) {
-                addBtn.disabled = true;
-                addBtn.textContent = 'Sold Out';
-                addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
-                addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
-                viewBtn.classList.add('hidden');
-                addBtn.classList.remove('hidden');
-            } else {
-                addBtn.disabled = false;
-                addBtn.textContent = 'Add to Cart';
-                addBtn.classList.add('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
-                addBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
-                viewBtn.classList.add('hidden');
-                addBtn.classList.remove('hidden');
-            }
-        }
-
-        // Save selected variant
-        localStorage.setItem(productKey, btn.dataset.variantId);
-    }
-
-    // Load saved variant
-    const savedVariantId = localStorage.getItem(productKey);
-    if (savedVariantId) {
-        variantButtons.forEach(btn => {
-            if (btn.dataset.variantId === savedVariantId) selectVariant(btn);
-        });
-    } else {
-        // Select the first variant button (main product)
-        if (variantButtons.length > 0) {
-            selectVariant(variantButtons[0]);
-        }
-    }
-
-    // Add click event to variant buttons
-    variantButtons.forEach(btn => btn.addEventListener('click', () => selectVariant(btn)));
-
-    // Add to cart - Use the same approach as common-cart.js
-    addBtn.addEventListener('click', function() {
-        // Don't proceed if button is disabled (for main variant with advanced variants)
-        if (this.disabled) {
-            return;
-        }
-
-        const element = $(this);
-        const product_id = element.data("id");
-        
-        // Get variant data based on current selection
-        let variant = '';
-        let advanced_variant = '';
-        
-        if (currentVariantType === 'main') {
-            variant = '';
-            advanced_variant = '';
-        } else if (currentVariantType === 'advanced') {
-            variant = '';
-            advanced_variant = currentVariantId;
-        } else {
-            variant = currentVariantId;
-            advanced_variant = '';
-        }
-
-        console.log('Adding to cart - Product:', product_id, 'Variant Type:', currentVariantType, 'Variant ID:', currentVariantId, 'Variant:', variant, 'Advanced Variant:', advanced_variant);
-
-        // Show loading state
-        const originalText = this.innerHTML;
-        const originalState = this.disabled;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
-        this.disabled = true;
-
-        $.ajax({
-            url: "shop/ajax/add-to-cart.php",
-            type: "POST",
-            data: { 
-                product_id: product_id, 
-                variant: variant, 
-                advanced_variant: advanced_variant 
-            },
-            success: function(result) {
-                console.log('addToCartBtn result:', result);
+            if (savedVariantId) {
+                let found = false;
+                variantButtons.forEach(btn => {
+                    if (btn.dataset.variantId === savedVariantId) {
+                        selectVariant(btn);
+                        found = true;
+                    }
+                });
                 
-                // Reset button state
-                addBtn.innerHTML = originalText;
-                addBtn.disabled = originalState;
+                // If saved variant not found, select first available
+                if (!found && variantButtons.length > 0) {
+                    selectVariant(variantButtons[0]);
+                }
+            } else {
+                // Select the first variant button (main product)
+                if (variantButtons.length > 0) {
+                    selectVariant(variantButtons[0]);
+                }
+            }
 
-                try {
-                    const response = result && JSON.parse(result);
+            // Add click event to variant buttons
+            variantButtons.forEach(btn => btn.addEventListener('click', () => selectVariant(btn)));
+
+            // Add to cart - Use the same approach as common-cart.js
+            addBtn.addEventListener('click', function() {
+                // Don't proceed if button is disabled (for main variant with advanced variants)
+                if (this.disabled) {
+                    return;
+                }
+
+                const element = $(this);
+                const product_id = element.data("id");
+
+                // Get variant data based on current selection
+                let variant = '';
+                let advanced_variant = '';
+
+                if (currentVariantType === 'main') {
+                    variant = '';
+                    advanced_variant = '';
+                } else if (currentVariantType === 'advanced') {
+                    variant = '';
+                    advanced_variant = currentVariantId;
+                } else {
+                    variant = currentVariantId;
+                    advanced_variant = '';
+                }
+
+                console.log('Adding to cart - Product:', product_id, 'Variant Type:', currentVariantType, 'Variant ID:', currentVariantId, 'Variant:', variant, 'Advanced Variant:', advanced_variant);
+
+                // Show loading state
+                const originalText = this.innerHTML;
+                const originalState = this.disabled;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+                this.disabled = true;
+
+                $.ajax({
+                    url: "shop/ajax/add-to-cart.php",
+                    type: "POST",
+                    data: {
+                        product_id: product_id,
+                        variant: variant,
+                        advanced_variant: advanced_variant
+                    },
+                    success: function(result) {
+                        console.log('addToCartBtn result:', result);
+
+                        // Reset button state
+                        addBtn.innerHTML = originalText;
+                        addBtn.disabled = originalState;
+
+                        try {
+                            const response = result && JSON.parse(result);
+
+                            if (response) {
+                                if (response.success) {
+                                    // Update UI to show "View Cart" button
+                                    addBtn.classList.add('hidden');
+                                    viewBtn.classList.remove('hidden');
+
+                                    // Update the current variant button to show it's in cart
+                                    variantButtons.forEach(btn => {
+                                        if (btn.dataset.variantId === currentVariantId) {
+                                            btn.dataset.inCart = '1';
+                                        }
+                                    });
+
+                                    // Show success message
+                                    if (typeof toastr !== 'undefined') {
+                                        toastr.success(response.message);
+                                    } else {
+                                        alert(response.message);
+                                    }
+
+                                    // Update cart counters
+                                    if (typeof getProductCountAndPrice === 'function') {
+                                        getProductCountAndPrice();
+                                    }
+                                    if (typeof getCartData === 'function') {
+                                        getCartData();
+                                    }
+                                } else {
+                                    if (typeof toastr !== 'undefined') {
+                                        toastr.error(response.message);
+                                    } else {
+                                        alert(response.message);
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            console.error('Error parsing response:', e);
+                            if (typeof toastr !== 'undefined') {
+                                toastr.error('Error adding to cart');
+                            } else {
+                                alert('Error adding to cart');
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                        // Reset button state
+                        addBtn.innerHTML = originalText;
+                        addBtn.disabled = originalState;
+
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error('Network error occurred');
+                        } else {
+                            alert('Network error occurred');
+                        }
+                    }
+                });
+            });
+
+            // Function to check cart status for all variants on page load
+            function checkCartStatusForVariants() {
+                $.ajax({
+                    url: "shop/ajax/get-cart-variants.php",
+                    type: "POST",
+                    data: {
+                        product_id: <?= $id ?>
+                    },
+                    success: function(result) {
+                        try {
+                            const response = JSON.parse(result);
+                            if (response.success && response.cartItems) {
+                                // Update variant buttons based on cart status
+                                variantButtons.forEach(btn => {
+                                    const variantId = btn.dataset.variantId;
+                                    const isInCart = response.cartItems.includes(variantId) || 
+                                                   (variantId === 'main' && response.cartItems.includes('main'));
+                                    
+                                    btn.dataset.inCart = isInCart ? '1' : '0';
+                                    
+                                    // If current variant is in cart, update UI
+                                    if (variantId === currentVariantId && isInCart) {
+                                        addBtn.classList.add('hidden');
+                                        viewBtn.classList.remove('hidden');
+                                        addBtn.disabled = true;
+                                    }
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error parsing cart variants:', e);
+                        }
+                    }
+                });
+            }
+
+            // Check cart status on page load
+            checkCartStatusForVariants();
+        });
+
+        $(document).ready(function() {
+            const productId = <?= $id ?>;
+            const stars = $('#productRatingUI .star');
+            const ratingInfo = $('#ratingInfo');
+
+            stars.on('click', function() {
+                const rating = $(this).data('value');
+
+                // Update UI immediately
+                stars.each(function(idx) {
+                    $(this).toggleClass('text-yellow-400', idx < rating);
+                    $(this).toggleClass('text-gray-400', idx >= rating);
+                });
+
+                // Auto-post rating using pre-built function
+                $.post("shop/ajax/rate-product.php", {
+                    product_id: productId,
+                    rating: rating
+                }, function(res) {
+                    if (res.success) {
+                        ratingInfo.text(` ${res.avg_rating} / 5, ${res.total_ratings} ratings`);
+                    } else {
+                        alert(res.message);
+                    }
+                }, 'json');
+            });
+        });
+
+        // Open modal
+        document.getElementById('reportThisProduct').addEventListener('click', function() {
+            const modal = document.getElementById('reportProductContent');
+            modal.classList.remove('opacity-0', 'invisible');
+            modal.classList.add('opacity-100', 'visible');
+        });
+
+        // Close modal
+        document.getElementById('closeReportProductContent').addEventListener('click', function() {
+            const modal = document.getElementById('reportProductContent');
+            modal.classList.add('opacity-0', 'invisible');
+            modal.classList.remove('opacity-100', 'visible');
+        });
+
+        // Close modal on click outside content
+        document.getElementById('reportProductContent').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('opacity-0', 'invisible');
+                this.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        // AJAX Report Form Submission
+        $("#reportForm").on("submit", function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            $.ajax({
+                url: "shop/ajax/report-product.php",
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function(result) {
+                    let response = null;
+                    try {
+                        response = JSON.parse(result);
+                    } catch (err) {
+                        console.error("Invalid JSON:", result);
+                        return;
+                    }
 
                     if (response) {
                         if (response.success) {
-                            // Update UI to show "View Cart" button
-                            addBtn.classList.add('hidden');
-                            viewBtn.classList.remove('hidden');
-                            
-                            // Update the current variant button to show it's in cart
-                            variantButtons.forEach(btn => {
-                                if (btn.dataset.variantId === currentVariantId) {
-                                    btn.dataset.inCart = '1';
-                                }
-                            });
-                            
-                            // Show success message
-                            if (typeof toastr !== 'undefined') {
-                                toastr.success(response.message);
-                            } else {
-                                alert(response.message);
-                            }
-                            
-                            // Update cart counters
-                            if (typeof getProductCountAndPrice === 'function') {
-                                getProductCountAndPrice();
-                            }
-                            if (typeof getCartData === 'function') {
-                                getCartData();
-                            }
+                            // Optional: small success toast or inline message
+                            $("#reportProductContent").fadeOut(); // close modal
+                            $("#reportForm")[0].reset(); // reset form
+                            $("<div class='bg-green-500 text-white px-4 py-2 rounded fixed top-5 right-5 z-50'>Report sent successfully!</div>")
+                                .appendTo("body")
+                                .delay(3000)
+                                .fadeOut(500, function() {
+                                    $(this).remove();
+                                });
                         } else {
-                            if (typeof toastr !== 'undefined') {
-                                toastr.error(response.message);
-                            } else {
-                                alert(response.message);
-                            }
+                            $("<div class='bg-red-500 text-white px-4 py-2 rounded fixed top-5 right-5 z-50'>" + response.message + "</div>")
+                                .appendTo("body")
+                                .delay(3000)
+                                .fadeOut(500, function() {
+                                    $(this).remove();
+                                });
                         }
                     }
-                } catch (e) {
-                    console.error('Error parsing response:', e);
-                    if (typeof toastr !== 'undefined') {
-                        toastr.error('Error adding to cart');
-                    } else {
-                        alert('Error adding to cart');
-                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", error);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX Error:', error);
-                // Reset button state
-                addBtn.innerHTML = originalText;
-                addBtn.disabled = originalState;
-                
-                if (typeof toastr !== 'undefined') {
-                    toastr.error('Network error occurred');
-                } else {
-                    alert('Network error occurred');
-                }
-            }
+            });
         });
-    });
-});
-
-// The rest of your code remains the same...
-</script>
-
+    </script>
 
 </body>
 
