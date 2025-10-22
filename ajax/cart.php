@@ -49,8 +49,54 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
 }
 ?>
 <div class="max-w-6xl mx-auto px-3 sm:px-4">
+
     <!-- Your Cart Section Heading -->
-    <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">Your Cart</h2>
+    <div class="relative flex items-center justify-center mb-4 sm:mb-6">
+
+        <!-- Animated GIF - clickable -->
+        <a href="<?= $storeUrl ?>shop-all" class="absolute left-2 lg:hidden animate-slide-in">
+            <img
+                src="<?= APP_URL ?>assets/image/carticon.gif"
+                alt="Cart Animation"
+                class="w-20 h-20 sm:w-24 sm:h-24">
+        </a>
+
+        <!-- Heading -->
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 text-center">
+            Your Cart
+        </h2>
+    </div>
+
+    <style>
+        @keyframes slide-in {
+            0% {
+                transform: translateX(-120%);
+                /* reduced from -150% */
+                opacity: 0;
+            }
+
+            20% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            80% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(-120%);
+                /* match start */
+                opacity: 0;
+            }
+        }
+
+        .animate-slide-in {
+            animation: slide-in 8s ease-in-out infinite;
+        }
+    </style>
+
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         <!-- Left Side: Cart Items -->

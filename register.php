@@ -94,7 +94,7 @@
 
                     <!-- Create Account Button -->
                     <button type="button" id="create"
-                        class="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-2 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all">
+                        class="w-full mt-4 bg-gradient-to-r from-pink-400 to-pink-600 text-white py-2 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all">
                         CREATE ACCOUNT
                     </button>
                 </div>

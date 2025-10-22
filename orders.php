@@ -1,5 +1,5 @@
 <?php
-//session_start(); // make sure session is started
+
 include_once __DIR__ . "/includes/files_includes.php";
 ?>
 

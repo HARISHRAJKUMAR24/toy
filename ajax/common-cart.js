@@ -43,16 +43,6 @@ $(document).on("click", ".addToCartBtn", function () {
 
       if (response) {
         if (response.success) {
-          /* $(".addToCartWrapper[data-id='" + product_id + "']")
-             .html(`<div class="qtySwitcher">
-           <button class="decreaseQtyBtn" data-id="${product_id}">${decreaseQtyBtnHtml}</button>
-   
-           <span class="text-base font-medium text-center currentQty">1</span>
-   
-           <button class="increaseQtyBtn" data-id="${product_id}">${increaseQtyBtnHtml}</button>
-       </div>`); */
-
-
           toastr.success(response.message);
           getProductCountAndPrice();
           getCartData();
@@ -173,6 +163,9 @@ $(document).on("click", ".decreaseQtyBtn", function () {
           if (
             parseInt(element.closest(".group").find(".currentQty").text()) <= 0
           ) {
+            // Define addToCartBtnHtml before using it
+            const addToCartBtnHtml = "Add to Cart";
+
             $(".addToCartWrapper[data-id='" + id + "']").html(
               `<button type="button" class="addToCartBtn" data-id="${id}">${addToCartBtnHtml}</button>`
             );
@@ -213,14 +206,16 @@ $(document).on("click", ".removeQtyBtn", function () {
     type: "POST",
     data: { id, type: "remove", variant, advancedVariant },
     success: function (result) {
-
-
       const response = result && JSON.parse(result);
 
       if (response) {
         if (response.success) {
           $(".group[data-id='" + id + "']").waitMe("hide");
           element.css("display", "none");
+
+          // Define addToCartBtnHtml before using it
+          const addToCartBtnHtml = "Add to Cart";
+
           $(".addToCartWrapper[data-id='" + id + "']").html(
             `<button type="button" class="addToCartBtn" data-id="${id}">${addToCartBtnHtml}</button>`
           );

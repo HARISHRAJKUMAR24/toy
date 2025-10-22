@@ -401,10 +401,10 @@
 
 
     <!-- Video Commerce Section Start -->
-    <section class="py-16 px-4 bg-gray-50">
-        <div class="container mx-auto">
-            <!-- Video Commerce Heading-->
-            <div class="text-center mb-8">
+    <!-- <section class="py-16 px-4 bg-gray-50">
+        <div class="container mx-auto"> -->
+    <!-- Video Commerce Heading-->
+    <!-- <div class="text-center mb-8">
                 <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">
                     Shop with Videos
                 </h2>
@@ -412,11 +412,11 @@
                     Explore our diverse collection of toys for all ages and interests
                 </p>
 
-            </div>
-            <!-- Video Commerce Grid-->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                <!--Video - 1 -->
-                <div class="video-card relative w-full h-[250px] sm:h-[300px] md:h-[350px] bg-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer"
+            </div> -->
+    <!-- Video Commerce Grid-->
+    <!-- <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"> -->
+    <!--Video - 1 -->
+    <!-- <div class="video-card relative w-full h-[250px] sm:h-[300px] md:h-[350px] bg-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer"
                     data-video="https://www.youtube.com/embed/tgbNymZ7vqY" data-name="Premium Teddy Bear"
                     data-price="₹1,499">
 
@@ -441,10 +441,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
-                <!--Video - 1 -->
-                <div class="video-card relative w-full h-[250px] sm:h-[300px] md:h-[350px] bg-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer"
+    <!--Video - 1 -->
+    <!-- <div class="video-card relative w-full h-[250px] sm:h-[300px] md:h-[350px] bg-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition cursor-pointer"
                     data-video="https://www.youtube.com/embed/tgbNymZ7vqY" data-name="Premium Teddy Bear"
                     data-price="₹1,499">
 
@@ -472,31 +472,31 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- Video Commerce Section End -->
 
     <!-- Video Popup Start-->
-    <div id="videoModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <!-- <div id="videoModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50"> -->
 
-        <!-- Premium 3D Close Button fixed top-right -->
-        <button id="closeModal"
+    <!-- Premium 3D Close Button fixed top-right -->
+    <!-- <button id="closeModal"
             class="fixed top-5 right-5 w-14 h-14 rounded-full bg-gradient-to-br from-red-600 to-red-500 shadow-2xl flex items-center justify-center text-white text-3xl font-bold leading-none hover:from-red-700 hover:to-red-600 active:scale-95 transition-transform z-50"
             title="Close">
             <span class="-translate-y-0.5 inline-block">&times;</span>
-        </button>
+        </button> -->
 
-        <!-- Modal Content -->
-        <div
-            class="backdrop-blur-xl bg-white/90 w-11/12 md:w-4/5 lg:w-3/5 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-fadeIn">
+    <!-- Modal Content -->
+    <!-- <div
+            class="backdrop-blur-xl bg-white/90 w-11/12 md:w-4/5 lg:w-3/5 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-fadeIn"> -->
 
-            <!-- Left: Video -->
-            <div class="w-full md:w-3/5 h-[200px] sm:h-[300px] md:h-auto bg-black flex items-center justify-center">
+    <!-- Left: Video -->
+    <!-- <div class="w-full md:w-3/5 h-[200px] sm:h-[300px] md:h-auto bg-black flex items-center justify-center">
                 <iframe id="videoFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen
                     class="w-full h-full rounded-lg"></iframe>
-            </div>
+            </div> -->
 
-            <!-- Right: Product Info -->
-            <div class="w-full md:w-2/5 p-6 flex flex-col justify-between">
+    <!-- Right: Product Info -->
+    <!-- <div class="w-full md:w-2/5 p-6 flex flex-col justify-between">
                 <div>
                     <h3 id="productName" class="text-2xl font-bold text-gray-800">Product Name</h3>
                     <p id="productPrice" class="text-pink-600 text-xl font-semibold mt-2">₹0</p>
@@ -534,7 +534,7 @@
             </div>
         </div>
 
-    </div>
+    </div> -->
     <!-- Video Popup Start End-->
 
 

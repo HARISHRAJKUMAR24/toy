@@ -29,7 +29,38 @@
         }
     }
 </style>
+
 <?php
+// =====================
+// BADGE FUNCTIONS
+// =====================
+function calculateSavePercent($mrp_price, $price) {
+    $savePercent = 0;
+    if ($mrp_price && $mrp_price > $price) {
+        $savePercent = round((($mrp_price - $price) / $mrp_price) * 100);
+    }
+    return $savePercent;
+}
+
+function displayProductBadge($badge, $savePercent = 0) {
+    if ($badge || $savePercent > 0) {
+        $html = '<div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 
+                       bg-gradient-to-b from-red-600 to-red-800 text-white rounded shadow-lg border-2 border-red-300 border-opacity-50 
+                       text-[6px] sm:text-[8px] font-bold uppercase text-center">
+                    <span>' . strtoupper($badge ?: 'SAVE') . '</span>';
+        
+        if ($savePercent > 0) {
+            $html .= '<span class="text-sm font-black leading-none">' . $savePercent . '%</span>';
+        }
+        
+        $html .= '<div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
+                </div>';
+        
+        return $html;
+    }
+    return '';
+}
+
 // =====================
 // ADD TO CART FUNCTION
 // =====================
@@ -84,6 +115,12 @@ function getProductHtml($id)
     $unit_type  = getData("unit_type", "seller_products", "id='$id'");
     $variation  = getData("variation", "seller_products", "id='$id'");
 
+    // Calculate save percentage for badge
+    $savePercent = 0;
+    if ($badge === "Save" && $mrp_price && $mrp_price > $price) {
+        $savePercent = calculateSavePercent($mrp_price, $price);
+    }
+
     // Check if advanced variants exist
     $hasAdvancedVariants = getData("id", "seller_product_advanced_variants", "product_id='$product_id'");
     $hasBasicVariants = getData("id", "seller_product_variants", "product_id='$product_id'");
@@ -108,24 +145,23 @@ function getProductHtml($id)
         text-xs sm:text-sm md:text-base ' . $btnText . '"></i>  
      </button>';
 
-    // Rating stars
-    $rating = getData("rating", "product_ratings", "product_id='$id'") ?: 0;
-    $stars = '';
-    for ($i = 1; $i <= 5; $i++) {
-        $stars .= $i <= $rating ? '<span class="mgc_star_fill text-yellow-400 text-sm md:text-base"></span>' : '<span class="mgc_star_line text-gray-300 text-sm md:text-base"></span>';
-    }
-
     // Start HTML
-    $html = '<div class="group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col h-full" data-id="' . $id . '">
-                <div class="relative">
-                    <a href="' . $storeUrl . 'product/' . $slug . '">
-                        <img src="' . UPLOADS_URL . $image . '" alt="' . htmlspecialchars($name) . '" class="productImage w-full h-40 sm:h-48 md:h-56 object-cover transition-transform duration-500 group-hover:scale-105">
-                    </a>' . $wishlist . '</div>';
+    $html = '<div class="group relative bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 flex flex-col h-full" data-id="' . $id . '">
+            <div class="relative">
+                <a href="' . $storeUrl . 'product/' . $slug . '">
+                    <img src="' . UPLOADS_URL . $image . '" alt="' . htmlspecialchars($name) . '" class="productImage w-full h-40 sm:h-48 md:h-56 object-cover transition-transform duration-500 group-hover:scale-105">
+                </a>';
+
+    // Add badge display
+    $html .= displayProductBadge($badge, $savePercent);
+    
+    // Add wishlist button
+    $html .= $wishlist . '</div>';
 
     // Product Info
     $html .= '<div class="p-3 sm:p-4 flex flex-col flex-grow">
                 <h3 class="text-sm sm:text-base font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1 line-clamp-2 min-h-[2.5rem]">' . htmlspecialchars($name) . '</h3>
-                <div class="flex items-center mb-2 sm:mb-3">' . $stars . '</div>';
+                <div class="flex items-center mb-2 sm:mb-3"> </div>';
 
     // Variant dropdown - Show if any variants exist
     if ($hasAdvancedVariants || $hasBasicVariants) {
@@ -218,8 +254,6 @@ function getProductHtml($id)
 }
 ?>
 
-
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.variantSelect').forEach(select => {
@@ -280,14 +314,14 @@ function getProductHtml($id)
                         addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Select';
                         addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                         addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
-                    } 
+                    }
                     // Handle out of stock
                     else if (isOutOfStock) {
                         addBtn.disabled = true;
                         addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Sold Out';
                         addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                         addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
-                    } 
+                    }
                     // Enable button for non-main variants
                     else {
                         addBtn.disabled = false;

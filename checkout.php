@@ -256,9 +256,21 @@
                                             </div>
                                         </label>
                                     <?php endif ?>
+
                                 </div>
                             </div>
                         </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                // Clear any checked radios in this group
+                                document.querySelectorAll('input[name="delivery_option"]').forEach(r => {
+                                    r.checked = false;
+                                    r.removeAttribute('checked'); // remove markup-level attribute too
+                                });
+
+                            });
+                        </script>
 
                         <!-- Step 3: Address -->
                         <div class="flex gap-4 step-container" id="step-3">

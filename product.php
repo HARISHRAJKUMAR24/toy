@@ -1,5 +1,18 @@
 <?php include_once __DIR__ . "/includes/files_includes.php"; ?>
+<?php
+// -------------------------
+// Get Random Products image Function
+// -------------------------
+function getRandomProductsBySeller($seller_id, $limit = 3)
+{
+    global $db;
+    $limit = (int)$limit; // ensure it’s an integer
+    $stmt = $db->prepare("SELECT * FROM seller_products WHERE seller_id = ? ORDER BY RAND() LIMIT $limit");
+    $stmt->execute([$seller_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -297,9 +310,44 @@
                                 <i class="fas fa-flag"></i>
                             </button>
                         </div>
-                    </div>
 
+
+                        <?php
+                        // Use the seller_id from fetched product
+                        $seller_id = $product['seller_id'];
+
+                        // Fetch 3 random products from the same seller
+                        $randomProducts = getRandomProductsBySeller($seller_id, 3);
+
+                        if ($randomProducts && count($randomProducts) > 0) {
+                            echo '<div class="mt-6 border-t pt-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Customers Also Bought</h3>
+        <div class="grid grid-cols-3 gap-3">';
+
+                            // Array of background colors
+                            $bgColors = ['bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100'];
+
+                            foreach ($randomProducts as $index => $rp) {
+                                $img = UPLOADS_URL . $rp['image'];
+                                $slug = $rp['slug'];
+
+                                // Pick a color from the array (cycle if more products than colors)
+                                $bgClass = $bgColors[$index % count($bgColors)];
+
+                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition ' . $bgClass . ' p-2 flex items-center justify-center">
+        <img src="' . $img . '" alt="' . htmlspecialchars($rp['name']) . '" class="w-full h-24 object-contain rounded-lg">
+      </a>';
+                            }
+
+                            echo '</div></div>';
+                        }
+                        ?>
+
+
+
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -500,13 +548,13 @@
             // Load saved variant - Check URL parameter first, then localStorage
             const urlParams = new URLSearchParams(window.location.search);
             const urlVariant = urlParams.get('variation');
-            
+
             let savedVariantId = null;
-            
+
             // Priority 1: URL parameter
             if (urlVariant && urlVariant !== 'main') {
                 savedVariantId = urlVariant;
-            } 
+            }
             // Priority 2: localStorage
             else {
                 savedVariantId = localStorage.getItem(productKey);
@@ -520,7 +568,7 @@
                         found = true;
                     }
                 });
-                
+
                 // If saved variant not found, select first available
                 if (!found && variantButtons.length > 0) {
                     selectVariant(variantButtons[0]);
@@ -660,11 +708,11 @@
                                 // Update variant buttons based on cart status
                                 variantButtons.forEach(btn => {
                                     const variantId = btn.dataset.variantId;
-                                    const isInCart = response.cartItems.includes(variantId) || 
-                                                   (variantId === 'main' && response.cartItems.includes('main'));
-                                    
+                                    const isInCart = response.cartItems.includes(variantId) ||
+                                        (variantId === 'main' && response.cartItems.includes('main'));
+
                                     btn.dataset.inCart = isInCart ? '1' : '0';
-                                    
+
                                     // If current variant is in cart, update UI
                                     if (variantId === currentVariantId && isInCart) {
                                         addBtn.classList.add('hidden');
