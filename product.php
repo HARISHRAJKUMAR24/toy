@@ -3,14 +3,23 @@
 // -------------------------
 // Get Random Products image Function
 // -------------------------
-function getRandomProductsBySeller($seller_id, $limit = 3)
+function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
 {
     global $db;
-    $limit = (int)$limit; // ensure it’s an integer
-    $stmt = $db->prepare("SELECT * FROM seller_products WHERE seller_id = ? ORDER BY RAND() LIMIT $limit");
-    $stmt->execute([$seller_id]);
+    $limit = (int)$limit; // ensure it's an integer
+
+    $stmt = $db->prepare("
+        SELECT * 
+        FROM seller_products 
+        WHERE seller_id = ? AND store_id = ?
+        ORDER BY RAND() 
+        LIMIT $limit
+    ");
+
+    $stmt->execute([$seller_id, $store_id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -56,8 +65,20 @@ function getRandomProductsBySeller($seller_id, $limit = 3)
     $slug = $_GET['slug'];
 
     // Fetch product
-    $productQuery = $db->prepare("SELECT * FROM seller_products WHERE slug=? AND seller_id=? AND status=1 AND (visibility='publish' OR (visibility='schedule' AND schedule_date<=NOW()))");
-    $productQuery->execute([$slug, $sellerId]);
+    $productQuery = $db->prepare("
+    SELECT * 
+    FROM seller_products 
+    WHERE slug = ? 
+      AND seller_id = ? 
+      AND store_id = ? 
+      AND status = 1 
+      AND (
+            visibility = 'publish' 
+            OR (visibility = 'schedule' AND schedule_date <= NOW())
+          )
+");
+    $productQuery->execute([$slug, $sellerId, $storeId]);
+
     $product = $productQuery->fetch(PDO::FETCH_ASSOC);
     if (!$product) redirect($storeUrl);
 
@@ -142,11 +163,20 @@ function getRandomProductsBySeller($seller_id, $limit = 3)
         }
     }
 
-    // Wishlist check
+    // Wishlist check - FIXED: Check if wishlist table exists first
     $wishlistExists = false;
     if (isLoggedIn()) {
-        $wishlistQuery = readData("*", "wishlist", "customer_id='$cookie_id' AND product_id='$id'");
-        $wishlistExists = $wishlistQuery && $wishlistQuery->rowCount() > 0;
+        try {
+            // Check if wishlist table exists by querying it
+            $tableCheck = $db->query("SHOW TABLES LIKE 'wishlist'");
+            if ($tableCheck && $tableCheck->rowCount() > 0) {
+                $wishlistQuery = readData("*", "wishlist", "customer_id='$cookie_id' AND product_id='$id'");
+                $wishlistExists = $wishlistQuery && $wishlistQuery->rowCount() > 0;
+            }
+        } catch (PDOException $e) {
+            // If table doesn't exist, wishlistExists remains false
+            $wishlistExists = false;
+        }
     }
 
     // Additional images
@@ -296,9 +326,21 @@ function getRandomProductsBySeller($seller_id, $limit = 3)
                             </a>
 
                             <?php if (isLoggedIn()) : ?>
-                                <button id="wishlistBtn" data-id="<?= $id ?>" class="wishlistBtn px-3 py-2 rounded-lg border <?= $wishlistExists ? 'bg-rose-500 text-white' : 'bg-white text-pink-500' ?> font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
-                                    <i class="<?= $wishlistExists ? 'fas' : 'far' ?> fa-heart"></i>
-                                </button>
+                                <?php
+                                // Only show wishlist button if the table exists
+                                try {
+                                    $tableCheck = $db->query("SHOW TABLES LIKE 'wishlist'");
+                                    if ($tableCheck && $tableCheck->rowCount() > 0):
+                                ?>
+                                        <button id="wishlistBtn" data-id="<?= $id ?>" class="wishlistBtn px-3 py-2 rounded-lg border <?= $wishlistExists ? 'bg-rose-500 text-white' : 'bg-white text-pink-500' ?> font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
+                                            <i class="<?= $wishlistExists ? 'fas' : 'far' ?> fa-heart"></i>
+                                        </button>
+                                <?php
+                                    endif;
+                                } catch (PDOException $e) {
+                                    // Don't show wishlist button if table doesn't exist
+                                }
+                                ?>
                             <?php else: ?>
                                 <a href="<?= $storeUrl ?>login" class="px-3 py-2 rounded-lg border bg-white text-pink-500 font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
                                     <i class="far fa-heart"></i>
@@ -313,11 +355,12 @@ function getRandomProductsBySeller($seller_id, $limit = 3)
 
 
                         <?php
-                        // Use the seller_id from fetched product
                         $seller_id = $product['seller_id'];
+                        $store_id  = $product['store_id']; // assuming your product array has store_id
 
-                        // Fetch 3 random products from the same seller
-                        $randomProducts = getRandomProductsBySeller($seller_id, 3);
+                        // Fetch 3 random products from the same seller and store
+                        $randomProducts = getRandomProductsBySeller($seller_id, $store_id, 3);
+
 
                         if ($randomProducts && count($randomProducts) > 0) {
                             echo '<div class="mt-6 border-t pt-4">

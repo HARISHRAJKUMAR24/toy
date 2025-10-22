@@ -88,8 +88,8 @@
         $column = "homepage_banner" . ($i > 1 ? "_$i" : "");
         $link_column = "homepage_banner_link" . ($i > 1 ? "_$i" : "");
 
-        $image = getData($column, "seller_banners", "(seller_id = '$sellerId')");
-        $link = getData($link_column, "seller_banners", "(seller_id = '$sellerId')");
+        $image = getData($column, "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')");
+        $link = getData($link_column, "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')");
 
         if (!empty($image)) {
             $banners[] = ['image' => $image, 'link' => $link];
@@ -238,7 +238,7 @@
     $offerSlides = [];
     for ($i = 1; $i <= 2; $i++) {
         $imgColumn = "offer_image_$i";
-        $img = getData($imgColumn, "seller_banners", "(seller_id = '$sellerId')");
+        $img = getData($imgColumn, "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')");
         if (!empty($img)) {
             $offerSlides[] = $img;
         }
@@ -361,7 +361,7 @@
                 <!-- Card 1 -->
                 <div class="bg-gray-200 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
        w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-                    <?php $img1 = getData("featured_image_1", "seller_banners", "(seller_id = '$sellerId')"); ?>
+                    <?php $img1 = getData("featured_image_1", "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')"); ?>
                     <img src="<?= !empty($img1) ? UPLOADS_URL . $img1 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
@@ -373,7 +373,7 @@
                 <!-- Card 2 -->
                 <div class="bg-sky-500/50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
        w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-                    <?php $img2 = getData("featured_image_2", "seller_banners", "(seller_id = '$sellerId')"); ?>
+                    <?php $img2 = getData("featured_image_2", "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')"); ?>
                     <img src="<?= !empty($img2) ? UPLOADS_URL . $img2 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTImNf14UOHtFVN3T2-HELY9-dv3PkJOJPdiA&s' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
@@ -385,7 +385,7 @@
                 <!-- Card 3 -->
                 <div class="bg-cyan-100 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
        w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
-                    <?php $img3 = getData("featured_image_3", "seller_banners", "(seller_id = '$sellerId')"); ?>
+                    <?php $img3 = getData("featured_image_3", "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')"); ?>
                     <img src="<?= !empty($img3) ? UPLOADS_URL . $img3 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
@@ -541,8 +541,8 @@
     <!-- About Section Start -->
     <?php
     // Fetch data
-    $aboutContent = $sellerId ? getData("about_content", "homepage_settings", "(seller_id = '$sellerId')") : '';
-    $aboutImage = $sellerId ? getData("about_image", "homepage_settings", "(seller_id = '$sellerId')") : '';
+    $aboutContent = $sellerId ? getData("about_content", "homepage_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") : '';
+    $aboutImage = $sellerId ? getData("about_image", "homepage_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") : '';
     ?>
 
     <?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>

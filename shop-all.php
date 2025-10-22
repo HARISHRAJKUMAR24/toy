@@ -80,9 +80,9 @@
     // Fetch advanced categories
     $advance_categories = [];
     for ($i = 1; $i <= 6; $i++) {
-        $name = getData("advance_category_name_$i", "seller_banners", "seller_id = '$sellerId'");
-        $link = getData("advance_category_link_$i", "seller_banners", "seller_id = '$sellerId'");
-        $image = getData("advance_category_image_$i", "seller_banners", "seller_id = '$sellerId'");
+        $name = getData("advance_category_name_$i", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
+        $link = getData("advance_category_link_$i", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
+        $image = getData("advance_category_image_$i", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
 
         if (!empty($image)) { // Require only image
             $advance_categories[] = [
@@ -101,7 +101,7 @@
         <section class="py-12 bg-gray-50">
             <div class="max-w-6xl mx-auto px-4 ">
                 <!--Heading-->
-                <?php $main_heading = getData("advance_category_main_heading", "seller_banners", "seller_id = '$sellerId'"); ?>
+                <?php $main_heading = getData("advance_category_main_heading", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'"); ?>
                 <?php if (!empty($main_heading)) : ?>
                     <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-6 text-center mb-8">
                         <?= htmlspecialchars($main_heading) ?>
