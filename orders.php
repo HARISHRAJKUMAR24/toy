@@ -1,5 +1,4 @@
 <?php
-
 include_once __DIR__ . "/includes/files_includes.php";
 ?>
 
@@ -8,6 +7,73 @@ include_once __DIR__ . "/includes/files_includes.php";
 
 <head>
   <?php include_once __DIR__ . "/includes/head_links.php"; ?>
+  <style>
+    /*<==========> CSS Styles <==========>*/
+    /* Custom DataTables Styling */
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+      padding: 8px 4px;
+    }
+
+    .dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_filter input {
+      border: 1px solid #f9a8d4;
+      border-radius: 8px;
+      padding: 6px 12px;
+      background: white;
+    }
+
+    .dataTables_wrapper .dataTables_length select:focus,
+    .dataTables_wrapper .dataTables_filter input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+      border-color: #ec4899;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      border: 1px solid #f9a8d4;
+      border-radius: 8px;
+      padding: 6px 12px;
+      margin: 0 2px;
+      background: white;
+      color: #db2777;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+      background: #ec4899;
+      color: white;
+      border-color: #ec4899;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: #fdf2f8;
+      color: #be185d;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+      background: #fce7f3;
+      color: #9ca3af;
+      border-color: #fbcfe8;
+    }
+
+    /* Center the no orders message */
+    .dataTables_empty {
+      text-align: center !important;
+      padding: 40px 20px !important;
+      font-size: 16px !important;
+      color: #6b7280 !important;
+    }
+
+    /* Ensure the table row centers the message */
+    #ordersTable td.dataTables_empty {
+      text-align: center !important;
+      padding: 40px 20px !important;
+    }
+  </style>
 </head>
 
 <body class="font-sans bg-pink-50 min-h-screen">
@@ -35,123 +101,94 @@ include_once __DIR__ . "/includes/files_includes.php";
 
   $userName = $userData['name'] ?? 'Guest';
   $userEmail = $userData['email'] ?? 'guest@example.com';
-
-  // Fetch orders
-  $orderQuery = $db->prepare("SELECT order_id, created_at, total, payment_method, status, currency FROM seller_orders WHERE customer_id = :id ORDER BY created_at DESC");
-  $orderQuery->bindValue(':id', $userId, PDO::PARAM_INT);
-  $orderQuery->execute();
-  $ordersData = $orderQuery->fetchAll(PDO::FETCH_ASSOC);
-
-  // Format orders for display
-  $orders = [];
-  foreach ($ordersData as $order) {
-    $orders[] = [
-      'order_id' => '<a href="' . $storeUrl . 'order?id=' . $order['order_id'] . '" class="underline text-primary-500">#' . $order['order_id'] . '</a>',
-      'created_at' => $order['created_at'],
-      'total' => currencyToSymbol($order['currency']) . number_format($order['total'], 2),
-      'payment_method' => $order['payment_method'],
-      'status' => ucfirst($order['status']),
-    ];
-  }
   ?>
 
   <!-- Main Container -->
-  <div class="container mx-auto px-4 py-8">
-    <div class="flex flex-col md:flex-row gap-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
 
-      <!-- Left: Profile Card -->
-      <div class="w-full md:w-1/4">
-        <div class="bg-white/70 backdrop-blur-[12px] border border-white/50 rounded-2xl p-6 shadow-lg">
+      <!-- Left Sidebar -->
+      <div class="w-full lg:w-1/3 xl:w-2/5">
+        <div class="bg-white/70 backdrop-blur-md border border-white/50 rounded-2xl p-6 shadow-lg">
+
+          <!-- Profile Info -->
           <div class="flex flex-col items-center mb-6">
             <div class="relative mb-4">
-              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
-                alt="User Profile" class="w-24 h-24 rounded-full border-4 border-white/50 object-cover">
-              <div class="absolute bottom-0 right-0 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center border-2 border-white">
+              <img id="previewImage"
+                src="<?= !empty(customer('photo')) ? UPLOADS_URL . customer('photo') : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80' ?>"
+                alt="User Profile"
+                class="w-24 h-24 rounded-full border-4 border-white/50 object-cover transition-all duration-300 shadow-sm">
+              <label for="photo"
+                class="absolute bottom-0 right-0 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center border-2 border-white cursor-pointer hover:bg-pink-600 transition"
+                onclick="window.location.href='<?= $storeUrl ?>profile'">
                 <i class='bx bx-edit text-white text-sm'></i>
-              </div>
+              </label>
             </div>
-            <h2 class="text-xl font-semibold text-gray-800"><?= htmlspecialchars($userName) ?></h2>
-            <p class="text-gray-600 text-sm"><?= htmlspecialchars($userEmail) ?></p>
+            <h2 class="text-xl font-semibold text-gray-800"><?= customer("name") ?></h2>
+            <p class="text-gray-600 text-sm"><?= customer("email") ?></p>
           </div>
 
-          <div class="space-y-4">
-            <a href="#" class="flex items-center gap-3 p-3 rounded-xl text-gray-700 hover:bg-pink-100 hover:text-pink-600 transition">
-              <i class='bx bx-user-circle text-xl'></i>
-              <span>My Profile</span>
+          <!-- Sidebar Links -->
+          <div class="space-y-4 w-full">
+            <a href="<?= $storeUrl ?>profile"
+              class="flex items-center gap-3 p-3 rounded-xl transition <?= $page == 'profile.php' ? 'bg-indigo-100 text-indigo-500' : 'bg-gray-100 text-gray-700 hover:bg-pink-100 hover:text-pink-600' ?>">
+              <span class="bg-white border transition w-[44px] h-[44px] flex items-center justify-center rounded-full text-xl">
+                <i class='bx bx-user'></i>
+              </span>
+              <span class="font-medium">My Profile</span>
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-pink-100 text-pink-600 transition">
-              <i class='bx bx-package text-xl'></i>
-              <span>My Orders</span>
+
+            <a href="<?= $storeUrl ?>orders"
+              class="flex items-center gap-3 p-3 rounded-xl transition <?= $page == 'orders.php' ? 'bg-orange-100 text-orange-500' : 'bg-gray-100 text-gray-700 hover:bg-pink-100 hover:text-pink-600' ?>">
+              <span class="bg-white border transition w-[44px] h-[44px] flex items-center justify-center rounded-full text-xl">
+                <i class='bx bx-package'></i>
+              </span>
+              <span class="font-medium">My Orders</span>
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 rounded-xl text-gray-700 hover:bg-pink-100 hover:text-pink-600 transition">
-              <i class='bx bx-heart text-xl'></i>
-              <span>Wishlists</span>
+
+            <a href="<?= $storeUrl ?>wishlists"
+              class="flex items-center gap-3 p-3 rounded-xl transition <?= $page == 'wishlists.php' ? 'bg-pink-100 text-pink-500' : 'bg-gray-100 text-gray-700 hover:bg-pink-100 hover:text-pink-600' ?>">
+              <span class="bg-white border transition w-[44px] h-[44px] flex items-center justify-center rounded-full text-xl">
+                <i class='bx bx-heart'></i>
+              </span>
+              <span class="font-medium">Wishlists</span>
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 rounded-xl text-gray-700 hover:bg-pink-100 hover:text-pink-600 transition">
-              <i class='bx bx-log-out text-xl'></i>
-              <span>Logout</span>
+
+            <a href="<?= $storeUrl ?>logout"
+              class="flex items-center gap-3 p-3 rounded-xl transition bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-500">
+              <span class="bg-white border transition w-[44px] h-[44px] flex items-center justify-center rounded-full text-xl">
+                <i class='bx bx-log-out'></i>
+              </span>
+              <span class="font-medium">Logout</span>
             </a>
           </div>
         </div>
       </div>
 
       <!-- Right: Orders Table -->
-      <div class="w-full md:w-3/4 bg-white rounded-3xl p-6 shadow-lg overflow-x-auto">
-        <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-6">My Orders</h3>
+      <div class="w-full lg:w-2/3 xl:w-3/5">
+        <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-lg">
+          <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center sm:text-left">My Orders</h3>
 
-        <!-- Top Controls (replace your current block) -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white/70 backdrop-blur-md border border-pink-200 rounded-xl p-4 shadow-md gap-4">
-          <span class="text-gray-700 text-sm md:text-base font-medium">
-            Show
-            <select id="entriesSelect" class="border border-pink-300 rounded-lg px-3 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition">
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-            </select>
-            entries
-          </span>
-          <div class="flex items-center gap-2 w-full md:w-auto">
-            <input id="searchInput" type="text" placeholder="Search..." class="flex-1 border border-pink-300 rounded-lg px-3 py-1 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition placeholder:text-gray-400">
-
-          </div>
-        </div>
-
-        <!-- Orders Table -->
-        <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-pink-300 scrollbar-track-pink-100 rounded-lg">
-          <table class="min-w-full table-auto border-collapse border border-gray-200 text-sm">
-            <thead class="bg-pink-50">
-              <tr>
-                <th class="border border-gray-200 px-4 py-2 text-left">Order ID</th>
-                <th class="border border-gray-200 px-4 py-2 text-left">Created</th>
-                <th class="border border-gray-200 px-4 py-2 text-left">Total</th>
-                <th class="border border-gray-200 px-4 py-2 text-left">Payment Method</th>
-                <th class="border border-gray-200 px-4 py-2 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php if (!empty($orders)): ?>
-                <?php foreach ($orders as $order): ?>
-                  <tr class="hover:bg-pink-50 transition">
-                    <td class="border border-gray-200 px-4 py-2"><?= $order['order_id'] ?></td>
-                    <td class="border border-gray-200 px-4 py-2"><?= $order['created_at'] ?></td>
-                    <td class="border border-gray-200 px-4 py-2"><?= $order['total'] ?></td>
-                    <td class="border border-gray-200 px-4 py-2"><?= $order['payment_method'] ?></td>
-                    <td class="border border-gray-200 px-4 py-2"><?= $order['status'] ?></td>
-                  </tr>
-                <?php endforeach; ?>
-              <?php else: ?>
+          <!-- Orders Table Container -->
+          <div class="overflow-x-auto rounded-xl border border-pink-100">
+            <table id="ordersTable" class="min-w-full table-auto border-collapse text-sm">
+              <thead class="bg-pink-50">
                 <tr>
-                  <td colspan="5" class="text-center py-4 text-gray-500">No orders found.</td>
+                  <th class="px-4 py-3 text-left font-semibold text-gray-700 border-b border-pink-100">Order ID</th>
+                  <th class="px-4 py-3 text-left font-semibold text-gray-700 border-b border-pink-100">Created</th>
+                  <th class="px-4 py-3 text-left font-semibold text-gray-700 border-b border-pink-100">Total</th>
+                  <th class="px-4 py-3 text-left font-semibold text-gray-700 border-b border-pink-100">Payment Method</th>
+                  <th class="px-4 py-3 text-left font-semibold text-gray-700 border-b border-pink-100">Status</th>
                 </tr>
-              <?php endif; ?>
-            </tbody>
-          </table>
+              </thead>
+              <tbody class="bg-white divide-y divide-pink-50">
+                <!-- Data will be loaded via AJAX -->
+              </tbody>
+            </table>
+          </div>
+
         </div>
-
-        <!-- Pagination -->
-        <div id="pagination" class="flex justify-end items-center gap-2 mt-6 flex-wrap"></div>
-
-
       </div>
     </div>
   </div>
@@ -159,131 +196,98 @@ include_once __DIR__ . "/includes/files_includes.php";
   <!-- Footer -->
   <?php include_once __DIR__ . "/includes/footer.php"; ?>
 
+  <!-- DataTables Script -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Reliable element grabs
-      const tbody = document.querySelector('table tbody');
-      if (!tbody) return; // no table on page -> nothing to do
-
-      const allRows = Array.from(tbody.querySelectorAll('tr'));
-      const entriesSelect = document.getElementById('entriesSelect');
-      const searchInput = document.getElementById('searchInput');
-      const searchButton = document.getElementById('searchBtn');
-      const paginationContainer = document.getElementById('pagination');
-
-      // safety checks
-      if (!entriesSelect || !searchInput || !searchButton || !paginationContainer) {
-        console.warn('Missing one of the required controls (entriesSelect, searchInput, searchBtn, pagination).');
-      }
-
-      let currentPage = 1;
-      let rowsPerPage = parseInt(entriesSelect?.value || '10', 10);
-      let filteredRows = [...allRows]; // visible rows after filter
-
-      function renderTable() {
-        // hide all first
-        allRows.forEach(r => r.style.display = 'none');
-
-        // handle no rows at all
-        if (filteredRows.length === 0) {
-          renderPagination(); // still render pagination (shows page 1)
-          return;
-        }
-
-        const start = (currentPage - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-
-        // show the page slice
-        filteredRows.slice(start, end).forEach(row => row.style.display = '');
-
-        renderPagination();
-      }
-
-      function renderPagination() {
-        const totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
-        paginationContainer.innerHTML = '';
-
-        // Prev
-        const prevBtn = document.createElement('button');
-        prevBtn.textContent = 'Prev';
-        prevBtn.disabled = currentPage <= 1;
-        prevBtn.className = 'px-3 py-1 rounded-lg border border-pink-300 text-pink-500 hover:bg-pink-100 transition disabled:opacity-50 disabled:cursor-not-allowed';
-        prevBtn.addEventListener('click', () => {
-          if (currentPage > 1) {
-            currentPage--;
-            renderTable();
+    $(document).ready(function() {
+      // Initialize DataTable with server-side processing
+      var table = $('#ordersTable').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url": "shop/ajax/orders.php",
+          "type": "POST",
+          "data": function(d) {
+            // Ensure recent orders come first by default
+            if (!d.order || d.order.length === 0) {
+              d.order = [
+                [1, 'desc']
+              ]; // Sort by Created date (column index 1) descending
+            }
           }
-        });
-        paginationContainer.appendChild(prevBtn);
-
-        // Page buttons (if many pages, we can limit display — simple approach: show all)
-        for (let i = 1; i <= totalPages; i++) {
-          const btn = document.createElement('button');
-          btn.textContent = i;
-          btn.className = `px-3 py-1 rounded-lg border border-pink-300 ${currentPage === i ? 'bg-pink-500 text-white' : 'text-pink-500 hover:bg-pink-100'} transition`;
-          btn.addEventListener('click', () => {
-            currentPage = i;
-            renderTable();
-          });
-          paginationContainer.appendChild(btn);
-        }
-
-        // Next
-        const nextBtn = document.createElement('button');
-        nextBtn.textContent = 'Next';
-        nextBtn.disabled = currentPage >= totalPages;
-        nextBtn.className = 'px-3 py-1 rounded-lg border border-pink-300 text-pink-500 hover:bg-pink-100 transition disabled:opacity-50 disabled:cursor-not-allowed';
-        nextBtn.addEventListener('click', () => {
-          if (currentPage < totalPages) {
-            currentPage++;
-            renderTable();
+        },
+        "columns": [{
+            "data": "order_id",
+            "className": "px-4 py-3 whitespace-nowrap"
+          },
+          {
+            "data": "created_at",
+            "className": "px-4 py-3 whitespace-nowrap"
+          },
+          {
+            "data": "total",
+            "className": "px-4 py-3 whitespace-nowrap"
+          },
+          {
+            "data": "payment_method",
+            "className": "px-4 py-3 whitespace-nowrap"
+          },
+          {
+            "data": "status",
+            "className": "px-4 py-3 whitespace-nowrap"
           }
-        });
-        paginationContainer.appendChild(nextBtn);
-      }
+        ],
+        "pageLength": 10,
+        "lengthMenu": [
+          [10, 25, 50],
+          [10, 25, 50]
+        ],
+        "order": [
+          [1, 'desc']
+        ], // Default sort: Created date descending (recent first)
+        "language": {
+          "search": "",
+          "searchPlaceholder": "Search orders...",
+          "lengthMenu": "Show _MENU_ entries",
+          "info": "Showing _START_ to _END_ of _TOTAL_ orders",
+          "infoEmpty": "No orders found",
+          "infoFiltered": "(filtered from _MAX_ total orders)",
+          "zeroRecords": "You Dont't Place Order Yet 🛒",
+          "paginate": {
+            "first": "First",
+            "last": "Last",
+            "previous": "‹",
+            "next": "›"
+          },
+          "processing": "Loading orders..."
+        },
+        "responsive": true,
+        "dom": '<"flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"<"w-full sm:w-auto"l><"w-full sm:w-auto flex justify-end"f>>rt<"flex flex-col sm:flex-row justify-between items-center gap-4 mt-6"<"text-sm text-gray-600"i><"flex gap-2"p>>',
+        "initComplete": function() {
+          // Add custom classes to search input and move to right
+          $('.dataTables_filter')
+            .addClass('w-full sm:w-auto')
+            .find('input')
+            .addClass('w-full sm:w-64 px-4 py-2 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition placeholder-gray-400')
+            .attr('placeholder', 'Search orders...');
 
-      // When entries per page changes
-      entriesSelect.addEventListener('change', () => {
-        const val = parseInt(entriesSelect.value, 10);
-        rowsPerPage = Number.isFinite(val) && val > 0 ? val : 10;
-        currentPage = 1;
-        renderTable();
-      });
+          // Add custom classes to length select
+          $('.dataTables_length select')
+            .addClass('px-3 py-2 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition');
+        },
+        "drawCallback": function() {
+          // Re-apply custom classes after each draw
+          $('.dataTables_filter')
+            .addClass('w-full sm:w-auto')
+            .find('input')
+            .addClass('w-full sm:w-64 px-4 py-2 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition placeholder-gray-400')
+            .attr('placeholder', 'Search orders...');
 
-      // Search logic
-      function performSearch() {
-        const q = (searchInput.value || '').trim().toLowerCase();
-
-        if (q === '') {
-          // reset filter
-          filteredRows = [...allRows];
-        } else {
-          filteredRows = allRows.filter(row => row.textContent.toLowerCase().includes(q));
-        }
-
-        // reset page and render
-        currentPage = 1;
-        renderTable();
-      }
-
-      // event listeners
-      searchInput.addEventListener('keyup', performSearch);
-      searchButton.addEventListener('click', performSearch);
-
-      // esc clears search
-      searchInput.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-          searchInput.value = '';
-          performSearch();
+          $('.dataTables_length select')
+            .addClass('px-3 py-2 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition');
         }
       });
-
-      // initial render
-      renderTable();
     });
   </script>
-
-
 
 </body>
 

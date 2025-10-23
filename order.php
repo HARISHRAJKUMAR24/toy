@@ -403,7 +403,7 @@ include_once __DIR__ . "/includes/files_includes.php";
             </p>
         </div>
     </div>
-    
+
     <!-- Footer -->
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
 

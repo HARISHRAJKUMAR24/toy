@@ -1,4 +1,6 @@
-<?php include_once __DIR__ . "/includes/files_includes.php"; ?>
+<?php
+include_once __DIR__ . "/includes/files_includes.php";
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,105 +8,32 @@
 <head>
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
     <style>
-        /*<==========> Enhanced CSS Styles <==========>*/
-
-        /*------------- Smooth Animations -------------*/
-        * {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /*------------- Spin Animation For Shop By Age Image Border -------------*/
-        @layer utilities {
-            .animate-spin-slow {
-                animation: spin 18s linear infinite;
-            }
-        }
-
-        /*------------- Hide Scroll Bars -------------*/
-        .scroll-container::-webkit-scrollbar,
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
         .hide-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
-        /*------------- Product Category Styles -------------*/
-        .tab-button {
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: 10px;
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
         }
 
-        .tab-button::before {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(135deg, #ec4899, #f97316);
-            border-radius: 2px;
-            transform: translateX(-50%);
-            transition: width 0.3s ease;
+        .cursor-grabbing {
+            cursor: grabbing;
         }
 
-        .tab-button.active::before {
-            width: 40px;
-        }
-
-        .tab-img {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .tab-button span {
-            display: inline-block;
-            transition: all 0.5s ease;
-        }
-
-        .tab-button img {
-            transition: all 0.5s ease;
-        }
-
-        /*------------- Product Category Active Styles -------------*/
         .tab-button.active .tab-img {
             border-color: #ec4899;
-            box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
-            transform: scale(1.08) rotate(5deg);
-        }
-
-        .tab-button.active img {
-            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
         }
 
         .tab-button.active span {
             color: #ec4899;
-            font-weight: 700;
-            transform: scale(1.03);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /*------------- Gradient Text -------------*/
-        .gradient-text {
-            background: linear-gradient(135deg, #ec4899, #f97316);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /*------------- Product Display Container Margins -------------*/
-        .product-display-container {
-            margin-top: 2rem;
-            margin-bottom: 2rem;
+            font-weight: 600;
         }
     </style>
 </head>
 
-<body class="font-sans min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-
+<body class="font-sans bg-gray-50">
     <!-- Minimum Order Amount Start-->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
         <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
@@ -113,121 +42,8 @@
     <?php endif; ?>
     <!-- Minimum Order Amount End-->
 
-    <!-- Navigation -->
+    <!--Php File Include For Nav Bar-->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
-
-    <!--Shop By Age Start-->
-    <?php
-    // Fetch advanced categories
-    $advance_categories = [];
-    for ($i = 1; $i <= 6; $i++) {
-        $name = getData("advance_category_name_$i", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
-        $link = getData("advance_category_link_$i", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
-        $image = getData("advance_category_image_$i", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
-
-        if (!empty($image)) { // Require only image
-            $advance_categories[] = [
-                'name' => $name, // Can be empty
-                'link' => $link,
-                'image' => $image
-            ];
-        }
-    }
-
-    // Only show section if there is at least 1 image
-    if (!empty($advance_categories)) :
-    ?>
-
-        <!--Shop By Age Start-->
-        <section class="py-12 bg-gradient-to-r from-blue-100 via-pink-100 to-purple-100 animate-gradient-x">
-            <div class="max-w-6xl mx-auto px-4">
-                <!--Heading - SAME SIZE AS SHOP BY CATEGORY -->
-                <?php $main_heading = getData("advance_category_main_heading", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'"); ?>
-                <?php if (!empty($main_heading)) : ?>
-                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 text-center">
-                        <?= htmlspecialchars($main_heading) ?>
-                    </h2>
-                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto text-center mb-4">
-                        Discover our carefully curated collections tailored just for you
-                    </p>
-                <?php endif; ?>
-
-                <!-- Scroll Container / Centered Flex -->
-                <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 -mx-4 lg:mx-0">
-                    <div class="flex flex-wrap justify-center gap-6 md:gap-8">
-
-                        <?php foreach ($advance_categories as $index => $category) :
-                            // Color for border animation (cycle through colors) - DARKER COLORS
-                            $border_colors = ['pink-500', 'blue-500', 'green-500', 'yellow-500', 'purple-500', 'pink-700'];
-                            $bg_colors = ['pink-600', 'blue-600', 'green-600', 'yellow-600', 'purple-600', 'pink-800'];
-                            $color_index = $index % count($border_colors);
-                        ?>
-                            <div class="relative w-32 h-32 flex-shrink-0">
-                                <!-- Spinning border -->
-                                <div class="absolute inset-0 rounded-full border-4 border-dashed border-<?= $border_colors[$color_index] ?> animate-spin-slow"></div>
-                                <!-- Image circle -->
-                                <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300">
-                                    <?php if (!empty($category['link'])): ?>
-                                        <a href="<?= $category['link'] ?>" target="_blank">
-                                            <img src="<?= UPLOADS_URL . $category['image'] ?>" alt="<?= htmlspecialchars($category['name']) ?>" class="w-full h-full object-cover">
-                                        </a>
-                                    <?php else: ?>
-                                        <img src="<?= UPLOADS_URL . $category['image'] ?>" alt="<?= htmlspecialchars($category['name']) ?>" class="w-full h-full object-cover">
-                                    <?php endif; ?>
-                                </div>
-                                <!-- Category Name Box -->
-                                <?php if (!empty($category['name'])): ?>
-                                    <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-0.5 bg-<?= $bg_colors[$color_index] ?> text-white text-sm font-semibold rounded-md shadow-lg text-center break-words max-w-[90%] border border-white/30">
-                                        <?= htmlspecialchars($category['name']) ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        <?php endforeach; ?>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <style>
-            .animate-gradient-x {
-                background-size: 400% 400%;
-                animation: gradient 6s ease infinite;
-            }
-
-            @keyframes gradient {
-                0% {
-                    background-position: 0% 50%;
-                }
-
-                50% {
-                    background-position: 100% 50%;
-                }
-
-                100% {
-                    background-position: 0% 50%;
-                }
-            }
-
-            /* Enhanced spin animation */
-            @keyframes spin-slow {
-                from {
-                    transform: rotate(0deg);
-                }
-
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-
-            .animate-spin-slow {
-                animation: spin-slow 18s linear infinite;
-            }
-        </style>
-        <!--Shop By Age End-->
-
-    <?php endif; ?>
-
 
     <?php
     // Product Category with new UI/UX Style
@@ -247,10 +63,10 @@
         <div class="py-16 px-4 bg-gray-50">
             <!-- Heading -->
             <div class="text-center mb-8">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 text-center">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">
                     Shop By Category
                 </h2>
-                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto text-center mb-4">
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
                     Explore our diverse collection of products for all your needs
                 </p>
             </div>
@@ -264,8 +80,8 @@
                     <button class="tab-button flex flex-col items-center cursor-pointer"
                         data-section="section<?= $index + 1 ?>"
                         data-category-id="<?= $category['id'] ?>">
-                        <div class="tab-img w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg mb-4 group-hover:shadow-xl">
-                            <img src="<?= $catImage ?>" alt="<?= $category['name'] ?>" class="w-full h-full object-cover transform group-hover:scale-105">
+                        <div class="tab-img w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+                            <img src="<?= $catImage ?>" alt="<?= $category['name'] ?>" class="w-full h-full object-cover rounded-full">
                         </div>
                         <span class="mt-2 text-sm font-medium text-gray-700"><?= $category['name'] ?></span>
                     </button>
@@ -290,8 +106,11 @@
         <!--Product Category End -->
     <?php endif; ?>
 
-    <!-- Enhanced JavaScript -->
     <script>
+        // ===============================
+        // product category
+        // ===============================
+
         document.addEventListener('DOMContentLoaded', () => {
             const menuTabs = document.getElementById('menu-tabs');
             const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
@@ -322,18 +141,6 @@
                 updateActiveTab(tab);
             }
 
-            // Enhanced product counting
-            function countRealProductsInHTML(html) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
-                const productElements = tempDiv.querySelectorAll('.gap-5, .addToCartBtn, [class*="group"]');
-                return Array.from(productElements).filter(el =>
-                    el.innerHTML.includes('product/') ||
-                    el.innerHTML.includes('₹') ||
-                    el.innerHTML.includes('addToCartBtn')
-                ).length;
-            }
-
             // Load products for a category
             function loadCategoryProducts(categoryId, categoryName) {
                 // Show loading state
@@ -359,15 +166,19 @@
                         const trimmed = response.trim();
 
                         if (trimmed && trimmed !== '') {
-                            const productCount = countRealProductsInHTML(trimmed);
-
                             productDisplayArea.innerHTML = `
                             <div class="mb-6">
                                 <h3 class="text-2xl font-bold text-gray-800 text-center">${categoryName} Products</h3>
-                                <p class="text-gray-600 text-center mt-2">${productCount}+ amazing products waiting for you</p>
+                                <p class="text-gray-600 text-center mt-2">Discover amazing products in ${categoryName} category</p>
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6 items-stretch">
                                 ${trimmed}
+                            </div>
+                            <div class="text-center mt-8">
+                                <button onclick="loadMoreCategoryProducts('${categoryId}', '${categoryName}', 2)" 
+                                        class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-lg font-medium transition">
+                                    Load More Products
+                                </button>
                             </div>
                         `;
                         } else {
@@ -393,6 +204,53 @@
                             <p class="text-gray-500 mb-6 max-w-md mx-auto">Unable to load products. Please try again.</p>
                         </div>
                     `;
+                    }
+                });
+            }
+
+            // Load more products for a category
+            window.loadMoreCategoryProducts = function(categoryId, categoryName, page) {
+                const loadMoreBtn = document.querySelector('#product-display-area button');
+                const originalText = loadMoreBtn.innerHTML;
+
+                // Show loading on button
+                loadMoreBtn.innerHTML = '<div class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Loading...';
+                loadMoreBtn.disabled = true;
+
+                $.ajax({
+                    url: "shop/ajax/get-category-wise-product.php",
+                    type: "POST",
+                    data: {
+                        page: page,
+                        category: categoryId,
+                        min_price: '',
+                        max_price: '',
+                        q: ''
+                    },
+                    success: function(response) {
+                        const trimmed = response.trim();
+
+                        if (trimmed && trimmed !== '') {
+                            // Append new products
+                            const productsContainer = document.querySelector('#product-display-area .grid');
+                            productsContainer.innerHTML += trimmed;
+
+                            // Update load more button for next page
+                            loadMoreBtn.innerHTML = originalText;
+                            loadMoreBtn.disabled = false;
+                            loadMoreBtn.setAttribute('onclick', `loadMoreCategoryProducts('${categoryId}', '${categoryName}', ${page + 1})`);
+                        } else {
+                            // No more products
+                            loadMoreBtn.innerHTML = 'No More Products';
+                            loadMoreBtn.disabled = true;
+                            loadMoreBtn.classList.remove('bg-pink-500', 'hover:bg-pink-600');
+                            loadMoreBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading more products:', error);
+                        loadMoreBtn.innerHTML = 'Error - Try Again';
+                        loadMoreBtn.disabled = false;
                     }
                 });
             }
@@ -446,9 +304,7 @@
         });
     </script>
 
-    <!-- Footer -->
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
-
 </body>
 
 </html>

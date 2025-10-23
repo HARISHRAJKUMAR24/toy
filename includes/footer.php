@@ -56,46 +56,53 @@
                 </div>
 
                 <!-- Social Icons -->
-                <div class="flex flex-col gap-3 md:w-1/3">
-                    <h3 class="font-semibold text-gray-800">Follow Us</h3>
-                    <div class="flex gap-3 justify-center md:justify-start">
-                        <?php if (getSettings("facebook")): ?>
-                            <a href="<?= getSettings("facebook") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                                <i class='bx bxl-facebook text-pink-500 text-lg'></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (getSettings("instagram")): ?>
-                            <a href="<?= getSettings("instagram") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                                <i class='bx bxl-instagram text-pink-500 text-lg'></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (getSettings("twitter")): ?>
-                            <a href="<?= getSettings("twitter") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                                <i class='bx bxl-twitter text-pink-500 text-lg'></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (getSettings("linkedin")): ?>
-                            <a href="<?= getSettings("linkedin") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                                <i class='bx bxl-linkedin text-pink-500 text-lg'></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (getSettings("youtube")): ?>
-                            <a href="<?= getSettings("youtube") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                                <i class='bx bxl-youtube text-pink-500 text-lg'></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (getSettings("pinterest")): ?>
-                            <a href="<?= getSettings("pinterest") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                                <i class='bx bxl-pinterest text-pink-500 text-lg'></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (getSettings("sharechat")): ?>
-                            <a href="<?= getSettings("sharechat") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                                <img src="<?= APP_URL ?>assets/img/sharechat.webp" alt="ShareChat" class="w-5 h-5">
-                            </a>
-                        <?php endif; ?>
+                <?php
+                // Check if at least one social media link exists
+                $hasSocialLinks = getSettings("facebook") || getSettings("instagram") || getSettings("twitter") || getSettings("linkedin") || getSettings("youtube") || getSettings("pinterest") || getSettings("sharechat");
+
+                if ($hasSocialLinks): ?>
+                    <div class="flex flex-col gap-3 md:w-1/3">
+                        <h3 class="font-semibold text-gray-800">Follow Us</h3>
+                        <div class="flex gap-3 justify-center md:justify-start">
+                            <?php if (getSettings("facebook")): ?>
+                                <a href="<?= getSettings("facebook") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
+                                    <i class='bx bxl-facebook text-pink-500 text-lg'></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (getSettings("instagram")): ?>
+                                <a href="<?= getSettings("instagram") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
+                                    <i class='bx bxl-instagram text-pink-500 text-lg'></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (getSettings("twitter")): ?>
+                                <a href="<?= getSettings("twitter") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
+                                    <i class='bx bxl-twitter text-pink-500 text-lg'></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (getSettings("linkedin")): ?>
+                                <a href="<?= getSettings("linkedin") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
+                                    <i class='bx bxl-linkedin text-pink-500 text-lg'></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (getSettings("youtube")): ?>
+                                <a href="<?= getSettings("youtube") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
+                                    <i class='bx bxl-youtube text-pink-500 text-lg'></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (getSettings("pinterest")): ?>
+                                <a href="<?= getSettings("pinterest") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
+                                    <i class='bx bxl-pinterest text-pink-500 text-lg'></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (getSettings("sharechat")): ?>
+                                <a href="<?= getSettings("sharechat") ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full hover:bg-pink-200 transition">
+                                    <img src="<?= APP_URL ?>assets/img/sharechat.webp" alt="ShareChat" class="w-5 h-5">
+                                </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
+
 
             </div>
 
@@ -161,5 +168,4 @@
         <script src="<?= APP_URL ?>shop/javascripts/orders.js"></script>
 
 
-        <!--This File For report product View-->
-        <script src="<?= APP_URL ?>shop/javascripts/product.js"></script>
+ 

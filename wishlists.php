@@ -24,48 +24,67 @@
 
 
     <!-- My Wishlist Container Start-->
-    <div class="container mx-auto px-4 py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-4 text-center">My Wishlist
         </h1>
 
         <!--Wish List 2 Main Container Left & Right-->
         <div class="flex flex-col md:flex-row gap-8">
 
-            <!-- Left Side: Profile Section -->
-            <div class="w-full md:w-1/4">
-                <div class="bg-white/70 backdrop-blur-[12px] border border-white/50 rounded-2xl p-6 shadow-lg">
+
+            <!-- Left Sidebar -->
+            <div class="w-full lg:w-1/3 xl:w-2/5">
+                <div class="bg-white/70 backdrop-blur-md border border-white/50 rounded-2xl p-6 shadow-lg">
+
+                    <!-- Profile Info -->
                     <div class="flex flex-col items-center mb-6">
                         <div class="relative mb-4">
-                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
-                                alt="User Profile" class="w-24 h-24 rounded-full border-4 border-white/50 object-cover">
-                            <div
-                                class="absolute bottom-0 right-0 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center border-2 border-white">
+                            <img id="previewImage"
+                                src="<?= !empty(customer('photo')) ? UPLOADS_URL . customer('photo') : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80' ?>"
+                                alt="User Profile"
+                                class="w-24 h-24 rounded-full border-4 border-white/50 object-cover transition-all duration-300 shadow-sm">
+                            <label for="photo"
+                                class="absolute bottom-0 right-0 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center border-2 border-white cursor-pointer hover:bg-pink-600 transition"
+                                onclick="window.location.href='<?= $storeUrl ?>profile'">
                                 <i class='bx bx-edit text-white text-sm'></i>
-                            </div>
+                            </label>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-800">Rahul Sharma</h2>
-                        <p class="text-gray-600 text-sm">rahul@example.com</p>
+                        <h2 class="text-xl font-semibold text-gray-800"><?= customer("name") ?></h2>
+                        <p class="text-gray-600 text-sm"><?= customer("email") ?></p>
                     </div>
 
-                    <div class="space-y-4">
-                        <a href="#"
-                            class="flex items-center gap-3 p-3 rounded-xl text-gray-700 hover:bg-pink-100 hover:text-pink-600 transition">
-                            <i class='bx bx-user-circle text-xl'></i>
-                            <span>My Profile</span>
+                    <!-- Sidebar Links -->
+                    <div class="space-y-4 w-full">
+                        <a href="<?= $storeUrl ?>profile"
+                            class="flex items-center gap-3 p-3 rounded-xl transition <?= $page == 'profile.php' ? 'bg-indigo-100 text-indigo-500' : 'bg-gray-100 text-gray-700 hover:bg-pink-100 hover:text-pink-600' ?>">
+                            <span class="bg-white border transition w-[44px] h-[44px] flex items-center justify-center rounded-full text-xl">
+                                <i class='bx bx-user'></i>
+                            </span>
+                            <span class="font-medium">My Profile</span>
                         </a>
-                        <a href="#"
-                            class="flex items-center gap-3 p-3 rounded-xl text-gray-700 hover:bg-pink-100 hover:text-pink-600 transition">
-                            <i class='bx bx-package text-xl'></i>
-                            <span>My Orders</span>
+
+                        <a href="<?= $storeUrl ?>orders"
+                            class="flex items-center gap-3 p-3 rounded-xl transition <?= $page == 'orders.php' ? 'bg-orange-100 text-orange-500' : 'bg-gray-100 text-gray-700 hover:bg-pink-100 hover:text-pink-600' ?>">
+                            <span class="bg-white border transition w-[44px] h-[44px] flex items-center justify-center rounded-full text-xl">
+                                <i class='bx bx-package'></i>
+                            </span>
+                            <span class="font-medium">My Orders</span>
                         </a>
-                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-pink-100 text-pink-600 transition">
-                            <i class='bx bx-heart text-xl'></i>
-                            <span>Wishlists</span>
+
+                        <a href="<?= $storeUrl ?>wishlists"
+                            class="flex items-center gap-3 p-3 rounded-xl transition <?= $page == 'wishlists.php' ? 'bg-pink-100 text-pink-500' : 'bg-gray-100 text-gray-700 hover:bg-pink-100 hover:text-pink-600' ?>">
+                            <span class="bg-white border transition w-[44px] h-[44px] flex items-center justify-center rounded-full text-xl">
+                                <i class='bx bx-heart'></i>
+                            </span>
+                            <span class="font-medium">Wishlists</span>
                         </a>
-                        <a href="#"
-                            class="flex items-center gap-3 p-3 rounded-xl text-gray-700 hover:bg-pink-100 hover:text-pink-600 transition">
-                            <i class='bx bx-log-out text-xl'></i>
-                            <span>Logout</span>
+
+                        <a href="<?= $storeUrl ?>logout"
+                            class="flex items-center gap-3 p-3 rounded-xl transition bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-500">
+                            <span class="bg-white border transition w-[44px] h-[44px] flex items-center justify-center rounded-full text-xl">
+                                <i class='bx bx-log-out'></i>
+                            </span>
+                            <span class="font-medium">Logout</span>
                         </a>
                     </div>
                 </div>
@@ -73,7 +92,6 @@
 
             <!-- Right Side: Wishlist Products -->
             <div class="w-full md:w-3/4">
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Your Favorite Items</h2>
                 <p class="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mb-4">
                     Quick grab! These products are waiting for you to bring them home.
                 </p>
