@@ -46,7 +46,7 @@
             </li>
 
             <li>
-                <a href="#" class="hover:text-pink-500 transition-all duration-300">New Arrivals</a>
+                <a href="<?= $storeUrl ?>new-arrivals" class="hover:text-pink-500 transition-all duration-300">New Arrivals</a>
             </li>
         </ul>
 
@@ -143,7 +143,7 @@
                     <?php endforeach; ?>
                 </ul>
             </li>
-
+            <li><a href="<?= $storeUrl ?>new-arrivals" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">New Arrivals</a></li>
             <li><a href="#" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">About</a></li>
             <li><a href="#" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">Contact</a></li>
         </ul>

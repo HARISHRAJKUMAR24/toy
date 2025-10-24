@@ -39,7 +39,8 @@
 
     <!--Footer File Includes that file has all JS Files includes links-->
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
-
+        <!--This File For Cart Page View-->
+        <script src="<?= APP_URL ?>shop/javascripts/cart.js"></script>
 
 </body>
 

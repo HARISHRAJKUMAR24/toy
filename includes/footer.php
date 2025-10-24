@@ -154,8 +154,7 @@
         <script src="<?= APP_URL ?>assets/js/global.js"></script>
         <script src="<?= APP_URL ?>assets/js/theme3/app.js"></script>
 
-        <!--This File For Cart Page View-->
-        <script src="<?= APP_URL ?>shop/javascripts/cart.js"></script>
+
 
 
         <!--This File For Checkout -->
@@ -168,4 +167,19 @@
         <script src="<?= APP_URL ?>shop/javascripts/orders.js"></script>
 
 
- 
+        <script>
+            $(document).on("click", ".searchBtn", function(e) {
+                e.preventDefault();
+                console.log('ssss');
+                const searchInput = $(".searchInput");
+                const searchCategory = $(".searchCategory");
+                let url = '';
+                console.log('searchCategory ' + searchCategory.val());
+                if (searchCategory.val() == "undefined") {
+                    url = '<?= $storeUrl ?>search/' + searchInput.val();
+                } else {
+                    url = '<?= $storeUrl ?>search/' + searchInput.val() + "?category=" + searchCategory.val();
+                }
+                if (searchInput.val() !== "") window.location.href = url;
+            });
+        </script>

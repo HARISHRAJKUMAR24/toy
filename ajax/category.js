@@ -33,7 +33,7 @@ function loadMoreData() {
       },
       success: function (response) {
         if (response != "") {
-          $("#content").append(response);
+          $("#p_c_content").append(response);
           page++;
           isLoading = false;
         } else {

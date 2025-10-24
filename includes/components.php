@@ -34,7 +34,8 @@
 // =====================
 // BADGE FUNCTIONS
 // =====================
-function calculateSavePercent($mrp_price, $price) {
+function calculateSavePercent($mrp_price, $price)
+{
     $savePercent = 0;
     if ($mrp_price && $mrp_price > $price) {
         $savePercent = round((($mrp_price - $price) / $mrp_price) * 100);
@@ -42,20 +43,21 @@ function calculateSavePercent($mrp_price, $price) {
     return $savePercent;
 }
 
-function displayProductBadge($badge, $savePercent = 0) {
+function displayProductBadge($badge, $savePercent = 0)
+{
     if ($badge || $savePercent > 0) {
         $html = '<div class="absolute top-2 left-2 flex flex-col items-center justify-center min-w-[3.5rem] px-2 py-1 
                        bg-gradient-to-b from-red-600 to-red-800 text-white rounded shadow-lg border-2 border-red-300 border-opacity-50 
                        text-[6px] sm:text-[8px] font-bold uppercase text-center">
                     <span>' . strtoupper($badge ?: 'SAVE') . '</span>';
-        
+
         if ($savePercent > 0) {
             $html .= '<span class="text-sm font-black leading-none">' . $savePercent . '%</span>';
         }
-        
+
         $html .= '<div class="absolute -bottom-1 w-4/5 h-1 bg-red-900 rounded-b-lg opacity-80"></div>
                 </div>';
-        
+
         return $html;
     }
     return '';
@@ -138,7 +140,7 @@ function getProductHtml($id)
     $wishlist = '<button class="absolute top-2 right-2 
         w-7 h-7 sm:w-8 sm:h-8 md:w-7 md:h-7
         flex items-center justify-center 
-        rounded-full shadow-lg transition transform 
+        rounded-full sadow-lg transition transform 
         hover:scale-110 handleWishlist ' . $btnBg . '" 
         data-id="' . $id . '">
         <i class="fa-solid fa-heart 
@@ -154,7 +156,7 @@ function getProductHtml($id)
 
     // Add badge display
     $html .= displayProductBadge($badge, $savePercent);
-    
+
     // Add wishlist button
     $html .= $wishlist . '</div>';
 
@@ -164,24 +166,25 @@ function getProductHtml($id)
                 <div class="flex items-center mb-2 sm:mb-3"> </div>';
 
     // Variant dropdown - Show if any variants exist
+    // Variant dropdown - Show if any variants exist
     if ($hasAdvancedVariants || $hasBasicVariants) {
         $html .= '<div class="mb-2 sm:mb-3">
-                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Select Option:</label>
-                    <div class="relative">
-                        <select class="variantSelect block w-full appearance-none border border-gray-300 rounded-lg bg-white px-3 py-2 pr-8 text-gray-700 text-xs sm:text-sm">
-                            <option value="" selected disabled>Select Option</option>';
+                <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1"></label>
+                <div class="relative">
+                    <select class="variantSelect block w-full appearance-none border border-gray-300 rounded-lg bg-white px-3 py-2 pr-8 text-gray-700 text-xs sm:text-sm">
+                        <option value="" selected disabled>Select Option</option>';
 
         // ALWAYS show main product option in dropdown, even for advanced variants
         $html .= '<option value="main" 
-                    data-image="' . UPLOADS_URL . $image . '" 
-                    data-price="' . $price . '" 
-                    data-mrp="' . $mrp_price . '" 
-                    data-stock="' . $totalStocks . '" 
-                    data-unlimited="' . (getData("unlimited_stock", "seller_products", "id='$id'") ?? 0) . '" 
-                    data-variant-type="main"
-                    data-is-main="true">
-                    ' . htmlspecialchars(!empty($variation) ? $variation : $name) . '
-                </option>';
+                data-image="' . UPLOADS_URL . $image . '" 
+                data-price="' . $price . '" 
+                data-mrp="' . $mrp_price . '" 
+                data-stock="' . $totalStocks . '" 
+                data-unlimited="' . (getData("unlimited_stock", "seller_products", "id='$id'") ?? 0) . '" 
+                data-variant-type="main"
+                data-is-main="true">
+                ' . htmlspecialchars(!empty($variation) ? $variation : $name) . '
+            </option>';
 
         // Add basic variants
         if ($hasBasicVariants) {
@@ -189,15 +192,15 @@ function getProductHtml($id)
             while ($bv = $basicVariants->fetch(PDO::FETCH_ASSOC)) {
                 $stock = ($bv['unlimited_stock'] ?? 0) == 1 ? "Unlimited" : (int)($bv['stock'] ?? 0);
                 $html .= '<option value="' . $bv['id'] . '" 
-                    data-image="' . UPLOADS_URL . ($bv['image'] ?? $image) . '" 
-                    data-price="' . $bv['price'] . '" 
-                    data-mrp="' . $bv['mrp_price'] . '" 
-                    data-stock="' . $stock . '" 
-                    data-unlimited="' . ($bv['unlimited_stock'] ?? 0) . '" 
-                    data-variant-type="basic"
-                    data-is-main="false">
-                    ' . htmlspecialchars($bv['variation'] ?? $bv['name'] ?? "Variant") . '
-                </option>';
+                data-image="' . UPLOADS_URL . ($bv['image'] ?? $image) . '" 
+                data-price="' . $bv['price'] . '" 
+                data-mrp="' . $bv['mrp_price'] . '" 
+                data-stock="' . $stock . '" 
+                data-unlimited="' . ($bv['unlimited_stock'] ?? 0) . '" 
+                data-variant-type="basic"
+                data-is-main="false">
+                ' . htmlspecialchars($bv['variation'] ?? $bv['name'] ?? "Variant") . '
+            </option>';
             }
         }
 
@@ -218,25 +221,39 @@ function getProductHtml($id)
                 $stock = ($av['unlimited_stock'] ?? 0) == 1 ? "Unlimited" : (int)($av['stock'] ?? 0);
 
                 $html .= '<option value="' . $av['id'] . '" 
-                    data-image="' . UPLOADS_URL . ($av['image'] ?? $image) . '" 
-                    data-price="' . $av['price'] . '" 
-                    data-mrp="' . $av['mrp_price'] . '" 
-                    data-stock="' . $stock . '" 
-                    data-unlimited="' . ($av['unlimited_stock'] ?? 0) . '" 
-                    data-variant-type="advanced"
-                    data-is-main="false">
-                    ' . htmlspecialchars($variantLabel) . '
-                </option>';
+                data-image="' . UPLOADS_URL . ($av['image'] ?? $image) . '" 
+                data-price="' . $av['price'] . '" 
+                data-mrp="' . $av['mrp_price'] . '" 
+                data-stock="' . $stock . '" 
+                data-unlimited="' . ($av['unlimited_stock'] ?? 0) . '" 
+                data-variant-type="advanced"
+                data-is-main="false">
+                ' . htmlspecialchars($variantLabel) . '
+            </option>';
             }
         }
 
         $html .= '</select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                    <svg class="h-3 w-3 sm:h-4 sm:w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                  </div>
-                  </div></div>';
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                <svg class="h-3 w-3 sm:h-4 sm:w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+              </div></div>';
+    } else {
+        // Show visitors count when no variants exist
+        $visitors = getData("visitors", "seller_products", "id='$id'") ?: 0;
+        $html .= '<div class="mb-2 sm:mb-3">
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span class="flex items-center gap-1">
+                        <span class="text-red-500 animate-pulse [animation-duration:2.5s]">❤️</span>
+                        Viewed ' . number_format($visitors) . ' times
+                    </span>
+                    <span class="text-green-600 font-medium">
+                        ' . ($totalStocks > 0 || getData("unlimited_stock", "seller_products", "id='$id'") ? 'In Stock' : 'Out of Stock') . '
+                    </span>
+                </div>
+              </div>';
     }
 
     // Price + Add to Cart

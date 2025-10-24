@@ -106,43 +106,11 @@
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
     <?php
-    if (isset($_GET['slug']) && getData("id", "seller_product_categories", "slug = '{$_GET['slug']}' AND (seller_id = '$sellerId' AND store_id = '$storeId')")) {
-
-        $slug = $_GET['slug'];
-        $id = getData("id", "seller_product_categories", "slug = '{$_GET['slug']}' AND (seller_id = '$sellerId' AND store_id = '$storeId')");
-        $name = getData("name", "seller_product_categories", "slug = '{$_GET['slug']}' AND (seller_id = '$sellerId' AND store_id = '$storeId')");
-        $icon = getData("icon", "seller_product_categories", "slug = '{$_GET['slug']}' AND (seller_id = '$sellerId' AND store_id = '$storeId')");
-
-        $db->prepare("UPDATE seller_product_categories SET visitors = visitors+1 WHERE id = :id")->execute(['id' => $id]);
-
-        // Find the correct category column name
-        $category_column = null;
-        $possible_columns = ['category_id', 'category', 'product_category', 'cat_id', 'category_name'];
-
-        foreach ($possible_columns as $column) {
-            try {
-                $check_stmt = $db->query("SHOW COLUMNS FROM seller_products LIKE '$column'");
-                if ($check_stmt->rowCount() > 0) {
-                    $category_column = $column;
-                    break;
-                }
-            } catch (Exception $e) {
-                // Continue to next column
-                continue;
-            }
-        }
-
-        // Get products for this category
-        if ($category_column) {
-            $products = readData("*", "seller_products", "$category_column = '$id' AND status = 1 ORDER BY id DESC LIMIT 40");
-        } else {
-            // If no category column found, get all products (fallback)
-            $products = readData("*", "seller_products", "status = 1 ORDER BY id DESC LIMIT 40");
-        }
-    } else {
-        redirect($storeUrl);
-    }
-
+    // Get latest products
+    $products_stmt = getProducts(array("limit" => 40));
+    $products = $products_stmt->fetchAll(PDO::FETCH_ASSOC);
+    $products_count = count($products);
+    
     // Categories for navigation
     $categories = getCategories([
         "add_to_menu" => 1,
@@ -150,29 +118,51 @@
     ]);
     ?>
 
+    <!-- New Arrivals Header -->
+    <div class="bg-gradient-to-r from-pink-500 to-rose-500 py-6 text-white">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center gap-4 md:justify-center md:text-center">
+                <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold">New Arrivals</h1>
+                    <p class="text-pink-100 mt-1 text-sm">
+                        <?php
+                        if ($products_count > 0) {
+                            echo $products_count . " new products just arrived";
+                        } else {
+                            echo "Discover our latest products";
+                        }
+                        ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Category Navigation -->
     <?php if (!empty($categories) && $categories->rowCount()): ?>
         <section class="py-4 bg-white border-b shadow-sm">
             <div class="container mx-auto px-4">
                 <div id="categoriesScroll" class="category-scroll flex gap-4 overflow-x-auto px-2 py-1">
-                    <?php foreach ($categories as $category): ?>
-                        <?php
-                        $isActive = ($category['slug'] === $slug) ? 'active-category-card' : '';
-                        ?>
-                        <a href="<?= $storeUrl . "category/" . $category['slug'] ?>"
-                            class="category-card flex-shrink-0 flex flex-col items-center text-center w-20 p-2 rounded-lg <?= $isActive ?>">
+                    <?php foreach ($categories as $cat): ?>
+                        <a href="<?= $storeUrl . "category/" . $cat['slug'] ?>"
+                            class="category-card flex-shrink-0 flex flex-col items-center text-center w-20 p-2 rounded-lg">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 mb-2 flex items-center justify-center shadow-sm category-icon">
-                                <?php if (!empty($category['icon'])): ?>
-                                    <img src="<?= UPLOADS_URL . $category['icon'] ?>"
-                                        alt="<?= $category['name'] ?>"
+                                <?php if (!empty($cat['icon'])): ?>
+                                    <img src="<?= UPLOADS_URL . $cat['icon'] ?>"
+                                        alt="<?= $cat['name'] ?>"
                                         class="w-8 h-8 object-contain rounded-full"
-                                        onerror="this.style.display='none'; this.parentNode.innerHTML='<?= strtoupper(substr($category['name'], 0, 1)) ?>';">
+                                        onerror="this.style.display='none'; this.parentNode.innerHTML='<?= strtoupper(substr($cat['name'], 0, 1)) ?>';">
                                 <?php else: ?>
-                                    <span class="text-white font-bold"><?= strtoupper(substr($category['name'], 0, 1)) ?></span>
+                                    <span class="text-white font-bold"><?= strtoupper(substr($cat['name'], 0, 1)) ?></span>
                                 <?php endif; ?>
                             </div>
-                            <span class="text-xs font-medium text-gray-700 truncate w-full category-name <?= $isActive ? 'text-white' : '' ?>">
-                                <?= htmlspecialchars($category['name']) ?>
+                            <span class="text-xs font-medium text-gray-700 truncate w-full category-name">
+                                <?= htmlspecialchars($cat['name']) ?>
                             </span>
                         </a>
                     <?php endforeach; ?>
@@ -181,57 +171,14 @@
         </section>
     <?php endif; ?>
 
-<!-- Active Category Header -->
-<div class="bg-gradient-to-r from-pink-500 to-rose-500 py-6 text-white">
-    <div class="container mx-auto px-4">
-        <div class="flex items-center gap-4 md:justify-center md:text-center">
-            <?php if (!empty($icon)): ?>
-                <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-                    <img src="<?= UPLOADS_URL . $icon ?>" alt="<?= $name ?>" class="w-12 h-12 object-contain">
-                </div>
-            <?php endif; ?>
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-bold"><?= $name ?></h1>
-                <p class="text-pink-100 mt-1 text-sm">
-                    <?php
-                    if ($products && $products->rowCount() > 0) {
-                        echo $products->rowCount() . " products found in " . $name . " category";
-                    } else {
-                        echo "Discover amazing products in " . $name . " category";
-                    }
-                    ?>
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
     <!-- Main Content -->
     <div class="py-8">
         <div class="!px-5 lg:container">
             <div class="flex flex-col gap-6 lg:flex-row">
-                <!-- Left -->
+                <!-- Left Sidebar -->
                 <div class="lg:w-[20%] font-questrial">
                     <div class="flex flex-col gap-5">
-                        <?php if (getData("id", "seller_product_categories", "parent_category = '$id'")) : ?>
-                            <div class="py-5 bg-white rounded-md">
-                                <h3 class="pb-5 text-xl font-bold border-b px-5">Sub Categories</h3>
-                                <div class="h-auto overflow-y-auto">
-                                    <?php
-                                    $sub_categories = getCategories(array("parent_category" => $id));
-                                    foreach ($sub_categories as $key => $item) :
-                                    ?>
-                                        <a href="<?= $storeUrl . "category/"  . $item['slug'] ?>" class="transition hover:bg-primary-500 hover:text-white w-full px-5 h-[50px] flex items-center gap-3 font-medium border-b">
-                                            <img src="<?= UPLOADS_URL . $item['icon'] ?>" alt="<?= $item['name'] ?>" class="w-[24px] h-[24px] object-contain">
-                                            <?= $item['name'] ?>
-                                        </a>
-                                    <?php endforeach ?>
-                                </div>
-                            </div>
-                        <?php endif ?>
-
+                        <!-- Price Range Filter -->
                         <div class="bg-white rounded-md p-5">
                             <h3 class="pb-5 mb-5 text-xl font-bold border-b">Price Range</h3>
                             <form id="priceForm">
@@ -256,9 +203,11 @@
                 <!-- Right Products Section -->
                 <div class="lg:w-[80%]">
                     <!-- Sorting Dropdown -->
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-gray-800">Products</h2>
-                        <div class="sort-dropdown relative">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div class="text-center sm:text-left w-full sm:w-auto order-2 sm:order-1">
+                            <h2 class="text-xl font-bold text-gray-800">New Arrivals</h2>
+                        </div>
+                        <div class="sort-dropdown relative w-auto flex justify-end order-1 sm:order-2">
                             <select id="sortSelect" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white cursor-pointer appearance-none">
                                 <option value="default">Sort By</option>
                                 <option value="low-high">Price: Low to High</option>
@@ -270,21 +219,12 @@
                         </div>
                     </div>
 
-                    <!-- Debug Info -->
-                    <?php if (!$category_column): ?>
-                        <div class="mb-4 p-3 bg-yellow-100 border border-yellow-400 rounded-lg">
-                            <p class="text-sm text-yellow-800">
-                                <strong>Note:</strong> Showing all products (category filtering not available)
-                            </p>
-                        </div>
-                    <?php endif; ?>
-
                     <!-- Products Grid -->
                     <div class="grid xl:grid-cols-4 lg:grid-cols-3 xs:grid-cols-2 sm:gap-3 gap-2" id="content">
-                        <?php if ($products && $products->rowCount() > 0): ?>
-                            <?php while ($product = $products->fetch(PDO::FETCH_ASSOC)): ?>
+                        <?php if (!empty($products)): ?>
+                            <?php foreach ($products as $product): ?>
                                 <?= getProductHtml($product['id']) ?>
-                            <?php endwhile; ?>
+                            <?php endforeach; ?>
                         <?php else: ?>
                             <!-- Empty State -->
                             <div class="col-span-full text-center py-12">
@@ -298,16 +238,16 @@
                                                 stroke="currentColor"
                                                 class="w-14 h-14 sm:w-20 sm:h-20 text-pink-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M16 11V7a4 4 0 10-8 0v4M4 9h16l-1.5 11.25A2.25 2.25 0 0116.25 22H7.75A2.25 2.25 0 015.5 20.25L4 9z" />
+                                                    d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
                                             </svg>
                                         </div>
                                     </div>
 
                                     <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-3">
-                                        No Products Found
+                                        No New Products
                                     </h2>
                                     <p class="text-gray-500 text-base sm:text-lg mb-6">
-                                        No products found in <?= $name ?> category.
+                                        Check back soon for new arrivals!
                                     </p>
 
                                     <a href="<?= $storeUrl ?>"
@@ -327,7 +267,7 @@
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
 
     <script>
-        // Get min and max price from URL parameters
+        // Get price parameters
         const urlParams = new URLSearchParams(window.location.search);
         const minPrice = urlParams.get('min_price') || '';
         const maxPrice = urlParams.get('max_price') || '';
@@ -417,7 +357,6 @@
             return price;
         }
 
-
         // Helper function to extract product ID (for latest/oldest sorting)
         function getProductId(productElement) {
             // Try to get ID from data attributes
@@ -438,7 +377,7 @@
                 if (idMatch) return parseInt(idMatch[1]);
             }
 
-            // Fallback: use timestamp or random number (not ideal)
+            // Fallback: use timestamp or random number
             return Date.now() + Math.random();
         }
 
@@ -508,7 +447,7 @@
             window.location.href = url.toString();
         }
 
-        // Currency symbol helper (simplified)
+        // Currency symbol helper
         function currencyToSymbol(currency) {
             const symbols = {
                 'USD': '$',
@@ -547,7 +486,7 @@
             initializeVariantSelection();
         });
 
-        // Variant selection functionality (your existing code)
+        // Variant selection functionality
         function initializeVariantSelection() {
             document.querySelectorAll('.variantSelect').forEach(select => {
                 select.addEventListener('change', function() {

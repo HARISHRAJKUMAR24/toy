@@ -52,12 +52,15 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
 
 <body class="font-sans bg-pink-50 min-h-screen">
 
+    <!-- Minimum Order Amount Start-->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
         <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
             Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
         </div>
     <?php endif; ?>
+    <!-- Minimum Order Amount End-->
 
+    <!--Php File Include For Nav Bar-->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
     <?php
@@ -163,21 +166,21 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
         }
     }
 
-    // Wishlist check - FIXED: Check if wishlist table exists first
-    $wishlistExists = false;
-    if (isLoggedIn()) {
-        try {
-            // Check if wishlist table exists by querying it
-            $tableCheck = $db->query("SHOW TABLES LIKE 'wishlist'");
-            if ($tableCheck && $tableCheck->rowCount() > 0) {
-                $wishlistQuery = readData("*", "wishlist", "customer_id='$cookie_id' AND product_id='$id'");
-                $wishlistExists = $wishlistQuery && $wishlistQuery->rowCount() > 0;
-            }
-        } catch (PDOException $e) {
-            // If table doesn't exist, wishlistExists remains false
-            $wishlistExists = false;
-        }
-    }
+    // // Wishlist check - FIXED: Check if wishlist table exists first
+    // $wishlistExists = false;
+    // if (isLoggedIn()) {
+    //     try {
+    //         // Check if wishlist table exists by querying it
+    //         $tableCheck = $db->query("SHOW TABLES LIKE 'wishlist'");
+    //         if ($tableCheck && $tableCheck->rowCount() > 0) {
+    //             $wishlistQuery = readData("*", "wishlist", "customer_id='$cookie_id' AND product_id='$id'");
+    //             $wishlistExists = $wishlistQuery && $wishlistQuery->rowCount() > 0;
+    //         }
+    //     } catch (PDOException $e) {
+    //         // If table doesn't exist, wishlistExists remains false
+    //         $wishlistExists = false;
+    //     }
+    // }
 
     // Additional images
     $additionalImages = [];
@@ -325,27 +328,41 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                 <i class="fas fa-shopping-cart mr-2"></i> View Cart
                             </a>
 
-                            <?php if (isLoggedIn()) : ?>
-                                <?php
-                                // Only show wishlist button if the table exists
-                                try {
-                                    $tableCheck = $db->query("SHOW TABLES LIKE 'wishlist'");
-                                    if ($tableCheck && $tableCheck->rowCount() > 0):
-                                ?>
-                                        <button id="wishlistBtn" data-id="<?= $id ?>" class="wishlistBtn px-3 py-2 rounded-lg border <?= $wishlistExists ? 'bg-rose-500 text-white' : 'bg-white text-pink-500' ?> font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
-                                            <i class="<?= $wishlistExists ? 'fas' : 'far' ?> fa-heart"></i>
-                                        </button>
-                                <?php
-                                    endif;
-                                } catch (PDOException $e) {
-                                    // Don't show wishlist button if table doesn't exist
-                                }
-                                ?>
-                            <?php else: ?>
-                                <a href="<?= $storeUrl ?>login" class="px-3 py-2 rounded-lg border bg-white text-pink-500 font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
+
+
+                            <!-- <a href="//$storeUrl ?>login" class="px-3 py-2 rounded-lg border bg-white text-pink-500 font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
                                     <i class="far fa-heart"></i>
-                                </a>
-                            <?php endif; ?>
+                                </a> -->
+
+                            <?php
+                            // Ensure $variantId exists
+                            $variantId = $variantId ?? ''; // fallback to empty string if not defined
+
+                            // Wishlist Button - Medium size, normal flow
+                            if (isLoggedIn()) {
+                                $inWishlist = getData("id", "customer_wishlists", "customer_id='$customerId' AND product_id='$id' AND other=''") ? true : false;
+
+                                $btnBg   = $inWishlist ? "bg-white" : "bg-gray-500";
+                                $btnText = $inWishlist ? "text-rose-500" : "text-white";
+                                $title   = $inWishlist ? "Remove from Wishlist" : "Add to Wishlist";
+
+                                echo '<button 
+        id="wishlistBtn" 
+        data-id="' . $id . '" 
+        data-variant="' . $variantId . '" 
+        class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 handleWishlist ' . $btnBg . '" 
+        title="' . $title . '">
+        <i class="fa-solid fa-heart text-sm sm:text-base ' . $btnText . '"></i>
+    </button>';
+                            } else {
+                                // Not logged in → redirect to login
+                                echo '<a href="' . $storeUrl . 'wishlists" 
+       class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 bg-gray-200" 
+       title="Login to add wishlist">
+       <i class="fa-solid fa-heart text-sm sm:text-base text-gray-500"></i>
+    </a>';
+                            }
+                            ?>
 
                             <!-- Report Button -->
                             <button type="button" id="reportThisProduct" class="px-3 py-2 sm:px-4 sm:py-2 md:px-4 md:py-2 rounded-lg bg-red-500 text-white shadow hover:bg-red-600 transition transform hover:scale-105 flex items-center justify-center text-sm sm:text-base">
