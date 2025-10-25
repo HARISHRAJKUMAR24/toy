@@ -102,7 +102,7 @@
             font-size: 1.25rem;
             box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
             position: relative;
-            z-index: 2;
+            z-index: 0;
             flex-shrink: 0;
             transition: all 0.3s ease;
         }
@@ -636,12 +636,133 @@
                 </form>
 
                 <!-- Add Address Modal -->
-                <div id="addAddressModal" class="fixed top-0 left-0 flex items-center justify-center hidden w-full h-full transition opacity-0 bg-black/80">
-                    <!-- Your existing modal code remains the same -->
-                    <div class="p-5 bg-white rounded-xl max-w-[750px] w-full shadow">
-                        <!-- ... modal content ... -->
+                <div id="addAddressModal" class="fixed top-0 left-0 flex items-center justify-center hidden w-full h-full bg-black/70 backdrop-blur-sm transition-opacity duration-300 opacity-0 z-50">
+                    <div class="p-6 bg-white/95 rounded-2xl max-w-[750px] w-full shadow-2xl border border-gray-100">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-6 border-b pb-3">
+                            <h3 class="text-2xl font-semibold text-gray-800">Add Address</h3>
+                            <button class="addAddressToggle w-[44px] h-[44px] bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:shadow-md hover:scale-105 transition">
+                                <i class="text-lg font-medium bx bx-x"></i>
+                            </button>
+                        </div>
+
+                        <!-- Form -->
+                        <form id="addAddressForm" class="max-h-[75vh] overflow-y-auto space-y-5 pb-[50px] lg:pb-0 px-1">
+
+                            <!-- Name -->
+                            <div>
+                                <label for="name" class="block mb-2 font-medium text-gray-600">Name <span class="text-red-500">*</span></label>
+                                <input type="text" name="name" id="name" placeholder="Enter your name"
+                                    class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+                                    value="<?= customer('name') ?>" required>
+                            </div>
+
+                            <!-- Phone + Email -->
+                            <div class="grid gap-5 sm:grid-cols-2">
+                                <div>
+                                    <label for="phone" class="block mb-2 font-medium text-gray-600">Phone Number <span class="text-red-500">*</span></label>
+                                    <input type="tell" name="phone[main]" id="phone" placeholder="XXXXX XXXXX"
+                                        class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition"
+                                        value="<?= customer('phone') ?>" required>
+                                </div>
+                                <div>
+                                    <label for="email" class="block mb-2 font-medium text-gray-600">Email Address</label>
+                                    <input type="email" name="email" id="email" placeholder="Enter your email"
+                                        class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition"
+                                        value="<?= customer('email') ?>">
+                                </div>
+                            </div>
+
+                            <!-- Address -->
+                            <div>
+                                <label for="address" class="block mb-2 font-medium text-gray-600">Address <span class="text-red-500">*</span></label>
+                                <input type="text" name="address" id="address" placeholder="Flat / House No, Building, Colony"
+                                    class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition"
+                                    required>
+                            </div>
+
+                            <!-- Area + Landmark -->
+                            <div class="grid gap-5 sm:grid-cols-2">
+                                <div>
+                                    <label for="area" class="block mb-2 font-medium text-gray-600">Locality / Area <small class="text-gray-400">(optional)</small></label>
+                                    <input type="text" name="area" id="area" placeholder="E.g. MG Road, Gandhi Nagar"
+                                        class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition">
+                                </div>
+                                <div>
+                                    <label for="landmark" class="block mb-2 font-medium text-gray-600">Landmark <small class="text-gray-400">(optional)</small></label>
+                                    <input type="text" name="landmark" id="landmark" placeholder="E.g. Near Bank, Chowk, etc."
+                                        class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition">
+                                </div>
+                            </div>
+
+                            <!-- City, Pincode, State -->
+                            <div class="grid gap-5 sm:grid-cols-3">
+                                <div>
+                                    <label for="city" class="block mb-2 font-medium text-gray-600">City <span class="text-red-500">*</span></label>
+                                    <input type="text" name="city" id="city" placeholder="Enter city"
+                                        class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition"
+                                        required>
+                                </div>
+
+                                <div>
+                                    <label for="pin_code" class="block mb-2 font-medium text-gray-600">Pin Code <span class="text-red-500">*</span></label>
+                                    <input type="text" name="pin_code" id="pin_code" placeholder="Enter pin code"
+                                        class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition"
+                                        required>
+                                </div>
+
+                                <div>
+                                    <label for="state" class="block mb-2 font-medium text-gray-600">State <span class="text-red-500">*</span></label>
+                                    <?php if ($storeCountry == "IN") { ?>
+                                        <select name="state" id="state"
+                                            class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition"
+                                            required>
+                                            <option value="" disabled hidden selected>Select state</option>
+                                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                            <option value="Assam">Assam</option>
+                                            <option value="Bihar">Bihar</option>
+                                            <option value="Goa">Goa</option>
+                                            <option value="Gujarat">Gujarat</option>
+                                            <option value="Haryana">Haryana</option>
+                                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                            <option value="Jharkhand">Jharkhand</option>
+                                            <option value="Karnataka">Karnataka</option>
+                                            <option value="Kerala">Kerala</option>
+                                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                            <option value="Maharashtra">Maharashtra</option>
+                                            <option value="Manipur">Manipur</option>
+                                            <option value="Meghalaya">Meghalaya</option>
+                                            <option value="Mizoram">Mizoram</option>
+                                            <option value="Nagaland">Nagaland</option>
+                                            <option value="Odisha">Odisha</option>
+                                            <option value="Punjab">Punjab</option>
+                                            <option value="Rajasthan">Rajasthan</option>
+                                            <option value="Sikkim">Sikkim</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Telangana">Telangana</option>
+                                            <option value="Tripura">Tripura</option>
+                                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                            <option value="Uttarakhand">Uttarakhand</option>
+                                            <option value="West Bengal">West Bengal</option>
+                                        </select>
+                                    <?php } else { ?>
+                                        <input type="text" name="state" id="state" placeholder="Enter state"
+                                            class="border border-gray-200 font-medium text-sm h-12 px-4 rounded-xl w-full shadow-sm focus:ring-2 focus:ring-primary-500 transition"
+                                            required>
+                                    <?php } ?>
+                                </div>
+                            </div>
+
+                            <!-- Submit -->
+                            <button
+                                class="bg-gradient-to-r bg-primary-500 hover:from-primary-600 hover:to-primary-700 h-[50px] rounded-xl font-semibold text-base text-white flex items-center justify-center w-full transition-all shadow-md hover:shadow-lg">
+                                Add Address
+                            </button>
+                        </form>
                     </div>
                 </div>
+
             <?php } else { ?>
                 <!-- Empty cart state -->
                 <div class="p-6 sm:p-8 w-full text-center bg-white rounded-2xl shadow-lg">
@@ -861,6 +982,16 @@
 
             // You can add similar checks for other pre-selected radios if needed
         }
+    </script>
+    <script>
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            onlyCountries: ['IN'],
+            preferredCountries: ["<?= getSettings("country") ?>"],
+            hiddenInput: "full",
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
     </script>
 
     <!--Footer File Includes that file has all JS Files includes links-->

@@ -307,6 +307,16 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                             Viewed <?= (int)$visitors ?> times
                         </p>
 
+                        <!-- Product Description - ADD THIS SECTION -->
+                        <?php if (!empty($description)): ?>
+                            <div class="mt-6 mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-3">Product Description</h3>
+                                <div class="space-y-3 text-base text-gray-600 leading-relaxed">
+                                    <?= $description ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
                         <!-- Add to Cart -->
                         <div class="flex flex-wrap gap-4 mb-6 items-center mt-4">
                             <?php

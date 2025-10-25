@@ -34,10 +34,12 @@
                 <ul class="absolute top-full left-0 bg-white p-2 rounded-lg shadow-lg opacity-0 translate-y-2 pointer-events-none transition duration-300 flex flex-col gap-1 max-h-[60vh] overflow-y-auto shop-menu w-max">
                     <?php
                     $categories = getCategories();
-                    foreach ($categories as $category) : ?>
+                    foreach ($categories as $category) :
+                        $categoryUrl = $storeUrl . "category/" . $category['slug']; // Create category URL same as reference
+                    ?>
                         <li>
-                            <a href="<?= $storeUrl ?>shop?category=<?= $category['id'] ?>"
-                                class="block py-1 px-2 hover:text-pink-500">
+                            <a href="<?= $categoryUrl ?>"
+                                class="block py-1 px-2 hover:text-pink-500 transition-colors duration-300">
                                 <?= $category['name'] ?>
                             </a>
                         </li>
@@ -52,10 +54,23 @@
 
         <!-- Right: Icons -->
         <div class="flex items-center gap-3 sm:gap-4">
-            <div class="hidden md:flex items-center bg-white/30 rounded-full px-3 py-1">
-                <i class='bx bx-search text-lg text-gray-700'></i>
-                <input type="text" placeholder="Search..."
-                    class="bg-transparent outline-none px-2 text-sm w-32 text-gray-700 placeholder:text-gray-700">
+            <!-- Desktop Search -->
+            <div class="hidden md:flex items-center gap-5 w-full sm:w-[220px] md:w-[260px] lg:w-[300px]">
+                <div class="lg:w-[435px] w-full relative" id="searchForDesktop">
+                    <div class="relative">
+                        <input type="text"
+                            class="searchInput bg-white rounded-xl h-[52px] pl-3 pr-4 text-sm w-full placeholder-gray-500 border-2 border-pink-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100/50 transition-all duration-300 shadow-md"
+                            placeholder="Search...">
+                        <button type="button" class="searchBtn mgc_search_line text-2xl before:!text-primary-500 absolute top-[50%] right-[14px] -translate-y-[50%]"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Search Icon -->
+            <div class="md:hidden">
+                <button id="mobileSearchToggle" class="hover:text-pink-500 transition-all duration-300">
+                    <i class='bx bx-search text-xl sm:text-2xl cursor-pointer'></i>
+                </button>
             </div>
 
             <a href="<?= $storeUrl ?>profile" class="inline-block hover:text-pink-500 transition-all duration-300">
@@ -82,6 +97,41 @@
     </div>
 </nav>
 <!-- Navbar End -->
+
+<!-- Mobile Search Overlay -->
+<div id="mobileSearchOverlay" class="fixed inset-0 bg-gradient-to-br from-pink-50 via-white to-purple-50 z-[999] hidden transition-all duration-500 transform -translate-y-full">
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+        <!-- Decorative background elements -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-pink-200 rounded-full opacity-20 blur-xl"></div>
+        <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-purple-200 rounded-full opacity-20 blur-xl"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-100 rounded-full opacity-10 blur-2xl"></div>
+    </div>
+
+    <div class="relative z-10 h-full flex flex-col">
+        <!-- Header with close button -->
+        <div class="flex justify-between items-center p-6 pt-12 border-b border-pink-100/50 bg-white/30 backdrop-blur-sm">
+            <h2 class="text-xl font-bold text-gray-800">Search Products</h2>
+            <button id="mobileSearchClose" class="p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-pink-50 transition-all duration-300 group">
+                <i class='bx bx-x text-2xl text-gray-600 group-hover:text-pink-500'></i>
+            </button>
+        </div>
+
+        <!-- Search Content -->
+        <div class="flex-1 flex flex-col items-center justify-center px-6 py-8">
+            <!-- Search Input -->
+            <div class="w-full max-w-md">
+                <div class="relative">
+                    <input type="text"
+                        class="searchInputMobile w-full h-16 pl-6 pr-16 text-lg bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-pink-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100/50 shadow-xl transition-all duration-300 placeholder-gray-500"
+                        placeholder="What are you looking for?">
+                    <button type="button" class="searchBtnMobile absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 hover:text-pink-600 transition-colors">
+                    <i class='bx bx-search text-xl'></i>
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Mobile Overlay Start -->
 <div id="menu-overlay" class="fixed inset-0 bg-black/50 z-[90] opacity-0 invisible transition duration-300"></div>
@@ -133,9 +183,11 @@
 
                     <?php
                     $categories = getCategories();
-                    foreach ($categories as $category) : ?>
+                    foreach ($categories as $category) :
+                        $categoryUrl = $storeUrl . "category/" . $category['slug']; // Create category URL
+                    ?>
                         <li>
-                            <a href="<?= $storeUrl ?>shop?category=<?= $category['id'] ?>"
+                            <a href="<?= $categoryUrl ?>"
                                 class="block py-1 text-gray-600 hover:text-pink-500 transition-all duration-300 text-sm">
                                 <?= $category['name'] ?>
                             </a>
@@ -148,13 +200,104 @@
             <li><a href="#" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">Contact</a></li>
         </ul>
 
-        <!--Search Tab-->
-        <div class="mt-6 pt-4 border-t border-gray-200">
-            <div class="flex items-center bg-white rounded-full px-3 py-2 shadow-sm">
-                <i class='bx bx-search text-base text-gray-700'></i>
-                <input type="text" placeholder="Search..." class="bg-transparent outline-none px-2 text-sm w-full">
+        <!-- Search in Mobile Menu -->
+        <div class="mt-6">
+            <div class="relative">
+                <input type="text"
+                    class="searchInput2 w-full h-12 pl-4 pr-12 bg-white rounded-xl border-2 border-pink-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100/50 transition-all duration-300 shadow-md placeholder-gray-500"
+                    placeholder="Search...">
+                <button type="button" class="searchBtn2 absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 hover:text-pink-600 transition-colors">
+                    <i class='bx bx-search text-xl'></i>
+                </button>
             </div>
         </div>
+
     </div>
 </div>
 <!-- Mobile Menu End -->
+
+<script>
+    $(document).ready(function() {
+        // Search functionality for desktop
+        $(document).on("click", ".searchBtn", function(e) {
+            e.preventDefault();
+            const searchInput = $(".searchInput");
+            let url = '<?= $storeUrl ?>search/' + searchInput.val();
+
+            if (searchInput.val() !== "") window.location.href = url;
+        });
+
+        // Search functionality for mobile overlay
+        $(document).on("click", ".searchBtnMobile", function(e) {
+            e.preventDefault();
+            const searchInput = $(".searchInputMobile");
+            let url = '<?= $storeUrl ?>search/' + searchInput.val();
+
+            if (searchInput.val() !== "") {
+                window.location.href = url;
+            }
+        });
+
+        // Search functionality for mobile menu
+        $(document).on("click", ".searchBtn2", function(e) {
+            e.preventDefault();
+            const searchInput = $(".searchInput2");
+            let url = '<?= $storeUrl ?>search/' + searchInput.val();
+
+            if (searchInput.val() !== "") window.location.href = url;
+        });
+
+        // Mobile search overlay functionality
+        const searchToggle = document.getElementById("mobileSearchToggle");
+        const searchOverlay = document.getElementById("mobileSearchOverlay");
+        const searchClose = document.getElementById("mobileSearchClose");
+        const searchInputMobile = document.querySelector(".searchInputMobile");
+
+        if (searchToggle) {
+            // Open search overlay (slide down)
+            searchToggle.addEventListener("click", () => {
+                searchOverlay.classList.remove("hidden");
+                setTimeout(() => {
+                    searchOverlay.classList.remove("-translate-y-full");
+                    if (searchInputMobile) searchInputMobile.focus();
+                }, 10);
+            });
+        }
+
+        if (searchClose) {
+            // Close search overlay (slide up)
+            searchClose.addEventListener("click", () => {
+                searchOverlay.classList.add("-translate-y-full");
+                setTimeout(() => {
+                    searchOverlay.classList.add("hidden");
+                    if (searchInputMobile) searchInputMobile.value = "";
+                }, 500); // Wait for animation
+            });
+        }
+
+        // Close search overlay when clicking outside of content (optional)
+        searchOverlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                searchOverlay.classList.add("-translate-y-full");
+                setTimeout(() => {
+                    searchOverlay.classList.add("hidden");
+                    if (searchInputMobile) searchInputMobile.value = "";
+                }, 500);
+            }
+        });
+
+        // Enter key support for all search inputs
+        $(".searchInput, .searchInputMobile, .searchInput2").on("keypress", function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                if ($(this).hasClass("searchInput")) {
+                    $(".searchBtn").click();
+                } else if ($(this).hasClass("searchInputMobile")) {
+                    $(".searchBtnMobile").click();
+                } else if ($(this).hasClass("searchInput2")) {
+                    $(".searchBtn2").click();
+                }
+            }
+        });
+    });
+</script>

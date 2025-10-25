@@ -91,7 +91,7 @@ function addToCartSection($id, $product_id, $cookie_id, $hasAdvancedVariants, $t
 
     $html .= '<button type="button" class="addToCartBtn relative overflow-hidden px-3 py-2 md:px-4 md:py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center text-sm md:text-base ' . $btnClass . '" 
                     data-id="' . $id . '" ' . $variantData . ' ' . $disabled . '>
-                    <span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> ' . $btnText . '
+                    <span class=" mr-1 text-sm md:text-base"></span> ' . $btnText . '
                   </button>';
 
     $html .= '</div>'; // Closing wrapper
