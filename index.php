@@ -160,13 +160,17 @@
                         $categoryUrl = $storeUrl . "category/" . $category['slug']; // Create category URL
                     ?>
                         <a href="<?= $categoryUrl ?>" class="block"> <!-- Add this wrapper -->
-                            <div class="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col h-full">
-                                <div class="relative overflow-hidden">
-                                    <img src="<?= $catImage ?>" alt="<?= $category['name'] ?>"
-                                        class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="group relative overflow-hidden rounded-xl shadow-md shadow-blue-200 bg-white transition-all duration-300 hover:shadow-lg hover:shadow-blue-400/50 hover:-translate-y-1 cursor-pointer flex flex-col h-full border border-blue-100 hover:border-blue-300">
+
+                                <div class="relative overflow-hidden bg-white flex items-center justify-center h-40">
+                                    <img
+                                        src="<?= $catImage ?>"
+                                        alt="<?= $category['name'] ?>"
+                                        class="max-w-[80%] max-h-[80%] object-contain object-center transition-transform duration-500 group-hover:scale-105">
                                     <div class="absolute inset-0 bg-gradient-to-br from-transparent via-white/70 to-transparent -translate-x-full -translate-y-full group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-700">
                                     </div>
                                 </div>
+
                                 <div class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
                                     <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors"><?= $category['name'] ?></h3>
                                     <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
@@ -584,6 +588,68 @@
 
     <!--Footer File Includes that file has all JS Files includes links-->
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
+    <!-- Floating Right-Side Man / Cart Prompt -->
+    <a href="<?= $storeUrl ?>cart" class="group">
+        <div id="cartPrompt" class="fixed right-0 bottom-32 sm:bottom-40 z-50 flex items-center gap-2 pr-2 animate-slide-outgroup cursor-pointer">
+
+            <!-- Character or Icon -->
+            <div class="relative">
+                <img src="<?= APP_URL ?>assets/image/home_cart_gif.gif"
+                    alt="Cart Icon"
+                    class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 
+                  object-contain transition-transform duration-300 group-hover:scale-110">
+            </div>
+
+            <!-- Speech Bubble -->
+            <div class="bg-pink-600 text-white font-semibold text-sm sm:text-base px-4 py-2 rounded-l-full shadow-lg hidden group-hover:flex items-center gap-2 animate-fadeIn">
+                Go to Cart
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </div>
+
+        </div>
+    </a>
+
+    <style>
+        @keyframes slideOutRightPrompt {
+            0% {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+
+            20%,
+            80% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+
+        .animate-slide-outgroup {
+            animation: slideOutRightPrompt 10s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out;
+        }
+    </style>
 
 </body>
 

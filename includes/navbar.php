@@ -1,6 +1,6 @@
 <!-- Navbar Start -->
 <nav class="sticky top-0 w-full z-50 bg-white/20 backdrop-blur-lg border-b border-white/30 transition duration-300">
-    <div class="container mx-auto flex items-center justify-between px-3 sm:px-4 py-3">
+    <div class="container mx-auto flex items-center justify-between px-4 sm:px-6 md:px-10 lg:px-16 xl:px-20 py-3">
         <!-- Left: Logo -->
         <div class="flex items-center gap-2">
             <a class="no-underline block" href="<?= $storeUrl ?>">
