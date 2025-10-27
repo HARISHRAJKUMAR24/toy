@@ -165,21 +165,3 @@
         <!-- Datatable JS -->
         <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
         <script src="<?= APP_URL ?>shop/javascripts/orders.js"></script>
-
-
-        <script>
-            $(document).on("click", ".searchBtn", function(e) {
-                e.preventDefault();
-                console.log('ssss');
-                const searchInput = $(".searchInput");
-                const searchCategory = $(".searchCategory");
-                let url = '';
-                console.log('searchCategory ' + searchCategory.val());
-                if (searchCategory.val() == "undefined") {
-                    url = '<?= $storeUrl ?>search/' + searchInput.val();
-                } else {
-                    url = '<?= $storeUrl ?>search/' + searchInput.val() + "?category=" + searchCategory.val();
-                }
-                if (searchInput.val() !== "") window.location.href = url;
-            });
-        </script>

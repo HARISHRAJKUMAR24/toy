@@ -95,6 +95,54 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
         .animate-slide-in {
             animation: slide-in 8s ease-in-out infinite;
         }
+
+        /* Toast Animation */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast-slide-in {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+
+        .toast-slide-out {
+            animation: slideOutRight 0.5s ease-in forwards;
+        }
+
+        /* Remove animation */
+        .remove-animation {
+            animation: removeItem 0.3s ease-out forwards;
+        }
+
+        @keyframes removeItem {
+            to {
+                opacity: 0;
+                transform: translateX(-100%);
+                height: 0;
+                margin: 0;
+                padding: 0;
+            }
+        }
     </style>
 
 
@@ -106,10 +154,13 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                 <div class="py-6 sm:py-10">
                     <div class="px-0 sm:px-2">
                         <div class="flex flex-col gap-4 sm:gap-6">
-                            <div class="flex flex-col gap-4 sm:gap-6">
+                            <div class="flex flex-col gap-4 sm:gap-6" id="cartItemsContainer">
                                 <?php if (!empty($cartItems)): ?>
                                     <?php foreach ($cartItems as $cart): ?>
-                                        <div class="relative bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-lg transition p-3 sm:p-4 flex gap-3 sm:gap-4 items-start">
+                                        <div class="cart-item relative bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-lg transition p-3 sm:p-4 flex gap-3 sm:gap-4 items-start"
+                                            data-id="<?= $cart['product_id'] ?>"
+                                            data-variant="<?= $cart['other'] ?? '' ?>"
+                                            data-advancedvariant="<?= $cart['advanced_variant'] ?? '' ?>">
                                             <!-- Product Image -->
                                             <div class="flex-shrink-0">
                                                 <img src="<?= UPLOADS_URL . $cart['image'] ?>" alt="<?= htmlspecialchars($cart['product_name']) ?>" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg">
@@ -146,10 +197,11 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                                             <!-- Price Section - Right Aligned -->
                                             <div class="flex flex-col items-end justify-between h-full min-w-[100px] sm:min-w-[120px]">
                                                 <!-- Delete Button - Top Right -->
-                                                <button class="border border-gray-300 px-2 py-1 rounded-md hover:border-red-600 hover:text-red-600 transition bg-white shadow-sm removeQtyBtn text-xs sm:text-sm mb-2"
+                                                <button class="removeQtyBtn border border-gray-300 px-2 py-1 rounded-md hover:border-red-600 hover:text-red-600 transition bg-white shadow-sm text-xs sm:text-sm mb-2"
                                                     data-id="<?= $cart['product_id'] ?>"
                                                     data-variant="<?= $cart['other'] ?? '' ?>"
-                                                    data-advancedVariant="<?= $cart['advanced_variant'] ?? '' ?>">
+                                                    data-advancedvariant="<?= $cart['advanced_variant'] ?? '' ?>"
+                                                    data-product-name="<?= htmlspecialchars($cart['product_name']) ?>">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
 
@@ -177,14 +229,6 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <div class="text-center py-8 sm:py-12">
-                                        <h3 class="text-lg sm:text-xl font-semibold text-gray-700 mb-2">Your cart is empty</h3>
-                                        <p class="text-gray-500 text-sm sm:text-base mb-4 sm:mb-6">Looks like you haven't added any products yet.</p>
-                                        <a href="<?= APP_URL ?>" class="inline-flex items-center px-4 py-2 sm:px-5 sm:py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition text-sm sm:text-base">
-                                            Continue Shopping
-                                        </a>
-                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -308,7 +352,7 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                     <?php
                     $minimumOrder = (int)getSettings("minimum_order_amount");
                     ?>
-                    <?php if (!empty($minimumOrder) && $subTotal < $minimumOrder): ?>
+                    <?php if (!empty($minimumOrder) && $subTotalWithTax < $minimumOrder): ?>
                         <!-- Stylish Marketing-Themed Minimum Order Message -->
                         <div class="py-2 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl text-center bg-gradient-to-r from-pink-50 to-pink-100 border border-pink-200 shadow-sm">
                             <p class="text-pink-700 font-semibold text-xs sm:text-sm">
@@ -339,3 +383,43 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
         </div>
     </div>
 </div>
+
+<script>
+    // Custom toast function with smooth right-to-left animation
+    function showCustomToast(message, type) {
+        // Remove any existing toasts
+        const existingToasts = document.querySelectorAll('.custom-cart-toast');
+        existingToasts.forEach(toast => toast.remove());
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = 'custom-cart-toast fixed top-4 right-4 z-50';
+        toast.innerHTML = `
+        <div style="background-color: var(--primary-color) !important; color: white !important; border-color: var(--primary-dark) !important;" 
+             class="px-4 py-3 rounded-lg shadow-lg border-l-4 flex items-center gap-3">
+            <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl'></i>
+            <span class="font-semibold">${message}</span>
+        </div>
+    `;
+
+        // Add to page
+        document.body.appendChild(toast);
+
+        // Add slide in animation
+        const toastContent = toast.querySelector('div');
+        toastContent.classList.add('toast-slide-in');
+
+        // Auto remove after 3 seconds with slide out animation
+        setTimeout(() => {
+            toastContent.classList.remove('toast-slide-in');
+            toastContent.classList.add('toast-slide-out');
+
+            // Remove from DOM after animation completes
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 500);
+        }, 3000);
+    }
+</script>

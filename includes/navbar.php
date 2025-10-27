@@ -20,7 +20,7 @@
         <!-- Center: Pages -->
         <ul class="hidden md:flex gap-6 lg:gap-8 font-medium text-gray-700 relative flex-wrap">
             <li>
-                <a href="#" class="hover:text-pink-500 transition-all duration-300">Home</a>
+                <a href="<?= $storeUrl ?>" class="hover:text-pink-500 transition-all duration-300">Home</a>
             </li>
 
             <!-- Shop All Dropdown -->
@@ -125,8 +125,8 @@
                         class="searchInputMobile w-full h-16 pl-6 pr-16 text-lg bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-pink-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100/50 shadow-xl transition-all duration-300 placeholder-gray-500"
                         placeholder="What are you looking for?">
                     <button type="button" class="searchBtnMobile absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 hover:text-pink-600 transition-colors">
-                    <i class='bx bx-search text-xl'></i>
-                </button>
+                        <i class='bx bx-search text-xl'></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -163,7 +163,7 @@
         </div>
 
         <ul class="flex flex-col gap-4 font-medium text-gray-700">
-            <li><a href="#" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">Home</a></li>
+            <li><a href="<?= $storeUrl ?>" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">Home</a></li>
 
             <!-- Shop All Dropdown For Mobile -->
             <li class="mobile-dropdown">

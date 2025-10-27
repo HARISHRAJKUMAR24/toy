@@ -486,97 +486,97 @@
             initializeVariantSelection();
         });
 
-        // Variant selection functionality
-        function initializeVariantSelection() {
-            document.querySelectorAll('.variantSelect').forEach(select => {
-                select.addEventListener('change', function() {
-                    const selected = this.options[this.selectedIndex];
-                    const card = this.closest('.group');
-                    const addBtn = card.querySelector('.addToCartBtn');
+        // // Variant selection functionality
+        // function initializeVariantSelection() {
+        //     document.querySelectorAll('.variantSelect').forEach(select => {
+        //         select.addEventListener('change', function() {
+        //             const selected = this.options[this.selectedIndex];
+        //             const card = this.closest('.group');
+        //             const addBtn = card.querySelector('.addToCartBtn');
 
-                    const img = selected.dataset.image;
-                    const price = selected.dataset.price;
-                    const mrp = selected.dataset.mrp;
-                    const stock = Number(selected.dataset.stock) || 0;
-                    const unlimited = Number(selected.dataset.unlimited) || 0;
-                    const variantType = selected.dataset.variantType;
-                    const variantValue = selected.value;
-                    const isMain = selected.dataset.isMain === 'true';
+        //             const img = selected.dataset.image;
+        //             const price = selected.dataset.price;
+        //             const mrp = selected.dataset.mrp;
+        //             const stock = Number(selected.dataset.stock) || 0;
+        //             const unlimited = Number(selected.dataset.unlimited) || 0;
+        //             const variantType = selected.dataset.variantType;
+        //             const variantValue = selected.value;
+        //             const isMain = selected.dataset.isMain === 'true';
 
-                    const imageEl = card.querySelector('.productImage');
-                    const priceEl = card.querySelector('.productPrice');
-                    const mrpEl = card.querySelector('.productMrp');
+        //             const imageEl = card.querySelector('.productImage');
+        //             const priceEl = card.querySelector('.productPrice');
+        //             const mrpEl = card.querySelector('.productMrp');
 
-                    if (imageEl && img) imageEl.src = img;
-                    if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(price).toLocaleString();
-                    if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ?
-                        "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString() :
-                        '';
+        //             if (imageEl && img) imageEl.src = img;
+        //             if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(price).toLocaleString();
+        //             if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ?
+        //                 "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString() :
+        //                 '';
 
-                    if (addBtn) {
-                        const isOutOfStock = stock <= 0 && unlimited !== 1;
-                        const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
+        //             if (addBtn) {
+        //                 const isOutOfStock = stock <= 0 && unlimited !== 1;
+        //                 const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
 
-                        addBtn.dataset.variant = "";
-                        addBtn.dataset.advancedvariant = "";
+        //                 addBtn.dataset.variant = "";
+        //                 addBtn.dataset.advancedvariant = "";
 
-                        if (variantType === 'main') {
-                            addBtn.dataset.variant = "";
-                            addBtn.dataset.advancedvariant = "";
-                        } else if (variantType === 'advanced') {
-                            addBtn.dataset.advancedvariant = variantValue;
-                            addBtn.dataset.variant = "";
-                        } else {
-                            addBtn.dataset.variant = variantValue;
-                            addBtn.dataset.advancedvariant = "";
-                        }
+        //                 if (variantType === 'main') {
+        //                     addBtn.dataset.variant = "";
+        //                     addBtn.dataset.advancedvariant = "";
+        //                 } else if (variantType === 'advanced') {
+        //                     addBtn.dataset.advancedvariant = variantValue;
+        //                     addBtn.dataset.variant = "";
+        //                 } else {
+        //                     addBtn.dataset.variant = variantValue;
+        //                     addBtn.dataset.advancedvariant = "";
+        //                 }
 
-                        if (hasAdvancedVariants && isMain) {
-                            addBtn.disabled = true;
-                            addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Select';
-                            addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                            addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
-                        } else if (isOutOfStock) {
-                            addBtn.disabled = true;
-                            addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Sold Out';
-                            addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                            addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
-                        } else {
-                            addBtn.disabled = false;
-                            addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Add';
-                            addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-400', 'bg-gray-300');
-                            addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                        }
-                    }
-                });
-            });
+        //                 if (hasAdvancedVariants && isMain) {
+        //                     addBtn.disabled = true;
+        //                     addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
+        //                     addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+        //                     addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
+        //                 } else if (isOutOfStock) {
+        //                     addBtn.disabled = true;
+        //                     addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
+        //                     addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+        //                     addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
+        //                 } else {
+        //                     addBtn.disabled = false;
+        //                     addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
+        //                     addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-400', 'bg-gray-300');
+        //                     addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+        //                 }
+        //             }
+        //         });
+        //     });
 
-            function resetVariantSelects() {
-                document.querySelectorAll('.variantSelect').forEach(select => {
-                    const card = select.closest('.group');
-                    const addBtn = card.querySelector('.addToCartBtn');
-                    const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
+        //     function resetVariantSelects() {
+        //         document.querySelectorAll('.variantSelect').forEach(select => {
+        //             const card = select.closest('.group');
+        //             const addBtn = card.querySelector('.addToCartBtn');
+        //             const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
 
-                    if (select.querySelector('option[value=""]')) {
-                        select.value = "";
-                    } else {
-                        select.selectedIndex = 0;
-                    }
+        //             if (select.querySelector('option[value=""]')) {
+        //                 select.value = "";
+        //             } else {
+        //                 select.selectedIndex = 0;
+        //             }
 
-                    if (hasAdvancedVariants && addBtn) {
-                        addBtn.disabled = true;
-                        addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Select';
-                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                        addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
-                    }
-                });
-            }
+        //             if (hasAdvancedVariants && addBtn) {
+        //                 addBtn.disabled = true;
+        //                 addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
+        //                 addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+        //                 addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
+        //             }
+        //         });
+        //     }
 
-            setTimeout(resetVariantSelects, 0);
-            window.addEventListener('pageshow', function() {
-                setTimeout(resetVariantSelects, 50);
-            });
-        }
+        //     setTimeout(resetVariantSelects, 0);
+        //     window.addEventListener('pageshow', function() {
+        //         setTimeout(resetVariantSelects, 50);
+        //     });
+        // }
     </script>
 </body>
 

@@ -594,17 +594,17 @@
 
                         if (hasAdvancedVariants && isMain) {
                             addBtn.disabled = true;
-                            addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Select';
+                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
                             addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                             addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
                         } else if (isOutOfStock) {
                             addBtn.disabled = true;
-                            addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Sold Out';
+                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
                             addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                             addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
                         } else {
                             addBtn.disabled = false;
-                            addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Add';
+                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
                             addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-400', 'bg-gray-300');
                             addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                         }
@@ -626,7 +626,7 @@
 
                     if (hasAdvancedVariants && addBtn) {
                         addBtn.disabled = true;
-                        addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Select';
+                        addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
                         addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                         addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
                     }

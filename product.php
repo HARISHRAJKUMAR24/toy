@@ -47,6 +47,39 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                 max-height: 30vh;
             }
         }
+
+        /* Toast Animation */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast-slide-in {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+
+        .toast-slide-out {
+            animation: slideOutRight 0.5s ease-in forwards;
+        }
     </style>
 </head>
 
@@ -165,22 +198,6 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
             }
         }
     }
-
-    // // Wishlist check - FIXED: Check if wishlist table exists first
-    // $wishlistExists = false;
-    // if (isLoggedIn()) {
-    //     try {
-    //         // Check if wishlist table exists by querying it
-    //         $tableCheck = $db->query("SHOW TABLES LIKE 'wishlist'");
-    //         if ($tableCheck && $tableCheck->rowCount() > 0) {
-    //             $wishlistQuery = readData("*", "wishlist", "customer_id='$cookie_id' AND product_id='$id'");
-    //             $wishlistExists = $wishlistQuery && $wishlistQuery->rowCount() > 0;
-    //         }
-    //     } catch (PDOException $e) {
-    //         // If table doesn't exist, wishlistExists remains false
-    //         $wishlistExists = false;
-    //     }
-    // }
 
     // Additional images
     $additionalImages = [];
@@ -338,12 +355,6 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                 <i class="fas fa-shopping-cart mr-2"></i> View Cart
                             </a>
 
-
-
-                            <!-- <a href="//$storeUrl ?>login" class="px-3 py-2 rounded-lg border bg-white text-pink-500 font-semibold shadow hover:bg-pink-50 transition text-sm sm:text-base">
-                                    <i class="far fa-heart"></i>
-                                </a> -->
-
                             <?php
                             // Ensure $variantId exists
                             $variantId = $variantId ?? ''; // fallback to empty string if not defined
@@ -380,14 +391,12 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                             </button>
                         </div>
 
-
                         <?php
                         $seller_id = $product['seller_id'];
                         $store_id  = $product['store_id']; // assuming your product array has store_id
 
                         // Fetch 3 random products from the same seller and store
                         $randomProducts = getRandomProductsBySeller($seller_id, $store_id, 3);
-
 
                         if ($randomProducts && count($randomProducts) > 0) {
                             echo '<div class="mt-6 border-t pt-4">
@@ -412,8 +421,6 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                             echo '</div></div>';
                         }
                         ?>
-
-
 
                     </div>
                 </div>
@@ -489,6 +496,44 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
 
     <script>
+        // Custom toast function with smooth right-to-left animation
+        function showCustomToast(message, type) {
+            // Remove any existing toasts
+            const existingToasts = document.querySelectorAll('.custom-product-toast');
+            existingToasts.forEach(toast => toast.remove());
+
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'custom-product-toast fixed top-4 right-4 z-50';
+            toast.innerHTML = `
+                <div style="background-color: var(--primary-color) !important; color: white !important; border-color: var(--primary-dark) !important;" 
+                     class="px-4 py-3 rounded-lg shadow-lg border-l-4 flex items-center gap-3">
+                    <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl'></i>
+                    <span class="font-semibold">${message}</span>
+                </div>
+            `;
+
+            // Add to page
+            document.body.appendChild(toast);
+
+            // Add slide in animation
+            const toastContent = toast.querySelector('div');
+            toastContent.classList.add('toast-slide-in');
+
+            // Auto remove after 3 seconds with slide out animation
+            setTimeout(() => {
+                toastContent.classList.remove('toast-slide-in');
+                toastContent.classList.add('toast-slide-out');
+
+                // Remove from DOM after animation completes
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 500);
+            }, 3000);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const variantButtons = document.querySelectorAll('.variant-btn');
             const mainImage = document.getElementById('mainProductImage');
@@ -717,12 +762,8 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                         }
                                     });
 
-                                    // Show success message
-                                    if (typeof toastr !== 'undefined') {
-                                        toastr.success(response.message);
-                                    } else {
-                                        alert(response.message);
-                                    }
+                                    // Show success message using custom toast
+                                    showCustomToast(response.message || "Product added to cart successfully!", 'success');
 
                                     // Update cart counters
                                     if (typeof getProductCountAndPrice === 'function') {
@@ -732,20 +773,29 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                         getCartData();
                                     }
                                 } else {
-                                    if (typeof toastr !== 'undefined') {
-                                        toastr.error(response.message);
+                                    // Check if it's a "duplicate product" error - don't show toast for these
+                                    const errorMessage = response.message || "";
+                                    const isDuplicateError =
+                                        errorMessage.includes('already') ||
+                                        errorMessage.includes('duplicate') ||
+                                        errorMessage.includes('exist') ||
+                                        errorMessage.includes('Added') ||
+                                        errorMessage.toLowerCase().includes('cart');
+
+                                    // Only show error toast for non-duplicate errors
+                                    if (!isDuplicateError) {
+                                        showCustomToast(errorMessage || "Failed to add product to cart.", 'error');
                                     } else {
-                                        alert(response.message);
+                                        // For duplicate adds, just update cart counts silently
+                                        if (typeof getProductCountAndPrice === 'function') {
+                                            getProductCountAndPrice();
+                                        }
                                     }
                                 }
                             }
                         } catch (e) {
                             console.error('Error parsing response:', e);
-                            if (typeof toastr !== 'undefined') {
-                                toastr.error('Error adding to cart');
-                            } else {
-                                alert('Error adding to cart');
-                            }
+                            showCustomToast('Error adding to cart', 'error');
                         }
                     },
                     error: function(xhr, status, error) {
@@ -753,12 +803,7 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                         // Reset button state
                         addBtn.innerHTML = originalText;
                         addBtn.disabled = originalState;
-
-                        if (typeof toastr !== 'undefined') {
-                            toastr.error('Network error occurred');
-                        } else {
-                            alert('Network error occurred');
-                        }
+                        showCustomToast('Network error occurred', 'error');
                     }
                 });
             });
@@ -823,8 +868,9 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                 }, function(res) {
                     if (res.success) {
                         ratingInfo.text(` ${res.avg_rating} / 5, ${res.total_ratings} ratings`);
+                        showCustomToast("Rating submitted successfully!", 'success');
                     } else {
-                        alert(res.message);
+                        showCustomToast(res.message || "Failed to submit rating", 'error');
                     }
                 }, 'json');
             });
@@ -874,27 +920,18 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
 
                     if (response) {
                         if (response.success) {
-                            // Optional: small success toast or inline message
-                            $("#reportProductContent").fadeOut(); // close modal
-                            $("#reportForm")[0].reset(); // reset form
-                            $("<div class='bg-green-500 text-white px-4 py-2 rounded fixed top-5 right-5 z-50'>Report sent successfully!</div>")
-                                .appendTo("body")
-                                .delay(3000)
-                                .fadeOut(500, function() {
-                                    $(this).remove();
-                                });
+                            // Close modal and show success toast
+                            $("#reportProductContent").fadeOut();
+                            $("#reportForm")[0].reset();
+                            showCustomToast("Report sent successfully!", 'success');
                         } else {
-                            $("<div class='bg-red-500 text-white px-4 py-2 rounded fixed top-5 right-5 z-50'>" + response.message + "</div>")
-                                .appendTo("body")
-                                .delay(3000)
-                                .fadeOut(500, function() {
-                                    $(this).remove();
-                                });
+                            showCustomToast(response.message || "Failed to send report", 'error');
                         }
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", error);
+                    showCustomToast('Network error occurred', 'error');
                 }
             });
         });

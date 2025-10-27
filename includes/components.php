@@ -83,15 +83,16 @@ function addToCartSection($id, $product_id, $cookie_id, $hasAdvancedVariants, $t
         // Normal behavior for products without advanced variants
         $btnClass = $isOutOfStock
             ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-            : 'bg-gradient-to-r from-pink-200 to-pink-300 text-pink-700 hover:from-pink-300 hover:to-pink-400';
+            : 'bg-primary-500 text-white hover:bg-hover';
         $btnText = $isOutOfStock ? 'Sold Out' : 'Add';
         $disabled = $isOutOfStock ? 'disabled' : '';
         $variantData = 'data-variant="" data-advancedvariant=""';
     }
 
-    $html .= '<button type="button" class="addToCartBtn relative overflow-hidden px-3 py-2 md:px-4 md:py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center text-sm md:text-base ' . $btnClass . '" 
+    // CHANGED: Using new ID 'customAddToCartBtn' to avoid conflicts
+    $html .= '<button type="button" class="customAddToCartBtn relative overflow-hidden px-3 py-2 md:px-4 md:py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center text-sm md:text-base ' . $btnClass . '" 
                     data-id="' . $id . '" ' . $variantData . ' ' . $disabled . '>
-                    <span class=" mr-1 text-sm md:text-base"></span> ' . $btnText . '
+                    <span class="mr-1 text-sm md:text-base"></span> ' . $btnText . '
                   </button>';
 
     $html .= '</div>'; // Closing wrapper
@@ -165,7 +166,6 @@ function getProductHtml($id)
                 <h3 class="text-sm sm:text-base font-semibold text-gray-800 group-hover:text-pink-600 transition-colors mb-1 line-clamp-2 min-h-[2.5rem]">' . htmlspecialchars($name) . '</h3>
                 <div class="flex items-center mb-2 sm:mb-3"> </div>';
 
-    // Variant dropdown - Show if any variants exist
     // Variant dropdown - Show if any variants exist
     if ($hasAdvancedVariants || $hasBasicVariants) {
         $html .= '<div class="mb-2 sm:mb-3">
@@ -272,14 +272,161 @@ function getProductHtml($id)
 ?>
 
 <script>
+    // Add to cart functionality with NEW button ID
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.variantSelect').forEach(select => {
+        // Track if it's the first add for this session
+        let firstAdd = true;
 
-            // Handle variant change
+        // Add to cart button click - USING NEW ID 'customAddToCartBtn'
+        // Add to cart button click - USING NEW ID 'customAddToCartBtn'
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('customAddToCartBtn')) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const element = e.target;
+                const product_id = element.dataset.id;
+                const variant = element.dataset.variant || "";
+                const advanced_variant = element.dataset.advancedvariant || "";
+
+                // Add loading state
+                const originalText = element.innerHTML;
+                element.disabled = true;
+                element.innerHTML = '<span class="mr-1">⏳</span> Adding...';
+
+                // Use jQuery AJAX for better compatibility
+                $.ajax({
+                    url: 'shop/ajax/add-to-cart.php',
+                    type: 'POST',
+                    data: {
+                        product_id: product_id,
+                        variant: variant,
+                        advanced_variant: advanced_variant
+                    },
+                    success: function(result) {
+                        element.disabled = false;
+                        element.innerHTML = originalText;
+
+                        // Check if result is valid JSON
+                        let response;
+                        try {
+                            response = JSON.parse(result);
+                        } catch (e) {
+                            // If not JSON, check if it contains success message
+                            if (result.includes('success') || result.includes('Success')) {
+                                response = {
+                                    success: true,
+                                    message: "Product added to cart successfully!"
+                                };
+                            } else {
+                                response = {
+                                    success: false,
+                                    message: "Failed to add product to cart."
+                                };
+                            }
+                        }
+
+                        if (response.success) {
+                            // Show success toast for all successful adds
+                            showCustomToast(response.message || "Product added to cart successfully!", 'success');
+                            // Update cart counts
+                            updateCartCounts();
+                            if (response.redirectUrl) {
+                                window.location.href = response.redirectUrl;
+                            }
+                        } else {
+                            // Check if it's a "duplicate product" error - don't show toast for these
+                            const errorMessage = response.message || "";
+                            const isDuplicateError =
+                                errorMessage.includes('already') ||
+                                errorMessage.includes('duplicate') ||
+                                errorMessage.includes('exist') ||
+                                errorMessage.includes('Added') ||
+                                errorMessage.toLowerCase().includes('cart');
+
+                            // Only show error toast for non-duplicate errors
+                            if (!isDuplicateError) {
+                                showCustomToast(errorMessage || "Failed to add product to cart.", 'error');
+                            } else {
+                                // For duplicate adds, just update cart counts silently
+                                updateCartCounts();
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        element.disabled = false;
+                        element.innerHTML = originalText;
+                        showCustomToast('Network error. Please try again.', 'error');
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            }
+        });
+
+        // Custom toast function with Tailwind animations only
+        function showCustomToast(message, type) {
+            // Remove any existing toasts
+            const existingToasts = document.querySelectorAll('.custom-product-toast');
+            existingToasts.forEach(toast => toast.remove());
+
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'custom-product-toast fixed top-4 right-4 z-50 transform transition-all duration-500 ease-in-out translate-x-full opacity-0';
+            toast.innerHTML = `
+        <div style="background-color: var(--primary-color) !important; color: white !important; border-color: var(--primary-dark) !important;" 
+             class="px-4 py-3 rounded-lg shadow-lg border-l-4 flex items-center gap-3">
+            <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl'></i>
+            <span class="font-semibold">${message}</span>
+        </div>
+    `;
+
+            // Add to page
+            document.body.appendChild(toast);
+
+            // Animate in from right to left
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+                toast.classList.add('translate-x-0', 'opacity-100');
+            }, 10);
+
+            // Auto remove after 3 seconds with reverse animation
+            setTimeout(() => {
+                toast.classList.remove('translate-x-0', 'opacity-100');
+                toast.classList.add('translate-x-full', 'opacity-0');
+
+                // Remove from DOM after animation completes
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        // Update cart counts function
+        function updateCartCounts() {
+            $.ajax({
+                url: 'shop/ajax/get-product-count-and-price.php',
+                success: function(result) {
+                    try {
+                        const response = JSON.parse(result);
+                        // Update cart counts in the UI
+                        $('.cartItemsCount').text(response.itemsCount || '0');
+                        $('.cartItemsCountWithTxt').text((response.itemsCount || '0') + " Item");
+                        $('.cartPrice').text(response.price || '0');
+                    } catch (e) {
+                        console.warn('Could not update cart counts:', e);
+                    }
+                }
+            });
+        }
+
+        // Variant selection functionality
+        document.querySelectorAll('.variantSelect').forEach(select => {
             select.addEventListener('change', function() {
                 const selected = this.options[this.selectedIndex];
                 const card = this.closest('.group');
-                const addBtn = card.querySelector('.addToCartBtn');
+                const addBtn = card.querySelector('.customAddToCartBtn'); // UPDATED: using new button class
 
                 const img = selected.dataset.image;
                 const price = selected.dataset.price;
@@ -304,7 +451,7 @@ function getProductHtml($id)
                 // Handle Add button
                 if (addBtn) {
                     const isOutOfStock = stock <= 0 && unlimited !== 1;
-                    const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300'); // Check if initially disabled
+                    const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
 
                     // Clear previous variant data
                     addBtn.dataset.variant = "";
@@ -312,15 +459,12 @@ function getProductHtml($id)
 
                     // Set the correct data attributes based on variant type
                     if (variantType === 'main') {
-                        // Main product - no variants needed
                         addBtn.dataset.variant = "";
                         addBtn.dataset.advancedvariant = "";
                     } else if (variantType === 'advanced') {
-                        // Advanced variant - use advancedvariant parameter
                         addBtn.dataset.advancedvariant = variantValue;
                         addBtn.dataset.variant = "";
                     } else {
-                        // Basic variant - use variant parameter
                         addBtn.dataset.variant = variantValue;
                         addBtn.dataset.advancedvariant = "";
                     }
@@ -328,48 +472,38 @@ function getProductHtml($id)
                     // SPECIAL LOGIC: If advanced variants exist AND main product is selected, show "Select"
                     if (hasAdvancedVariants && isMain) {
                         addBtn.disabled = true;
-                        addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Select';
+                        addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
                         addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                         addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
                     }
                     // Handle out of stock
                     else if (isOutOfStock) {
                         addBtn.disabled = true;
-                        addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Sold Out';
+                        addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
                         addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                         addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
                     }
                     // Enable button for non-main variants
                     else {
                         addBtn.disabled = false;
-                        addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Add';
+                        addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
                         addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-400', 'bg-gray-300');
                         addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                     }
-
-                    console.log('Variant selected:', {
-                        type: variantType,
-                        value: variantValue,
-                        isMain: isMain,
-                        variant: addBtn.dataset.variant,
-                        advancedVariant: addBtn.dataset.advancedvariant,
-                        enabled: !addBtn.disabled,
-                        hasAdvancedVariants: hasAdvancedVariants
-                    });
                 }
             });
         });
 
-        // --- Reset dropdowns on page load/refresh ---
+        // Reset dropdowns on page load
         function resetVariantSelects() {
             document.querySelectorAll('.variantSelect').forEach(select => {
                 const card = select.closest('.group');
-                const addBtn = card.querySelector('.addToCartBtn');
-                const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300'); // Check if initially disabled
+                const addBtn = card.querySelector('.customAddToCartBtn'); // UPDATED: using new button class
+                const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
 
                 // Reset to first option (Select Option)
                 if (select.querySelector('option[value=""]')) {
-                    select.value = ""; // reset dropdown to "Select Option"
+                    select.value = "";
                 } else {
                     select.selectedIndex = 0;
                 }
@@ -377,19 +511,15 @@ function getProductHtml($id)
                 // If advanced variants exist, ensure button shows "Select"
                 if (hasAdvancedVariants && addBtn) {
                     addBtn.disabled = true;
-                    addBtn.innerHTML = '<span class="mgc_shopping_bag_3_line mr-1 text-sm md:text-base"></span> Select';
+                    addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
                     addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
                     addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
                 }
             });
         }
 
-        // Run after load
+        // Initialize
         setTimeout(resetVariantSelects, 0);
-
-        // Also handle browser back/forward cache restore
-        window.addEventListener('pageshow', function() {
-            setTimeout(resetVariantSelects, 50);
-        });
+        window.addEventListener('pageshow', () => setTimeout(resetVariantSelects, 50));
     });
 </script>
