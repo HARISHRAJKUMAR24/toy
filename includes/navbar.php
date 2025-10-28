@@ -175,7 +175,7 @@
                 <!-- Dropdown Menu -->
                 <ul class="pl-3 mt-1 max-h-0 overflow-hidden overflow-y-auto transition-all duration-300 flex flex-col gap-1">
                     <li>
-                        <a href="<?= $storeUrl ?>shop?category="
+                        <a href="<?= $storeUrl ?>shop-all"
                             class="block py-1 text-gray-600 hover:text-pink-500 transition-all duration-300 text-sm">
                             All Categories
                         </a>

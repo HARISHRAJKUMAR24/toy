@@ -398,8 +398,11 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                         // Fetch 3 random products from the same seller and store
                         $randomProducts = getRandomProductsBySeller($seller_id, $store_id, 3);
 
+
                         if ($randomProducts && count($randomProducts) > 0) {
-                            echo '<div class="mt-6 border-t pt-4"> <h3 class="text-lg font-semibold text-gray-800 mb-3">Customers Also Bought</h3> <div class="grid grid-cols-3 gap-3">';
+                            echo '<div class="mt-6 border-t pt-4 md:mt-8 md:border-t-0 md:pt-0 md:bg-gradient-to-br md:from-purple-50 md:via-pink-50 md:to-blue-50 md:rounded-2xl md:shadow-lg md:p-6 md:border md:border-gray-200">
+            <h3 class="mt-2 text-lg font-semibold text-gray-800 mb-3 md:text-xl md:mb-4">Customers Also Bought</h3>
+            <div class="grid grid-cols-3 gap-3">';
 
                             // Array of background colors
                             $bgColors = ['bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100'];
@@ -411,11 +414,14 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                 // Pick a color from the array (cycle if more products than colors)
                                 $bgClass = $bgColors[$index % count($bgColors)];
 
-                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition ' . $bgClass . ' p-2 flex items-center justify-center">  <img src="' . $img . '" alt="' . htmlspecialchars($rp['name']) . '" class="w-full h-24 object-cover rounded-xl"> </a>';
+                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition ' . $bgClass . ' p-2 flex items-center justify-center">  
+                <img src="' . $img . '" alt="' . htmlspecialchars($rp['name']) . '" class="w-full h-24 object-cover rounded-xl"> 
+              </a>';
                             }
 
                             echo '</div></div>';
                         }
+
                         ?>
 
                     </div>

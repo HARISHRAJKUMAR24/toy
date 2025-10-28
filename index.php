@@ -11,21 +11,24 @@
 
         /*------------- Header Slide Images Height Fix -------------*/
         #slider {
-            height: 50vh;
+            height: 400px;
             /* Desktop */
+            max-height: 80vh;
         }
 
         @media (max-width: 768px) {
             #slider {
-                height: 60vh;
+                height: 350px;
                 /* Tablet */
+                max-height: 60vh;
             }
         }
 
         @media (max-width: 640px) {
             #slider {
-                height: 40vh;
+                height: 250px;
                 /* Mobile */
+                max-height: 40vh;
             }
         }
 
@@ -70,7 +73,7 @@
 
     <!-- Minimum Order Amount Start-->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
-        <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
+        <div class="w-full bg-primary-500 text-white text-center py-1 text-sm font-semibold">
             Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
         </div>
     <?php endif; ?>
@@ -80,6 +83,7 @@
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
 
+    <!-- Header Slide Start -->
     <!-- Header Slide Start -->
     <?php
     // Fetch banner images and links
@@ -99,28 +103,30 @@
     // Only render slider if there are banners
     if (!empty($banners)) :
     ?>
-        <header id="slider"
-            class="relative w-[95%] h-[60vh] sm:[h:40vh] md:[h:60vh] mx-auto my-4 overflow-hidden rounded-2xl shadow-2xl">
-
+        <header id="slider" class="relative w-[95%] mx-auto my-4 flex items-center justify-center">
             <?php
             // Render banners
             foreach ($banners as $index => $banner) {
-                $opacity = $index === 0 ? "opacity-100" : "opacity-0"; // first slide visible
-                echo '<div class="absolute inset-0 ' . $opacity . ' transition-opacity duration-1000 slide">';
+                $opacity = $index === 0 ? "opacity-100" : "opacity-0";
+                echo '<div class="absolute inset-0 flex items-center justify-center ' . $opacity . ' transition-opacity duration-1000 slide">';
                 if (!empty($banner['link'])) {
-                    echo '<a href="' . $banner['link'] . '" target="_blank">';
-                    echo '<img src="' . UPLOADS_URL . $banner['image'] . '" class="w-full h-full object-cover rounded-2xl shadow-2xl" alt="Slide ' . ($index + 1) . '">';
+                    echo '<a href="' . $banner['link'] . '" target="_blank" class="block w-full h-full flex items-center justify-center">';
+                    echo '<img src="' . UPLOADS_URL . $banner['image'] . '" 
+                     class="max-w-full max-h-full w-auto h-auto rounded-2xl shadow-2xl" 
+                     alt="Slide ' . ($index + 1) . '">';
                     echo '</a>';
                 } else {
-                    echo '<img src="' . UPLOADS_URL . $banner['image'] . '" class="w-full h-full object-cover rounded-2xl shadow-2xl" alt="Slide ' . ($index + 1) . '">';
+                    echo '<img src="' . UPLOADS_URL . $banner['image'] . '" 
+                     class="max-w-full max-h-full w-auto h-auto rounded-2xl shadow-2xl" 
+                     alt="Slide ' . ($index + 1) . '">';
                 }
                 echo '</div>';
             }
             ?>
-
             <div id="dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
         </header>
     <?php endif; ?>
+    <!-- Header slide End  -->
 
     <!-- Header slide End  -->
 
@@ -546,43 +552,52 @@
     $aboutContent = $sellerId ? getData("about_content", "homepage_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") : '';
     $aboutImage = $sellerId ? getData("about_image", "homepage_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") : '';
     ?>
+<?php
+// Fetch dynamic seller colors
+$color = getData("color", "seller_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')");
+?>
 
-    <?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
-        <section class="py-16 px-4 bg-gray-50 bg-gradient-to-r from-pink-200 via-white to-pink-200">
-            <div class="container mx-auto flex flex-col md:flex-row items-center gap-6
-        <?= empty($aboutImage) ? 'justify-center text-center' : '' ?>">
+<?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
+    <section 
+        class="py-16 px-4 bg-gradient-to-r from-[var(--primary)] via-white to-[var(--primary)]"
+        style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>;">
+        
+        <div class="container mx-auto flex flex-col md:flex-row items-center gap-6
+            <?= empty($aboutImage) ? 'justify-center text-center' : '' ?>">
 
-                <!-- Left: Image -->
-                <?php if (!empty($aboutImage)) : ?>
-                    <div class="<?= !empty($aboutContent) ? 'w-full md:w-1/2' : 'w-full flex justify-center' ?>">
-                        <div class="relative rounded-2xl shadow-2xl overflow-hidden 
-                w-11/12 sm:w-10/12 md:w-4/5 lg:w-4/5  <!-- increased width on desktop -->
-                h-64 sm:h-80 md:h-64 lg:h-80  <!-- slightly taller for desktop -->
-                aspect-[16/9]">
-                            <img src="<?= UPLOADS_URL . $aboutImage ?>" alt="About Us"
-                                class="w-full h-full object-cover object-center">
-                        </div>
+            <!-- Left: Image -->
+            <?php if (!empty($aboutImage)) : ?>
+                <div class="<?= !empty($aboutContent) ? 'w-full md:w-1/2' : 'w-full flex justify-center' ?>">
+                    <div class="relative rounded-2xl shadow-2xl overflow-hidden 
+                        w-11/12 sm:w-10/12 md:w-4/5 lg:w-4/5 
+                        h-64 sm:h-80 md:h-64 lg:h-80 
+                        aspect-[16/9]">
+                        <img src="<?= UPLOADS_URL . $aboutImage ?>" 
+                             alt="About Us"
+                             class="w-full h-full object-cover object-center">
                     </div>
-                <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
-                <!-- Right: Text Content -->
-                <?php if (!empty($aboutContent)) : ?>
-                    <div class="<?= !empty($aboutImage) ? 'w-full md:w-1/2' : 'w-full' ?> flex flex-col justify-center">
-                        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2
-               <?= empty($aboutImage) ? 'text-center' : 'text-left md:text-left' ?>">
-                            About <?= $storeName ?? 'Our Brand' ?>
-                        </h2>
-                        <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto
-              <?= empty($aboutImage) ? 'text-center' : 'md:mx-0 text-left' ?>
-              leading-relaxed">
-                            <?= htmlspecialchars($aboutContent) ?>
-                        </p>
-                    </div>
-                <?php endif; ?>
+            <!-- Right: Text Content -->
+            <?php if (!empty($aboutContent)) : ?>
+                <div class="<?= !empty($aboutImage) ? 'w-full md:w-1/2' : 'w-full' ?> flex flex-col justify-center">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2
+                        <?= empty($aboutImage) ? 'text-center' : 'text-left md:text-left' ?>">
+                        About <?= $storeName ?? 'Our Brand' ?>
+                    </h2>
+                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto
+                        <?= empty($aboutImage) ? 'text-center' : 'md:mx-0 text-left' ?>
+                        leading-relaxed">
+                        <?= htmlspecialchars($aboutContent) ?>
+                    </p>
+                </div>
+            <?php endif; ?>
 
-            </div>
-        </section>
-    <?php endif; ?>
+        </div>
+    </section>
+<?php endif; ?>
+
     <!-- About Section End -->
 
 

@@ -149,13 +149,14 @@
                         $key += 1;
                     ?>
                         <div class="location-card rounded-2xl p-6 shadow-lg">
-                            <div class="flex items-start gap-4">
-                                <div class="relative flex-shrink-0">
-                                    <div class="number-badge w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                                        <?= $key ?>
-                                    </div>
+                            <!-- Number badge centered at top -->
+                            <div class="flex justify-center mb-4">
+                                <div class="number-badge w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                    <?= $key ?>
                                 </div>
+                            </div>
 
+                            <div class="flex items-start gap-4">
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-3 mb-4 pb-3 border-b border-pink-100">
                                         <h5 class="text-xl font-bold text-gray-800 flex-1"><?= $area['value'] ?></h5>

@@ -601,7 +601,7 @@
                                     <span id="gstTax" class="font-semibold"><?= currencyToSymbol($gstAmount) ?></span>
                                 </div>
                                 <div class="flex justify-between text-gray-600">
-                                    <span>Charges</span>
+                                    <span>Shipping Charges</span>
                                     <span id="charges" class="font-semibold">0.00</span>
                                 </div>
                             </div>

@@ -14,7 +14,7 @@
             gap: 1rem;
             width: 100%;
         }
-        
+
         /* Desktop: Normal grid (3-4 products per row) */
         @media (min-width: 1024px) {
             .wishlist-grid {
@@ -22,21 +22,21 @@
                 gap: 1.5rem;
             }
         }
-        
+
         /* Large Desktop: 4 products per row */
         @media (min-width: 1280px) {
             .wishlist-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
-        
+
         /* Mobile optimization */
         @media (max-width: 640px) {
             .wishlist-grid {
                 gap: 0.75rem;
             }
         }
-        
+
         /* Ensure product cards have consistent height */
         .product-card {
             height: 100%;

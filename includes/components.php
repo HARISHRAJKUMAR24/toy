@@ -91,7 +91,7 @@ function addToCartSection($id, $product_id, $cookie_id, $hasAdvancedVariants, $t
 
     // CHANGED: Using new ID 'customAddToCartBtn' to avoid conflicts
     $html .= '<button type="button" class="customAddToCartBtn relative overflow-hidden px-3 py-2 md:px-4 md:py-2 rounded-md shadow transition-all duration-300 w-full flex items-center justify-center text-sm md:text-base ' . $btnClass . '" 
-                    data-id="' . $id . '" ' . $variantData . ' ' . $disabled . '>
+                    data-id="' . $id . '" ' . $variantData . ' ' . $disabled . ' data-has-advanced-variants="' . ($hasAdvancedVariants ? 'true' : 'false') . '">
                     <span class="mr-1 text-sm md:text-base"></span> ' . $btnText . '
                   </button>';
 
@@ -175,11 +175,12 @@ function getProductHtml($id)
                         <option value="" selected disabled>Select Option</option>';
 
         // ALWAYS show main product option in dropdown, even for advanced variants
+        $mainStock = getData("unlimited_stock", "seller_products", "id='$id'") ? "Unlimited" : $totalStocks;
         $html .= '<option value="main" 
                 data-image="' . UPLOADS_URL . $image . '" 
                 data-price="' . $price . '" 
                 data-mrp="' . $mrp_price . '" 
-                data-stock="' . $totalStocks . '" 
+                data-stock="' . $mainStock . '" 
                 data-unlimited="' . (getData("unlimited_stock", "seller_products", "id='$id'") ?? 0) . '" 
                 data-variant-type="main"
                 data-is-main="true">
@@ -277,7 +278,6 @@ function getProductHtml($id)
         // Track if it's the first add for this session
         let firstAdd = true;
 
-        // Add to cart button click - USING NEW ID 'customAddToCartBtn'
         // Add to cart button click - USING NEW ID 'customAddToCartBtn'
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('customAddToCartBtn')) {
@@ -421,12 +421,12 @@ function getProductHtml($id)
             });
         }
 
-        // Variant selection functionality
+        // Variant selection functionality - FIXED LOGIC
         document.querySelectorAll('.variantSelect').forEach(select => {
             select.addEventListener('change', function() {
                 const selected = this.options[this.selectedIndex];
                 const card = this.closest('.group');
-                const addBtn = card.querySelector('.customAddToCartBtn'); // UPDATED: using new button class
+                const addBtn = card.querySelector('.customAddToCartBtn');
 
                 const img = selected.dataset.image;
                 const price = selected.dataset.price;
@@ -451,7 +451,7 @@ function getProductHtml($id)
                 // Handle Add button
                 if (addBtn) {
                     const isOutOfStock = stock <= 0 && unlimited !== 1;
-                    const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
+                    const hasAdvancedVariants = addBtn.dataset.hasAdvancedVariants === 'true';
 
                     // Clear previous variant data
                     addBtn.dataset.variant = "";
@@ -469,26 +469,49 @@ function getProductHtml($id)
                         addBtn.dataset.advancedvariant = "";
                     }
 
-                    // SPECIAL LOGIC: If advanced variants exist AND main product is selected, show "Select"
+                    // FIXED RULE: If product has advanced variants, main product is ALWAYS disabled
                     if (hasAdvancedVariants && isMain) {
+                        // Main product is always disabled when advanced variants exist
                         addBtn.disabled = true;
                         addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
-                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+                        addBtn.classList.remove('bg-primary-500', 'text-white');
                         addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
                     }
-                    // Handle out of stock
-                    else if (isOutOfStock) {
-                        addBtn.disabled = true;
-                        addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
-                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                        addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
+                    // Handle other variants (basic or advanced) when advanced variants exist
+                    else if (hasAdvancedVariants && !isMain) {
+                        if (isOutOfStock) {
+                            addBtn.disabled = true;
+                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
+                            addBtn.classList.remove('bg-primary-500', 'text-white');
+                            addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
+                        } else {
+                            addBtn.disabled = false;
+                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
+                            // Remove all disabled classes and add enabled classes
+                            addBtn.classList.remove(
+                                'bg-gray-100', 'cursor-not-allowed', 'text-gray-400',
+                                'bg-gray-300', 'text-gray-500'
+                            );
+                            addBtn.classList.add('bg-primary-500', 'text-white');
+                        }
                     }
-                    // Enable button for non-main variants
+                    // Handle products without advanced variants
                     else {
-                        addBtn.disabled = false;
-                        addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
-                        addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-400', 'bg-gray-300');
-                        addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+                        if (isOutOfStock) {
+                            addBtn.disabled = true;
+                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
+                            addBtn.classList.remove('bg-primary-500', 'text-white');
+                            addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
+                        } else {
+                            addBtn.disabled = false;
+                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
+                            // Remove all disabled classes and add enabled classes
+                            addBtn.classList.remove(
+                                'bg-gray-100', 'cursor-not-allowed', 'text-gray-400',
+                                'bg-gray-300', 'text-gray-500'
+                            );
+                            addBtn.classList.add('bg-primary-500', 'text-white');
+                        }
                     }
                 }
             });
@@ -498,8 +521,8 @@ function getProductHtml($id)
         function resetVariantSelects() {
             document.querySelectorAll('.variantSelect').forEach(select => {
                 const card = select.closest('.group');
-                const addBtn = card.querySelector('.customAddToCartBtn'); // UPDATED: using new button class
-                const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
+                const addBtn = card.querySelector('.customAddToCartBtn');
+                const hasAdvancedVariants = addBtn.dataset.hasAdvancedVariants === 'true';
 
                 // Reset to first option (Select Option)
                 if (select.querySelector('option[value=""]')) {
@@ -512,11 +535,15 @@ function getProductHtml($id)
                 if (hasAdvancedVariants && addBtn) {
                     addBtn.disabled = true;
                     addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
-                    addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
+                    addBtn.classList.remove('bg-primary-500', 'text-white');
                     addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
                 }
             });
         }
+
+        // Initialize
+        setTimeout(resetVariantSelects, 0);
+        window.addEventListener('pageshow', () => setTimeout(resetVariantSelects, 50));
 
         // Initialize
         setTimeout(resetVariantSelects, 0);

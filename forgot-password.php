@@ -68,7 +68,10 @@
             <!-- Back to Login Link -->
             <p class="text-center text-gray-600 text-sm mt-4">
                 Remembered your password?
-                <a href="#" class="text-pink-600 font-semibold hover:underline">Login</a>
+                <a href="<?= $storeUrl ?>login" class="text-pink-600 font-semibold hover:underline">
+                    Login
+                </a>
+
             </p>
 
         </div>

@@ -152,9 +152,10 @@
                     </p>
                 <?php endif; ?>
 
-                <!-- Scroll Container / Centered Flex -->
-                <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 -mx-4 lg:mx-0">
-                    <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+                <!-- Scroll Container - FIXED: Center on desktop, scroll on mobile -->
+                <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 -mx-4 lg:mx-0 hide-scrollbar">
+                    <div class="flex flex-nowrap justify-center lg:justify-center gap-6 md:gap-8 min-w-min">
+                        <!-- CHANGED: justify-center on all screens -->
 
                         <?php foreach ($advance_categories as $index => $category) :
                             // Color for border animation (cycle through colors) - DARKER COLORS
@@ -168,11 +169,15 @@
                                 <!-- Image circle -->
                                 <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300">
                                     <?php if (!empty($category['link'])): ?>
-                                        <a href="<?= $category['link'] ?>" target="_blank">
-                                            <img src="<?= UPLOADS_URL . $category['image'] ?>" alt="<?= htmlspecialchars($category['name']) ?>" class="w-full h-full object-cover">
+                                        <a href="<?= $category['link'] ?>" target="_blank" class="block w-full h-full flex items-center justify-center">
+                                            <img src="<?= UPLOADS_URL . $category['image'] ?>"
+                                                alt="<?= htmlspecialchars($category['name']) ?>"
+                                                class="w-full h-full object-cover object-center">
                                         </a>
                                     <?php else: ?>
-                                        <img src="<?= UPLOADS_URL . $category['image'] ?>" alt="<?= htmlspecialchars($category['name']) ?>" class="w-full h-full object-cover">
+                                        <img src="<?= UPLOADS_URL . $category['image'] ?>"
+                                            alt="<?= htmlspecialchars($category['name']) ?>"
+                                            class="w-full h-full object-cover object-center">
                                     <?php endif; ?>
                                 </div>
                                 <!-- Category Name Box -->
@@ -223,10 +228,40 @@
             .animate-spin-slow {
                 animation: spin-slow 18s linear infinite;
             }
+
+            /* Ensure images fill the circle properly */
+            .relative.w-28.h-28 img {
+                min-width: 100%;
+                min-height: 100%;
+            }
+
+            /* Enhanced scroll container - hide scrollbar on desktop */
+            .scroll-container {
+                cursor: grab;
+            }
+
+            .scroll-container:active {
+                cursor: grabbing;
+            }
+
+            /* Hide overflow and scrollbar on desktop */
+            @media (min-width: 1024px) {
+                .scroll-container {
+                    overflow: hidden !important;
+                }
+            }
+
+            /* Show scrolling on mobile */
+            @media (max-width: 1023px) {
+                .scroll-container {
+                    overflow-x: auto !important;
+                }
+            }
         </style>
         <!--Shop By Age End-->
 
     <?php endif; ?>
+    <!--Shop By Age End-->
 
 
     <?php
@@ -244,49 +279,51 @@
 
     <?php if (!empty($categories)) : ?>
         <!--Product Category Start -->
-        <div class="py-16 px-4 bg-gray-50">
-            <!-- Heading -->
-            <div class="text-center mb-8">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 text-center">
-                    Shop By Category
-                </h2>
-                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto text-center mb-4">
-                    Explore our diverse collection of products for all your needs
-                </p>
-            </div>
+        <!-- UPDATED: Applied same padding as New Collections section -->
+        <section class="py-16 bg-gray-50 md:px-4">
+            <div class="container mx-auto md:max-w-none max-w-6xl px-4 md:px-20">
 
-            <!-- Scrollable Tabs -->
-            <div id="menu-tabs"
-                class="flex overflow-x-auto snap-x snap-proximity gap-6 py-3 whitespace-nowrap hide-scrollbar cursor-grab px-[50%]">
-                <?php foreach ($categories as $index => $category) :
-                    $catImage = !empty($category['icon']) ? UPLOADS_URL . $category['icon'] : 'https://via.placeholder.com/400x160?text=No+Image';
-                ?>
-                    <button class="tab-button flex flex-col items-center cursor-pointer"
-                        data-section="section<?= $index + 1 ?>"
-                        data-category-id="<?= $category['id'] ?>">
-                        <div class="tab-img w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg mb-4 group-hover:shadow-xl">
-                            <img src="<?= $catImage ?>" alt="<?= $category['name'] ?>" class="w-full h-full object-cover transform group-hover:scale-105">
-                        </div>
-                        <span class="mt-2 text-sm font-medium text-gray-700"><?= $category['name'] ?></span>
-                    </button>
-                <?php endforeach; ?>
-            </div>
+                <!-- Heading - UPDATED: Same structure as New Collections -->
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">Shop By Category</h2>
+                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                        Explore our diverse collection of products for all your needs
+                    </p>
+                </div>
 
-            <!-- Product Display Area -->
-            <div class="container mx-auto overflow-hidden mt-8">
-                <!-- This is where products will be shown when category is clicked -->
-                <div id="product-display-area" class="min-h-[400px]">
-                    <!-- Default message - will be replaced when category is clicked -->
-                    <div class="text-center py-16">
-                        <div class="w-24 h-24 rounded-full bg-pink-100 flex items-center justify-center mb-4 mx-auto">
-                            <i class="fas fa-shopping-bag text-pink-600 text-3xl"></i>
+                <!-- Scrollable Tabs -->
+                <div id="menu-tabs"
+                    class="flex overflow-x-auto snap-x snap-proximity gap-6 py-3 whitespace-nowrap hide-scrollbar cursor-grab px-[50%]">
+                    <?php foreach ($categories as $index => $category) :
+                        $catImage = !empty($category['icon']) ? UPLOADS_URL . $category['icon'] : 'https://via.placeholder.com/400x160?text=No+Image';
+                    ?>
+                        <button class="tab-button flex flex-col items-center cursor-pointer"
+                            data-section="section<?= $index + 1 ?>"
+                            data-category-id="<?= $category['id'] ?>">
+                            <div class="tab-img w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg mb-4 group-hover:shadow-xl">
+                                <img src="<?= $catImage ?>" alt="<?= $category['name'] ?>" class="w-full h-full object-cover transform group-hover:scale-105">
+                            </div>
+                            <span class="mt-2 text-sm font-medium text-gray-700"><?= $category['name'] ?></span>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Product Display Area - UPDATED: Same padding structure -->
+                <div class="mt-12">
+                    <!-- This is where products will be shown when category is clicked -->
+                    <div id="product-display-area">
+                        <!-- Default message - will be replaced when category is clicked -->
+                        <div class="text-center py-16">
+                            <div class="w-24 h-24 rounded-full bg-pink-100 flex items-center justify-center mb-4 mx-auto">
+                                <i class="fas fa-shopping-bag text-pink-600 text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Select a Category</h3>
+                            <p class="text-gray-500 mb-6 max-w-md mx-auto">Click on any category above to view products</p>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Select a Category</h3>
-                        <p class="text-gray-500 mb-6 max-w-md mx-auto">Click on any category above to view products</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
         <!--Product Category End -->
     <?php endif; ?>
 
@@ -442,6 +479,59 @@
             // Initialize first tab on page load
             if (tabs.length > 0) {
                 centerTab(tabs[0]);
+            }
+        });
+        // Enhanced scrolling for Shop By Age section
+        document.addEventListener('DOMContentLoaded', function() {
+            const shopByAgeContainer = document.querySelector('.scroll-container');
+
+            if (shopByAgeContainer) {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                shopByAgeContainer.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    shopByAgeContainer.classList.add('cursor-grabbing');
+                    startX = e.pageX - shopByAgeContainer.offsetLeft;
+                    scrollLeft = shopByAgeContainer.scrollLeft;
+                });
+
+                shopByAgeContainer.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    shopByAgeContainer.classList.remove('cursor-grabbing');
+                });
+
+                shopByAgeContainer.addEventListener('mouseup', () => {
+                    isDown = false;
+                    shopByAgeContainer.classList.remove('cursor-grabbing');
+                });
+
+                shopByAgeContainer.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - shopByAgeContainer.offsetLeft;
+                    const walk = (x - startX) * 2; // Scroll-fast
+                    shopByAgeContainer.scrollLeft = scrollLeft - walk;
+                });
+
+                // Touch support for mobile
+                shopByAgeContainer.addEventListener('touchstart', (e) => {
+                    isDown = true;
+                    startX = e.touches[0].pageX - shopByAgeContainer.offsetLeft;
+                    scrollLeft = shopByAgeContainer.scrollLeft;
+                });
+
+                shopByAgeContainer.addEventListener('touchend', () => {
+                    isDown = false;
+                });
+
+                shopByAgeContainer.addEventListener('touchmove', (e) => {
+                    if (!isDown) return;
+                    const x = e.touches[0].pageX - shopByAgeContainer.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    shopByAgeContainer.scrollLeft = scrollLeft - walk;
+                });
             }
         });
     </script>
