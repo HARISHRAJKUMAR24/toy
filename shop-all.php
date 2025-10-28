@@ -171,35 +171,63 @@
                     <div class="flex flex-nowrap justify-center lg:justify-center gap-6 md:gap-8 min-w-min">
                         <!-- CHANGED: justify-center on all screens -->
 
-                        <?php foreach ($advance_categories as $index => $category) :
-                            // Use dynamic colors from database instead of fixed colors
-                            $border_color = $index % 2 == 0 ? $primary_color : $hover_color;
-                            $bg_color = $index % 2 == 0 ? $hover_color : $primary_color;
+                        <?php
+                        // Array of beautiful random colors for variety
+                        $random_colors = [
+                            '#FF6B6B',
+                            '#4ECDC4',
+                            '#45B7D1',
+                            '#96CEB4',
+                            '#FFEAA7',
+                            '#DDA0DD',
+                            '#98D8C8',
+                            '#F7DC6F',
+                            '#BB8FCE',
+                            '#85C1E9',
+                            '#F8C471',
+                            '#82E0AA',
+                            '#F1948A',
+                            '#85C1E9',
+                            '#D7BDE2',
+                            '#A9DFBF',
+                            '#F9E79F',
+                            '#D2B4DE',
+                            '#AED6F1',
+                            '#F5B7B1',
+                            '#76D7C4',
+                            '#F7DC6F',
+                            '#BB8FCE',
+                            '#85C1E9',
+                            '#F8C471'
+                        ];
+
+                        foreach ($advance_categories as $index => $category) :
+                            // Get random colors for each category
+                            $border_color = $random_colors[$index % count($random_colors)];
+                            $label_color = $random_colors[($index + 5) % count($random_colors)]; // Different color for label
                         ?>
-                            <div class="relative w-32 h-32 flex-shrink-0 group">
-                                <!-- Spinning border with dynamic color and increased opacity -->
-                                <div class="absolute inset-0 rounded-full border-4 border-dashed animate-spin-slow opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                            <div class="relative w-32 h-32 flex-shrink-0">
+                                <!-- Spinning border with random color -->
+                                <div class="absolute inset-0 rounded-full border-4 border-dashed animate-spin-slow opacity-90 transition-opacity duration-300"
                                     style="border-color: <?= htmlspecialchars($border_color) ?>;"></div>
                                 <!-- Image circle -->
-                                <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300 group-hover:shadow-xl transition-all duration-300">
+                                <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300 transition-all duration-300">
                                     <?php if (!empty($category['link'])): ?>
                                         <a href="<?= $category['link'] ?>" target="_blank" class="block w-full h-full flex items-center justify-center">
                                             <img src="<?= UPLOADS_URL . $category['image'] ?>"
                                                 alt="<?= htmlspecialchars($category['name']) ?>"
-                                                class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110">
+                                                class="w-full h-full object-cover object-center">
                                         </a>
                                     <?php else: ?>
                                         <img src="<?= UPLOADS_URL . $category['image'] ?>"
                                             alt="<?= htmlspecialchars($category['name']) ?>"
-                                            class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110">
+                                            class="w-full h-full object-cover object-center">
                                     <?php endif; ?>
                                 </div>
-                                <!-- Category Name Box with dynamic background color and increased opacity -->
+                                <!-- Category Name Box with random background color -->
                                 <?php if (!empty($category['name'])): ?>
-                                    <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-0.5 text-white text-sm font-semibold rounded-md shadow-lg text-center break-words max-w-[90%] border border-white/30 transition-all duration-300 hover:scale-105 opacity-95 group-hover:opacity-100"
-                                        style="background-color: <?= htmlspecialchars($bg_color) ?>;"
-                                        onmouseover="this.style.backgroundColor='<?= htmlspecialchars($primary_color) ?>'; this.style.opacity='1'"
-                                        onmouseout="this.style.backgroundColor='<?= htmlspecialchars($bg_color) ?>'; this.style.opacity='0.95'">
+                                    <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-0.5 text-white text-sm font-semibold rounded-md shadow-lg text-center break-words max-w-[90%] border border-white/30 opacity-95"
+                                        style="background-color: <?= htmlspecialchars($label_color) ?>;">
                                         <?= htmlspecialchars($category['name']) ?>
                                     </div>
                                 <?php endif; ?>
@@ -212,19 +240,16 @@
         </section>
 
         <style>
+            /*------------- Shop By Age Bg Animation Taken From DB  -------------*/
             .animate-gradient-x {
                 background: linear-gradient(-45deg,
-                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 25%, white),
-                        /* Increased from 15% */
-                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 22%, white),
-                        /* Increased from 12% */
-                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 20%, white),
-                        /* Increased from 10% */
-                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 18%, white)
-                        /* Increased from 8% */
-                    );
+                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 35%, white),
+                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 32%, white),
+                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 30%, white),
+                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 28%, white));
                 background-size: 400% 400%;
-                animation: gradient 8s ease infinite;
+                animation: gradient 15s ease infinite;
+                /* Slower animation */
                 position: relative;
                 overflow: hidden;
             }
@@ -238,12 +263,13 @@
                 height: 100%;
                 background: linear-gradient(90deg,
                         transparent,
-                        rgba(255, 255, 255, 0.6),
-                        /* Increased from 0.4 */
+                        rgba(255, 255, 255, 0.9),
+                        /* Increased opacity */
                         transparent);
-                animation: shimmer 3s infinite;
-                opacity: 0.7;
-                /* Added opacity for better blending */
+                animation: shimmer 4s infinite;
+                /* Slower shimmer */
+                opacity: 0.8;
+                /* Increased opacity */
             }
 
             @keyframes gradient {
@@ -251,8 +277,16 @@
                     background-position: 0% 50%;
                 }
 
+                25% {
+                    background-position: 50% 100%;
+                }
+
                 50% {
                     background-position: 100% 50%;
+                }
+
+                75% {
+                    background-position: 50% 0%;
                 }
 
                 100% {
@@ -265,12 +299,16 @@
                     left: -100%;
                 }
 
+                50% {
+                    left: 100%;
+                }
+
                 100% {
                     left: 100%;
                 }
             }
 
-            /* Enhanced spin animation with dynamic colors */
+            /* Enhanced spin animation */
             @keyframes spin-slow {
                 from {
                     transform: rotate(0deg);
@@ -282,47 +320,19 @@
             }
 
             .animate-spin-slow {
-                animation: spin-slow 18s linear infinite;
-            }
-
-            /* Hover effects for the entire section with increased opacity */
-            .animate-gradient-x:hover {
-                background: linear-gradient(-45deg,
-                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 28%, white),
-                        /* Increased from 18% */
-                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 25%, white),
-                        /* Increased from 15% */
-                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 22%, white),
-                        /* Increased from 12% */
-                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 20%, white)
-                        /* Increased from 10% */
-                    );
-                background-size: 400% 400%;
-            }
-
-            /* Enhanced hover effects for individual category items */
-            .group:hover .animate-spin-slow {
-                opacity: 1;
-                border-width: 5px;
-                /* Slightly thicker border on hover */
+                animation: spin-slow 25s linear infinite;
+                /* Slower spin */
             }
 
             /* Ensure images fill the circle properly */
             .relative.w-28.h-28 img {
                 min-width: 100%;
                 min-height: 100%;
-                transition: transform 0.3s ease;
             }
 
             /* Enhanced shadow effects */
             .relative.w-28.h-28 {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                /* Added shadow to image container */
-            }
-
-            .relative.w-28.h-28:hover {
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-                /* Enhanced shadow on hover */
             }
 
             /* Enhanced scroll container - hide scrollbar on desktop */
@@ -348,8 +358,7 @@
                 }
             }
         </style>
-        <!--Shop By Age End-->
-        <!--Shop By Age End-->
+
 
     <?php endif; ?>
     <!--Shop By Age End-->

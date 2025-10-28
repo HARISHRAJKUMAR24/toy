@@ -11,7 +11,7 @@
                         <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center uppercase text-sm sm:text-base">
                             <?= substr($storeName, 0, 1) ?>
                         </div>
-                        <span class="font-extrabold text-lg sm:text-xl" style="color: var(--primary);"><?= $storeName ?></span>
+                        <span class="font-extrabold text-lg sm:text-xl" style="color: <?= htmlspecialchars(getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;"><?= $storeName ?></span>
                     </div>
                 <?php endif; ?>
             </a>
@@ -172,7 +172,7 @@
                         <div class="w-7 h-7 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center uppercase text-sm">
                             <?= substr($storeName, 0, 1) ?>
                         </div>
-                        <span class="font-extrabold text-base" style="color: var(--primary);"><?= $storeName ?></span>
+                        <span class="font-extrabold text-base" style="color: <?= htmlspecialchars(getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;"><?= $storeName ?></span>
                     </div>
                 <?php endif; ?>
             </a>
@@ -242,8 +242,6 @@
     </div>
 </div>
 <!-- Mobile Menu End -->
-
-
 
 <script>
     $(document).ready(function() {
