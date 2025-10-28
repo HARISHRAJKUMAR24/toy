@@ -268,7 +268,7 @@
                         transparent);
                 animation: shimmer 4s infinite;
                 /* Slower shimmer */
-                opacity: 0.1;
+                opacity: 0.2;
                 /* Increased opacity */
             }
 
