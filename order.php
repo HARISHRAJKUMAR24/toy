@@ -1,5 +1,9 @@
 <?php
 include_once __DIR__ . "/includes/files_includes.php";
+
+// Get colors from database
+$primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+$hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
 ?>
 
 <!DOCTYPE html>
@@ -7,9 +11,31 @@ include_once __DIR__ . "/includes/files_includes.php";
 
 <head>
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
+    <style>
+        :root {
+            --primary: <?= htmlspecialchars($primary_color) ?>;
+            --hover-color: <?= htmlspecialchars($hover_color) ?>;
+        }
+        
+        .bg-primary-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--hover-color));
+        }
+        
+        .text-primary {
+            color: var(--primary);
+        }
+        
+        .border-primary {
+            border-color: var(--primary);
+        }
+        
+        .hover-primary:hover {
+            color: var(--primary);
+        }
+    </style>
 </head>
 
-<body class="font-sans bg-pink-50 min-h-screen">
+<body class="font-sans bg-gray-50 min-h-screen" style="--primary: <?= htmlspecialchars($primary_color) ?>; --hover-color: <?= htmlspecialchars($hover_color) ?>;">
     <!-- Navbar -->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
@@ -64,7 +90,8 @@ include_once __DIR__ . "/includes/files_includes.php";
             <!-- Header Section -->
             <div class="flex flex-col items-center justify-between gap-4 sm:gap-5 mb-6 sm:mb-8">
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-800 text-center sm:text-left">Order: #<?= $order_id ?></h1>
-                <a href="<?= $storeUrl ?>download-invoice?id=<?= $order_id ?>" class="bg-green-500 text-white text-sm font-medium py-2 px-4 flex items-center gap-2 rounded-lg transition hover:opacity-90 justify-center shadow-lg hover:shadow-xl w-full sm:w-auto">
+                <a href="<?= $storeUrl ?>download-invoice?id=<?= $order_id ?>" 
+                   class="text-white text-sm font-medium py-2 px-4 flex items-center gap-2 rounded-lg transition hover:opacity-90 justify-center shadow-lg hover:shadow-xl w-full sm:w-auto bg-primary-gradient">
                     <i class='bx bxs-download'></i> Download Invoice
                 </a>
             </div>
@@ -74,26 +101,30 @@ include_once __DIR__ . "/includes/files_includes.php";
                 <!-- Order Status Card -->
                 <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg lg:w-[35%]">
                     <ul class="space-y-3">
-                        <li class="grid grid-cols-11 text-sm w-full font-medium bg-blue-50 p-3 rounded-xl border border-blue-100">
-                            <span class="col-span-4 text-blue-700">Ordered At</span>
-                            <span class="col-span-1 text-blue-500">:</span>
-                            <span class="col-span-6 text-blue-600 font-semibold"><?= $ordered_date ?></span>
+                        <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                            style="background-color: color-mix(in srgb, var(--primary) 8%, white); border-color: color-mix(in srgb, var(--primary) 20%, transparent);">
+                            <span class="col-span-4" style="color: var(--primary);">Ordered At</span>
+                            <span class="col-span-1" style="color: var(--primary); opacity: 0.7;">:</span>
+                            <span class="col-span-6 font-semibold" style="color: var(--primary);"><?= $ordered_date ?></span>
                         </li>
 
-                        <li class="grid grid-cols-11 text-sm w-full font-medium bg-green-50 p-3 rounded-xl border border-green-100">
+                        <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                            style="background-color: color-mix(in srgb, #10b981 8%, white); border-color: color-mix(in srgb, #10b981 20%, transparent);">
                             <span class="col-span-4 text-green-700">Status</span>
                             <span class="col-span-1 text-green-500">:</span>
-                            <span class="col-span-6 text-green-600 font-semibold"><?= $status ?></span>
+                            <span class="col-span-6 font-semibold text-green-600"><?= $status ?></span>
                         </li>
 
-                        <li class="grid grid-cols-11 text-sm w-full font-medium bg-indigo-50 p-3 rounded-xl border border-indigo-100">
-                            <span class="col-span-4 text-indigo-700">Payment Status</span>
-                            <span class="col-span-1 text-indigo-500">:</span>
-                            <span class="col-span-6 text-indigo-600 font-semibold"><?= $payment_status ?></span>
+                        <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                            style="background-color: color-mix(in srgb, var(--hover-color) 8%, white); border-color: color-mix(in srgb, var(--hover-color) 20%, transparent);">
+                            <span class="col-span-4" style="color: var(--hover-color);">Payment Status</span>
+                            <span class="col-span-1" style="color: var(--hover-color); opacity: 0.7;">:</span>
+                            <span class="col-span-6 font-semibold" style="color: var(--hover-color);"><?= $payment_status ?></span>
                         </li>
 
                         <?php if ($courier_service) : ?>
-                            <li class="grid grid-cols-11 text-sm w-full font-medium bg-cyan-50 p-3 rounded-xl border border-cyan-100">
+                            <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                style="background-color: color-mix(in srgb, #06b6d4 8%, white); border-color: color-mix(in srgb, #06b6d4 20%, transparent);">
                                 <span class="col-span-4 text-cyan-700">Courier Service</span>
                                 <span class="col-span-1 text-cyan-500">:</span>
                                 <span class="col-span-6 text-cyan-600 font-semibold"><?= $courier_service ? $courier_service : 'update soon' ?></span>
@@ -101,7 +132,8 @@ include_once __DIR__ . "/includes/files_includes.php";
                         <?php endif; ?>
 
                         <?php if ($expected_delivery_date) : ?>
-                            <li class="grid grid-cols-11 text-sm w-full font-medium bg-orange-50 p-3 rounded-xl border border-orange-100">
+                            <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                style="background-color: color-mix(in srgb, #f59e0b 8%, white); border-color: color-mix(in srgb, #f59e0b 20%, transparent);">
                                 <span class="col-span-4 text-orange-700">Expected Delivery</span>
                                 <span class="col-span-1 text-orange-500">:</span>
                                 <span class="col-span-6 text-orange-600 font-semibold"><?= $expected_delivery_date ? date('M d, Y', strtotime($expected_delivery_date)) : 'update soon' ?></span>
@@ -109,20 +141,20 @@ include_once __DIR__ . "/includes/files_includes.php";
                         <?php endif; ?>
                     </ul>
 
-                    <?= $payment_status == "Unpaid" ? "<p class='block text-sm mt-4 text-red-500 bg-red-50 p-3 rounded-lg border border-red-100'><b>Note:</b> Once you paid manually it can takes 3-5hours time to verify the payment made</p>" : null ?>
+                    <?= $payment_status == "Unpaid" ? "<p class='block text-sm mt-4 p-3 rounded-lg border transition-all duration-300' style='color: #ef4444; background-color: color-mix(in srgb, #ef4444 8%, white); border-color: color-mix(in srgb, #ef4444 20%, transparent);'><b>Note:</b> Once you paid manually it can takes 3-5hours time to verify the payment made</p>" : null ?>
                 </div>
 
                 <!-- Ordered Products - Responsive Table -->
                 <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg lg:w-[65%]">
                     <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                        <span class='mgc_package_2_fill text-2xl text-primary-500'></span> Ordered Products
+                        <span class='mgc_package_2_fill text-2xl' style="color: var(--primary);"></span> Ordered Products
                     </h3>
 
                     <!-- Desktop Table -->
                     <div class="hidden md:block w-full overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead>
-                                <tr class="bg-gradient-to-r from-pink-400 to-pink-600">
+                                <tr class="bg-primary-gradient">
                                     <th class="p-3 font-semibold text-left text-white">Product</th>
                                     <th class="p-3 font-semibold text-left text-white">Price</th>
                                     <th class="p-3 font-semibold text-left text-white">MRP Price</th>
@@ -160,7 +192,9 @@ include_once __DIR__ . "/includes/files_includes.php";
                                 ?>
                                     <tr class="border-t hover:bg-gray-50 transition">
                                         <td class="p-3 border-t">
-                                            <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") ?>" class="flex items-center gap-3 text-primary-500 hover:text-primary-600 transition">
+                                            <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") ?>" 
+                                               class="flex items-center gap-3 transition hover-primary"
+                                               style="color: var(--primary);">
                                                 <img class="object-contain w-12 h-12 rounded-lg shadow-sm" src="<?= UPLOADS_URL . $image ?>" alt="<?= getData("name", "seller_products", "id = '{$product['product_id']}'") . $other ?>">
                                                 <div>
                                                     <span class="font-bold block text-sm"><?= limit_characters(getData("name", "seller_products", "id = '{$product['product_id']}'") . $other, 35) ?></span>
@@ -201,11 +235,13 @@ include_once __DIR__ . "/includes/files_includes.php";
                                 if (getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'")) $image = getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
                             }
                         ?>
-                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 transition-all duration-300 hover:shadow-md">
                                 <div class="flex items-start gap-3">
                                     <img class="object-contain w-16 h-16 rounded-lg shadow-sm flex-shrink-0" src="<?= UPLOADS_URL . $image ?>" alt="<?= getData("name", "seller_products", "id = '{$product['product_id']}'") . $other ?>">
                                     <div class="flex-1 min-w-0">
-                                        <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") ?>" class="font-bold block text-sm text-gray-800 hover:text-primary-600 transition mb-1">
+                                        <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") ?>" 
+                                           class="font-bold block text-sm text-gray-800 transition mb-1 hover-primary"
+                                           style="color: var(--primary);">
                                             <?= limit_characters(getData("name", "seller_products", "id = '{$product['product_id']}'") . $other, 40) ?>
                                         </a>
                                         <?php if ($advanced_variant) : ?>
@@ -242,31 +278,33 @@ include_once __DIR__ . "/includes/files_includes.php";
             <div class="grid gap-4 sm:gap-6 mt-6 lg:grid-cols-3 md:grid-cols-2">
 
                 <?php if ($payment_status == "Unpaid" && !empty(getSettings("bank_details")) && plan("payment_bank") && $payment_method === "Bank Transfer") : ?>
-                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg">
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
                         <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                            <span class='mgc_bank_fill text-2xl text-teal-500'></span> Bank Information
+                            <span class='mgc_bank_fill text-2xl' style="color: var(--primary);"></span> Bank Information
                         </h3>
-                        <div class="p-4 mt-2 space-y-3 bg-teal-50 rounded-xl text-sm leading-6 border border-teal-100">
+                        <div class="p-4 mt-2 space-y-3 rounded-xl text-sm leading-6 border transition-all duration-300"
+                             style="background-color: color-mix(in srgb, var(--primary) 5%, white); border-color: color-mix(in srgb, var(--primary) 15%, transparent);">
                             <?= nl2br(getSettings("bank_details")) ?>
                         </div>
                     </div>
                 <?php endif ?>
 
                 <?php if ($payment_status == "Unpaid" && !empty(getSettings("upi_qr_code")) && plan("payment_upi") && $payment_method === "UPI") : ?>
-                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg">
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
                         <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                            <span class='text-2xl mgc_fast_forward_fill text-orange-500'></span> UPI Payment
+                            <span class='text-2xl mgc_fast_forward_fill' style="color: var(--hover-color);"></span> UPI Payment
                         </h3>
-                        <div class="p-4 mt-2 space-y-3 bg-orange-50 rounded-xl text-sm leading-6 border border-orange-100">
+                        <div class="p-4 mt-2 space-y-3 rounded-xl text-sm leading-6 border transition-all duration-300"
+                             style="background-color: color-mix(in srgb, var(--hover-color) 5%, white); border-color: color-mix(in srgb, var(--hover-color) 15%, transparent);">
                             <img src="<?= UPLOADS_URL . getSettings("upi_qr_code") ?>" alt="UPI QR Code" class="max-h-[180px] mx-auto rounded-lg shadow-sm">
                         </div>
                     </div>
                 <?php endif ?>
 
                 <!-- Order Summary -->
-                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg">
+                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
                     <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                        <span class='mgc_wallet_4_fill text-2xl text-purple-500'></span> Order Summary
+                        <span class='mgc_wallet_4_fill text-2xl' style="color: var(--primary);"></span> Order Summary
                     </h3>
                     <ul class="space-y-4">
                         <li class="grid grid-cols-11 max-w-[350px] text-sm">
@@ -302,9 +340,9 @@ include_once __DIR__ . "/includes/files_includes.php";
                 </div>
 
                 <!-- Delivery Address -->
-                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg">
+                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
                     <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                        <span class='mgc_truck_fill text-2xl text-blue-500'></span> Delivery Address
+                        <span class='mgc_truck_fill text-2xl' style="color: var(--hover-color);"></span> Delivery Address
                     </h3>
                     <ul class="space-y-4">
                         <li class="grid grid-cols-11 max-w-[350px] text-sm">
@@ -322,7 +360,8 @@ include_once __DIR__ . "/includes/files_includes.php";
                             <span class="col-span-1 text-gray-500">:</span>
                             <span class="col-span-6 font-medium"><?= getData("email", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></span>
                         </li>
-                        <div class="text-sm bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <div class="text-sm p-3 rounded-lg border transition-all duration-300"
+                             style="background-color: color-mix(in srgb, var(--primary) 3%, white); border-color: color-mix(in srgb, var(--primary) 10%, transparent);">
                             <span class="block mb-2 font-semibold text-gray-700">Address:</span>
                             <p class="mt-1 text-gray-600"><?= getData("address", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></p>
                             <p class="mt-1 text-gray-600"><?= getData("city", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?>, <?= getData("state", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?> <?= getData("pin_code", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></p>
@@ -331,9 +370,9 @@ include_once __DIR__ . "/includes/files_includes.php";
                 </div>
 
                 <!-- Billing Address -->
-                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg">
+                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
                     <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                        <span class='mgc_bill_fill text-2xl text-indigo-500'></span> Billing Address
+                        <span class='mgc_bill_fill text-2xl' style="color: var(--primary);"></span> Billing Address
                     </h3>
                     <ul class="space-y-4">
                         <li class="grid grid-cols-11 max-w-[350px] text-sm">
@@ -351,7 +390,8 @@ include_once __DIR__ . "/includes/files_includes.php";
                             <span class="col-span-1 text-gray-500">:</span>
                             <span class="col-span-6 font-medium"><?= getData("email", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?></span>
                         </li>
-                        <div class="text-sm bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <div class="text-sm p-3 rounded-lg border transition-all duration-300"
+                             style="background-color: color-mix(in srgb, var(--hover-color) 3%, white); border-color: color-mix(in srgb, var(--hover-color) 10%, transparent);">
                             <span class="block mb-2 font-semibold text-gray-700">Address:</span>
                             <p class="mt-1 text-gray-600"><?= getData("address", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?></p>
                             <p class="mt-1 text-gray-600"><?= getData("city", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?>, <?= getData("state", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?> <?= getData("pin_code", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?></p>
@@ -360,9 +400,9 @@ include_once __DIR__ . "/includes/files_includes.php";
                 </div>
 
                 <?php if (!empty($courier_service)) : ?>
-                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg">
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
                         <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                            <i class='text-2xl bx bx-package text-cyan-500'></i> Courier Information
+                            <i class='text-2xl bx bx-package' style="color: var(--primary);"></i> Courier Information
                         </h3>
                         <ul class="space-y-4">
                             <li class="grid grid-cols-11 max-w-[350px] text-sm">
@@ -373,7 +413,7 @@ include_once __DIR__ . "/includes/files_includes.php";
                             <li class="grid grid-cols-11 max-w-[350px] text-sm">
                                 <span class="col-span-4 font-semibold text-gray-700">Tracking ID</span>
                                 <span class="col-span-1 text-gray-500">:</span>
-                                <span class="col-span-6 font-medium text-cyan-600"><?= $tracking_id ?></span>
+                                <span class="col-span-6 font-medium" style="color: var(--hover-color);"><?= $tracking_id ?></span>
                             </li>
                             <li class="grid grid-cols-11 max-w-[350px] text-sm">
                                 <span class="col-span-4 font-semibold text-gray-700">Expected Date</span>
@@ -387,18 +427,20 @@ include_once __DIR__ . "/includes/files_includes.php";
 
             <!-- Customized Gift Section -->
             <?php if ($customized_gift) : ?>
-                <div class="p-4 sm:p-6 mt-6 bg-white rounded-2xl shadow-lg">
+                <div class="p-4 sm:p-6 mt-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
                     <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                        <span class='mgc_gift_fill text-2xl text-pink-500'></span> Customized Gift
+                        <span class='mgc_gift_fill text-2xl' style="color: var(--primary);"></span> Customized Gift
                     </h3>
-                    <div class="[&_ul]:ml-8 [&_ul]:mt-2 [&_ul]:list-disc [&_a]:text-primary-500 [&_a]:underline bg-pink-50 p-4 rounded-xl border border-pink-100">
+                    <div class="[&_ul]:ml-8 [&_ul]:mt-2 [&_ul]:list-disc [&_a]:underline bg-pink-50 p-4 rounded-xl border border-pink-100 transition-all duration-300"
+                         style="background-color: color-mix(in srgb, var(--primary) 5%, white); border-color: color-mix(in srgb, var(--primary) 15%, transparent);">
                         <?= preg_replace('/customers\/\//', UPLOADS_URL . 'customers//', $customized_gift) ?>
                     </div>
                 </div>
             <?php endif ?>
 
             <!-- Contact Information -->
-            <p class="mt-6 sm:mt-8 font-medium text-center text-primary-500 bg-white p-4 rounded-2xl shadow-lg text-sm sm:text-base">
+            <p class="mt-6 sm:mt-8 font-medium text-center bg-white p-4 rounded-2xl shadow-lg text-sm sm:text-base transition-all duration-300 hover:shadow-xl"
+               style="color: var(--primary); background-color: color-mix(in srgb, var(--primary) 5%, white);">
                 Contact us for any help at <?= getSettings("phone") ?> - We're always here to assist you with your shopping needs!
             </p>
         </div>
