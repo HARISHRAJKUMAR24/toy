@@ -6,6 +6,11 @@
 <head>
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
     <style>
+        :root {
+            --primary: <?= htmlspecialchars(getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;
+            --hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;
+        }
+
         .category-scroll {
             scroll-behavior: smooth;
             scrollbar-width: none;
@@ -25,7 +30,7 @@
         }
 
         .active-category-card {
-            background: linear-gradient(135deg, #ec4899, #f59e0b);
+            background: linear-gradient(135deg, var(--primary), #f59e0b);
             color: white;
         }
 
@@ -58,11 +63,12 @@
 
         .sort-dropdown select:focus {
             outline: none;
-            box-shadow: 0 0 0 2px #ec4899;
-            border-color: #ec4899;
+            box-shadow: 0 0 0 2px var(--primary);
+            border-color: var(--primary);
         }
 
-        /* Mobile-first responsive utilities */
+
+        /* Utilities */
         .line-clamp-2 {
             display: -webkit-box;
             display: -moz-box;
@@ -84,23 +90,25 @@
                 line-height: 1.5em;
             }
         }
-
-        /* Ensure proper spacing on mobile */
-        @media (max-width: 640px) {
-            .min-h-\[2\.5rem\] {
-                min-height: 2.5rem;
-            }
-        }
     </style>
 </head>
 
-<body class="font-sans bg-gray-50 min-h-screen">
-    <!-- Minimum Order Amount -->
+<body class="font-sans bg-gray-50 min-h-screen" style="--primary: <?= htmlspecialchars(getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>; --hover-color: <?= htmlspecialchars(getData('hover_color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;">
+
+    <!-- Minimum Order Amount Start-->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
-        <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
-            Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
+        <?php
+        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+        ?>
+        <div class="w-full text-white text-center py-1.5 sm:py-2 md:py-2.5 lg:py-2 text-sm sm:text-base md:text-lg lg:text-base font-semibold transition-all duration-500 ease-out cursor-pointer"
+            style="background: linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);"
+            onmouseover="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 98%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 100%)'; this.style.transform='scale(1.01) translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';"
+            onmouseout="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%)'; this.style.transform='scale(1) translateY(0)'; this.style.boxShadow='none';">
+            Minimum Order: <?= currencyToSymbol($storeCurrency) . ' ' . getSettings("minimum_order_amount") ?>
         </div>
     <?php endif; ?>
+    <!-- Minimum Order Amount End-->
 
     <!-- Navigation -->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
@@ -161,7 +169,8 @@
                         ?>
                         <a href="<?= $storeUrl . "category/" . $category['slug'] ?>"
                             class="category-card flex-shrink-0 flex flex-col items-center text-center w-20 p-2 rounded-lg <?= $isActive ?>">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 mb-2 flex items-center justify-center shadow-sm category-icon">
+                            <div class="w-12 h-12 rounded-full mb-2 flex items-center justify-center shadow-sm category-icon"
+                                style="background: linear-gradient(to bottom right, var(--primary), #f472b6);">
                                 <?php if (!empty($category['icon'])): ?>
                                     <img src="<?= UPLOADS_URL . $category['icon'] ?>"
                                         alt="<?= $category['name'] ?>"
@@ -181,38 +190,37 @@
         </section>
     <?php endif; ?>
 
-<!-- Active Category Header -->
-<div class="bg-gradient-to-r from-pink-500 to-rose-500 py-6 text-white">
-    <div class="container mx-auto px-4">
-        <div class="flex items-center gap-4 md:justify-center md:text-center">
-            <?php if (!empty($icon)): ?>
-                <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-                    <img src="<?= UPLOADS_URL . $icon ?>" alt="<?= $name ?>" class="w-12 h-12 object-contain">
+    <!-- Active Category Header -->
+    <div class="py-6 text-white"
+        style="background: linear-gradient(to right, var(--primary), #f472b6);">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center gap-4 md:justify-center md:text-center">
+                <?php if (!empty($icon)): ?>
+                    <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                        <img src="<?= UPLOADS_URL . $icon ?>" alt="<?= $name ?>" class="w-12 h-12 object-contain">
+                    </div>
+                <?php endif; ?>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold"><?= $name ?></h1>
+                    <p class="opacity-90 mt-1 text-sm">
+                        <?php
+                        if ($products && $products->rowCount() > 0) {
+                            echo $products->rowCount() . " products found in " . $name . " category";
+                        } else {
+                            echo "Discover amazing products in " . $name . " category";
+                        }
+                        ?>
+                    </p>
                 </div>
-            <?php endif; ?>
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-bold"><?= $name ?></h1>
-                <p class="text-pink-100 mt-1 text-sm">
-                    <?php
-                    if ($products && $products->rowCount() > 0) {
-                        echo $products->rowCount() . " products found in " . $name . " category";
-                    } else {
-                        echo "Discover amazing products in " . $name . " category";
-                    }
-                    ?>
-                </p>
             </div>
         </div>
     </div>
-</div>
-
-
 
     <!-- Main Content -->
     <div class="py-8">
         <div class="!px-5 lg:container">
             <div class="flex flex-col gap-6 lg:flex-row">
-                <!-- Left -->
+                <!-- Left Sidebar -->
                 <div class="lg:w-[20%] font-questrial">
                     <div class="flex flex-col gap-5">
                         <?php if (getData("id", "seller_product_categories", "parent_category = '$id'")) : ?>
@@ -223,7 +231,11 @@
                                     $sub_categories = getCategories(array("parent_category" => $id));
                                     foreach ($sub_categories as $key => $item) :
                                     ?>
-                                        <a href="<?= $storeUrl . "category/"  . $item['slug'] ?>" class="transition hover:bg-primary-500 hover:text-white w-full px-5 h-[50px] flex items-center gap-3 font-medium border-b">
+                                        <a href="<?= $storeUrl . "category/"  . $item['slug'] ?>"
+                                            class="transition w-full px-5 h-[50px] flex items-center gap-3 font-medium border-b hover:opacity-90"
+                                            style="color: var(--primary);"
+                                            onmouseover="this.style.backgroundColor='color-mix(in srgb, var(--primary) 10%, white)'; this.style.color='var(--hover-color)'"
+                                            onmouseout="this.style.backgroundColor=''; this.style.color='var(--primary)'">
                                             <img src="<?= UPLOADS_URL . $item['icon'] ?>" alt="<?= $item['name'] ?>" class="w-[24px] h-[24px] object-contain">
                                             <?= $item['name'] ?>
                                         </a>
@@ -259,7 +271,8 @@
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-xl font-bold text-gray-800">Products</h2>
                         <div class="sort-dropdown relative">
-                            <select id="sortSelect" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white cursor-pointer appearance-none">
+                            <select id="sortSelect" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent bg-white cursor-pointer appearance-none"
+                                style="--tw-ring-color: var(--primary);">
                                 <option value="default">Sort By</option>
                                 <option value="low-high">Price: Low to High</option>
                                 <option value="high-low">Price: High to Low</option>
@@ -272,8 +285,9 @@
 
                     <!-- Debug Info -->
                     <?php if (!$category_column): ?>
-                        <div class="mb-4 p-3 bg-yellow-100 border border-yellow-400 rounded-lg">
-                            <p class="text-sm text-yellow-800">
+                        <div class="mb-4 p-3 rounded-lg"
+                            style="background-color: color-mix(in srgb, var(--primary) 10%, white); border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);">
+                            <p class="text-sm" style="color: var(--primary);">
                                 <strong>Note:</strong> Showing all products (category filtering not available)
                             </p>
                         </div>
@@ -290,13 +304,14 @@
                             <div class="col-span-full text-center py-12">
                                 <div class="max-w-lg w-full p-10 text-center mx-auto">
                                     <div class="flex justify-center mb-6">
-                                        <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-pink-100 flex items-center justify-center">
+                                        <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center"
+                                            style="background-color: color-mix(in srgb, var(--primary) 20%, white);">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-14 h-14 sm:w-20 sm:h-20 text-pink-500">
+                                                class="w-14 h-14 sm:w-20 sm:h-20"
+                                                style="stroke: var(--primary);">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M16 11V7a4 4 0 10-8 0v4M4 9h16l-1.5 11.25A2.25 2.25 0 0116.25 22H7.75A2.25 2.25 0 015.5 20.25L4 9z" />
                                             </svg>
@@ -311,7 +326,8 @@
                                     </p>
 
                                     <a href="<?= $storeUrl ?>"
-                                        class="inline-block px-6 py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition">
+                                        class="inline-block px-6 py-3 text-white font-medium rounded-lg hover:opacity-90 transition"
+                                        style="background-color: var(--primary);">
                                         Back to Store
                                     </a>
                                 </div>
@@ -417,7 +433,6 @@
             return price;
         }
 
-
         // Helper function to extract product ID (for latest/oldest sorting)
         function getProductId(productElement) {
             // Try to get ID from data attributes
@@ -438,7 +453,7 @@
                 if (idMatch) return parseInt(idMatch[1]);
             }
 
-            // Fallback: use timestamp or random number (not ideal)
+            // Fallback: use timestamp or random number
             return Date.now() + Math.random();
         }
 
@@ -474,7 +489,9 @@
             if (minPrice || maxPrice) {
                 const message = document.createElement('div');
                 message.id = 'filterMessage';
-                message.className = 'mb-4 p-3 bg-blue-100 border border-blue-400 rounded-lg';
+                message.className = 'mb-4 p-3 rounded-lg';
+                message.style.backgroundColor = 'color-mix(in srgb, var(--primary) 10%, white)';
+                message.style.border = '1px solid color-mix(in srgb, var(--primary) 30%, transparent)';
 
                 let messageText = `Showing ${visibleCount} products`;
                 if (minPrice && maxPrice) {
@@ -486,9 +503,10 @@
                 }
 
                 message.innerHTML = `
-                    <p class="text-sm text-blue-800">
+                    <p class="text-sm" style="color: var(--primary);">
                         ${messageText}
-                        <button onclick="clearPriceFilter()" class="ml-2 text-blue-600 hover:text-blue-800 underline text-xs">
+                        <button onclick="clearPriceFilter()" class="ml-2 underline text-xs hover:opacity-80"
+                                style="color: var(--primary);">
                             Clear filter
                         </button>
                     </p>
@@ -508,7 +526,7 @@
             window.location.href = url.toString();
         }
 
-        // Currency symbol helper (simplified)
+        // Currency symbol helper
         function currencyToSymbol(currency) {
             const symbols = {
                 'USD': '$',
@@ -542,102 +560,7 @@
 
             // Center the active category in navigation
             centerActiveCategory();
-
-            // Initialize variant selection functionality
-            initializeVariantSelection();
         });
-
-        // Variant selection functionality (your existing code)
-        function initializeVariantSelection() {
-            document.querySelectorAll('.variantSelect').forEach(select => {
-                select.addEventListener('change', function() {
-                    const selected = this.options[this.selectedIndex];
-                    const card = this.closest('.group');
-                    const addBtn = card.querySelector('.addToCartBtn');
-
-                    const img = selected.dataset.image;
-                    const price = selected.dataset.price;
-                    const mrp = selected.dataset.mrp;
-                    const stock = Number(selected.dataset.stock) || 0;
-                    const unlimited = Number(selected.dataset.unlimited) || 0;
-                    const variantType = selected.dataset.variantType;
-                    const variantValue = selected.value;
-                    const isMain = selected.dataset.isMain === 'true';
-
-                    const imageEl = card.querySelector('.productImage');
-                    const priceEl = card.querySelector('.productPrice');
-                    const mrpEl = card.querySelector('.productMrp');
-
-                    if (imageEl && img) imageEl.src = img;
-                    if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(price).toLocaleString();
-                    if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ?
-                        "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString() :
-                        '';
-
-                    if (addBtn) {
-                        const isOutOfStock = stock <= 0 && unlimited !== 1;
-                        const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
-
-                        addBtn.dataset.variant = "";
-                        addBtn.dataset.advancedvariant = "";
-
-                        if (variantType === 'main') {
-                            addBtn.dataset.variant = "";
-                            addBtn.dataset.advancedvariant = "";
-                        } else if (variantType === 'advanced') {
-                            addBtn.dataset.advancedvariant = variantValue;
-                            addBtn.dataset.variant = "";
-                        } else {
-                            addBtn.dataset.variant = variantValue;
-                            addBtn.dataset.advancedvariant = "";
-                        }
-
-                        if (hasAdvancedVariants && isMain) {
-                            addBtn.disabled = true;
-                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
-                            addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                            addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
-                        } else if (isOutOfStock) {
-                            addBtn.disabled = true;
-                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
-                            addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                            addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
-                        } else {
-                            addBtn.disabled = false;
-                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
-                            addBtn.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-400', 'bg-gray-300');
-                            addBtn.classList.add('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                        }
-                    }
-                });
-            });
-
-            function resetVariantSelects() {
-                document.querySelectorAll('.variantSelect').forEach(select => {
-                    const card = select.closest('.group');
-                    const addBtn = card.querySelector('.addToCartBtn');
-                    const hasAdvancedVariants = addBtn.classList.contains('bg-gray-300');
-
-                    if (select.querySelector('option[value=""]')) {
-                        select.value = "";
-                    } else {
-                        select.selectedIndex = 0;
-                    }
-
-                    if (hasAdvancedVariants && addBtn) {
-                        addBtn.disabled = true;
-                        addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
-                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-200', 'to-pink-300', 'text-pink-700');
-                        addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
-                    }
-                });
-            }
-
-            setTimeout(resetVariantSelects, 0);
-            window.addEventListener('pageshow', function() {
-                setTimeout(resetVariantSelects, 50);
-            });
-        }
     </script>
 </body>
 

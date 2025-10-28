@@ -66,15 +66,89 @@
         .animate-fadeIn {
             animation: fadeIn 0.3s ease-out;
         }
+
+        /*------------- Product Category CTA Button -------------*/
+        .explore-btn {
+            --primary: <?= htmlspecialchars(getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;
+            --hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;
+            background: linear-gradient(to right,
+                    var(--primary),
+                    color-mix(in srgb, var(--primary) 70%, #ec4899),
+                    color-mix(in srgb, var(--primary) 40%, #6366f1));
+            transition: all 0.3s ease;
+        }
+
+        .explore-btn:hover {
+            background: linear-gradient(to right,
+                    var(--hover-color),
+                    color-mix(in srgb, var(--hover-color) 70%, #ec4899),
+                    color-mix(in srgb, var(--hover-color) 40%, #6366f1));
+        }
+
+        .explore-btn svg {
+            color: white;
+            transition: all 0.3s ease;
+            border-color: white;
+        }
+
+        .explore-btn:hover svg {
+            color: white;
+            border-color: white;
+        }
+
+        /*------------- Go To Cart Sticky -------------*/
+        @keyframes slideOutRightPrompt {
+            0% {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+
+            20%,
+            80% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+
+        .animate-slide-outgroup {
+            animation: slideOutRightPrompt 10s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out;
+        }
     </style>
+
 </head>
 
 <body class="font-sans">
 
     <!-- Minimum Order Amount Start-->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
-        <div class="w-full bg-primary-500 text-white text-center py-1 text-sm font-semibold">
-            Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
+        <?php
+        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+        ?>
+        <div class="w-full text-white text-center py-1.5 sm:py-2 md:py-2.5 lg:py-2 text-sm sm:text-base md:text-lg lg:text-base font-semibold transition-all duration-500 ease-out cursor-pointer"
+            style="background: linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);"
+            onmouseover="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 98%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 100%)'; this.style.transform='scale(1.01) translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';"
+            onmouseout="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%)'; this.style.transform='scale(1) translateY(0)'; this.style.boxShadow='none';">
+            Minimum Order: <?= currencyToSymbol($storeCurrency) . ' ' . getSettings("minimum_order_amount") ?>
         </div>
     <?php endif; ?>
     <!-- Minimum Order Amount End-->
@@ -163,10 +237,20 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
                     <?php foreach ($categories as $category) :
                         $catImage = !empty($category['icon']) ? UPLOADS_URL . $category['icon'] : 'https://via.placeholder.com/400x160?text=No+Image';
-                        $categoryUrl = $storeUrl . "category/" . $category['slug']; // Create category URL
+                        $categoryUrl = $storeUrl . "category/" . $category['slug'];
+                        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+                        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
                     ?>
-                        <a href="<?= $categoryUrl ?>" class="block"> <!-- Add this wrapper -->
-                            <div class="group relative overflow-hidden rounded-xl shadow-md shadow-blue-200 bg-white transition-all duration-300 hover:shadow-lg hover:shadow-blue-400/50 hover:-translate-y-1 cursor-pointer flex flex-col h-full border border-blue-100 hover:border-blue-300">
+                        <a href="<?= $categoryUrl ?>" class="block">
+                            <div class="group relative overflow-hidden rounded-xl bg-white transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col h-full"
+                                style="
+                                --primary: <?= htmlspecialchars($primary_color) ?>; 
+                                --hover-color: <?= htmlspecialchars($hover_color) ?>; 
+                                border: 2px solid color-mix(in srgb, var(--primary) 20%, transparent);
+                                box-shadow: 0 4px 6px -1px color-mix(in srgb, var(--primary) 15%, transparent), 0 2px 4px -1px color-mix(in srgb, var(--primary) 10%, transparent);
+                            "
+                                onmouseover="this.style.boxShadow='0 10px 25px -3px color-mix(in srgb, var(--hover-color) 25%, transparent), 0 4px 6px -2px color-mix(in srgb, var(--hover-color) 15%, transparent)'; this.style.borderColor='color-mix(in srgb, var(--hover-color) 40%, transparent)'"
+                                onmouseout="this.style.boxShadow='0 4px 6px -1px color-mix(in srgb, var(--primary) 15%, transparent), 0 2px 4px -1px color-mix(in srgb, var(--primary) 10%, transparent)'; this.style.borderColor='color-mix(in srgb, var(--primary) 20%, transparent)'">
 
                                 <div class="relative overflow-hidden bg-white flex items-center justify-center h-40">
                                     <img
@@ -177,27 +261,36 @@
                                     </div>
                                 </div>
 
-                                <div class="p-3 bg-gradient-to-br from-blue-200 to-indigo-300 flex-1 flex items-center justify-between">
-                                    <h3 class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors"><?= $category['name'] ?></h3>
-                                    <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                                        viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                                <div class="p-3 flex-1 flex items-center justify-between transition-all duration-300"
+                                    style="background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 15%, white), color-mix(in srgb, var(--primary) 30%, white));"
+                                    onmouseover="this.style.background='linear-gradient(135deg, color-mix(in srgb, var(--hover-color) 20%, white), color-mix(in srgb, var(--hover-color) 35%, white))'"
+                                    onmouseout="this.style.background='linear-gradient(135deg, color-mix(in srgb, var(--primary) 15%, white), color-mix(in srgb, var(--primary) 30%, white))'">
+                                    <h3 class="font-semibold text-gray-800 transition-colors duration-300 group-hover:text-gray-900">
+                                        <?= $category['name'] ?>
+                                    </h3>
+                                    <svg class="w-6 h-6 sm:w-7 sm:h-7 justify-end rounded-full p-1 sm:p-2 bg-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border transition-all duration-300"
+                                        viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg"
+                                        style="color: white; border-color: var(--primary); background: var(--primary);"
+                                        onmouseover="this.style.borderColor='var(--hover-color)'; this.style.background='var(--hover-color)'; this.style.color='white'"
+                                        onmouseout="this.style.borderColor='var(--primary)'; this.style.background='var(--primary)'; this.style.color='white'">
                                         <path
                                             d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
                                             class="fill-current"></path>
                                     </svg>
                                 </div>
                             </div>
-                        </a> <!-- Close the wrapper -->
+                        </a>
                     <?php endforeach; ?>
                 </div>
 
-                <!-- CTA Button -->
+
                 <div class="flex justify-center mt-8">
                     <a href="<?= $storeUrl ?>shop-all"
-                        class="flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-gray-800 hover:text-white bg-gradient-to-r from-pink-400 via-pink-500 to-indigo-400 lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
+                        class="explore-btn flex justify-center gap-2 items-center mx-auto shadow-lg text-base sm:text-lg text-white hover:text-white lg:font-semibold isolation-auto border-transparent before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white/20 before:-z-10 before:hover:scale-150 before:hover:duration-700 relative z-10 px-14 py-2 sm:px-16 sm:py-3 overflow-hidden rounded-full group">
                         Explore
-                        <svg class="w-7 h-7 sm:w-8 sm:h-8 justify-end rounded-full p-1 sm:p-2 bg-transparent group-hover:bg-white text-white ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-none group-hover:text-gray-700"
-                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-7 h-7 sm:w-8 sm:h-8 justify-end rounded-full p-1 sm:p-2 bg-white/20 ease-linear duration-300 rotate-45 group-hover:rotate-90 border border-white group-hover:border-white group-hover:text-white transition-all duration-300"
+                            viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg"
+                            style="color: white;">
                             <path
                                 d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z"
                                 class="fill-current"></path>
@@ -207,6 +300,7 @@
             </div>
         </section>
     <?php endif; ?>
+
     <!-- Product Categories Section End-->
 
     <!-- Latest Product Section Start-->
@@ -282,31 +376,36 @@
                 </div>
 
                 <!-- Buttons below slider -->
+                <?php
+                $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+                $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+                ?>
+
                 <div class="flex justify-center gap-4 mt-6 px-2">
                     <!-- Prev -->
-                    <button id="prevOffer" class="w-10 h-10 flex items-center justify-center rounded-full 
-             bg-gradient-to-br from-pink-400 to-purple-500 
-             text-white shadow-lg backdrop-blur-md border border-white/30
-             hover:scale-110 hover:shadow-xl hover:from-purple-500 hover:to-pink-400 
-             transition-all duration-300">
+                    <button id="prevOffer"
+                        class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-lg backdrop-blur-md border border-white/30 transition-all duration-300"
+                        style="background: linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%);"
+                        onmouseover="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($hover_color) ?> 0%, <?= htmlspecialchars($primary_color) ?> 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
+                        onmouseout="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
                         <i class='bx bx-chevron-left text-lg'></i>
                     </button>
 
                     <!-- Play/Pause -->
-                    <button id="toggleAutoplay" class="w-10 h-10 flex items-center justify-center rounded-full 
-             bg-gradient-to-br from-blue-400 to-indigo-500 
-             text-white shadow-lg backdrop-blur-md border border-white/30
-             hover:scale-110 hover:shadow-xl hover:from-indigo-500 hover:to-blue-400 
-             transition-all duration-300">
+                    <button id="toggleAutoplay"
+                        class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-lg backdrop-blur-md border border-white/30 transition-all duration-300"
+                        style="background: linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%);"
+                        onmouseover="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($hover_color) ?> 0%, <?= htmlspecialchars($primary_color) ?> 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
+                        onmouseout="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
                         <i class='bx bx-pause text-lg'></i>
                     </button>
 
                     <!-- Next -->
-                    <button id="nextOffer" class="w-10 h-10 flex items-center justify-center rounded-full 
-             bg-gradient-to-br from-pink-400 to-purple-500 
-             text-white shadow-lg backdrop-blur-md border border-white/30
-             hover:scale-110 hover:shadow-xl hover:from-purple-500 hover:to-pink-400 
-             transition-all duration-300">
+                    <button id="nextOffer"
+                        class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-lg backdrop-blur-md border border-white/30 transition-all duration-300"
+                        style="background: linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%);"
+                        onmouseover="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($hover_color) ?> 0%, <?= htmlspecialchars($primary_color) ?> 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
+                        onmouseout="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
                         <i class='bx bx-chevron-right text-lg'></i>
                     </button>
                 </div>
@@ -357,7 +456,7 @@
         <div class="max-w-6xl mx-auto px-4 text-center">
             <!--Why Shop With Us Heading-->
             <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Why Shop With <span
-                    class="text-pink-600">Us</span></h2>
+                    class="text-hover">Us</span></h2>
             <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">We offer the best products,
                 quality service, and seamless shopping
                 experience to make your life easier and fun!</p>
@@ -551,52 +650,51 @@
     // Fetch data
     $aboutContent = $sellerId ? getData("about_content", "homepage_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") : '';
     $aboutImage = $sellerId ? getData("about_image", "homepage_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") : '';
+    $color = getData("color", "seller_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')");
     ?>
-<?php
-// Fetch dynamic seller colors
-$color = getData("color", "seller_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')");
-?>
 
-<?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
-    <section 
-        class="py-16 px-4 bg-gradient-to-r from-[var(--primary)] via-white to-[var(--primary)]"
-        style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>;">
-        
-        <div class="container mx-auto flex flex-col md:flex-row items-center gap-6
+    <?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
+        <section
+            class="py-16 px-4 bg-gradient-to-r from-[var(--primary)] via-white to-[var(--primary)] opacity-100"
+            style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>;">
+
+
+
+            <div class="container mx-auto flex flex-col md:flex-row items-center gap-6
             <?= empty($aboutImage) ? 'justify-center text-center' : '' ?>">
 
-            <!-- Left: Image -->
-            <?php if (!empty($aboutImage)) : ?>
-                <div class="<?= !empty($aboutContent) ? 'w-full md:w-1/2' : 'w-full flex justify-center' ?>">
-                    <div class="relative rounded-2xl shadow-2xl overflow-hidden 
+                <!-- Left: Image -->
+                <?php if (!empty($aboutImage)) : ?>
+                    <div class="<?= !empty($aboutContent) ? 'w-full md:w-1/2' : 'w-full flex justify-center' ?>">
+                        <div class="relative rounded-2xl shadow-2xl overflow-hidden 
                         w-11/12 sm:w-10/12 md:w-4/5 lg:w-4/5 
                         h-64 sm:h-80 md:h-64 lg:h-80 
                         aspect-[16/9]">
-                        <img src="<?= UPLOADS_URL . $aboutImage ?>" 
-                             alt="About Us"
-                             class="w-full h-full object-cover object-center">
+                            <img src="<?= UPLOADS_URL . $aboutImage ?>"
+                                alt="About Us"
+                                class="w-full h-full object-cover object-center">
+                        </div>
                     </div>
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
 
-            <!-- Right: Text Content -->
-            <?php if (!empty($aboutContent)) : ?>
-                <div class="<?= !empty($aboutImage) ? 'w-full md:w-1/2' : 'w-full' ?> flex flex-col justify-center">
-                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2
+                <!-- Right: Text Content -->
+                <?php if (!empty($aboutContent)) : ?>
+                    <div class="<?= !empty($aboutImage) ? 'w-full md:w-1/2' : 'w-full' ?> flex flex-col justify-center">
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2
                         <?= empty($aboutImage) ? 'text-center' : 'text-left md:text-left' ?>">
-                        About <?= $storeName ?? 'Our Brand' ?>
-                    </h2>
-                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto
+                            About <?= $storeName ?? 'Our Brand' ?>
+                        </h2>
+                        <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto
                         <?= empty($aboutImage) ? 'text-center' : 'md:mx-0 text-left' ?>
                         leading-relaxed">
-                        <?= htmlspecialchars($aboutContent) ?>
-                    </p>
-                </div>
-            <?php endif; ?>
+                            <?= htmlspecialchars($aboutContent) ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
 
-        </div>
-    </section>
-<?php endif; ?>
+            </div>
+        </section>
+    <?php endif; ?>
 
     <!-- About Section End -->
 
@@ -616,7 +714,7 @@ $color = getData("color", "seller_settings", "(seller_id = '$sellerId' AND store
             </div>
 
             <!-- Speech Bubble -->
-            <div class="bg-pink-600 text-white font-semibold text-sm sm:text-base px-4 py-2 rounded-l-full shadow-lg hidden group-hover:flex items-center gap-2 animate-fadeIn">
+            <div class="bg-primary-500 text-white font-semibold text-sm sm:text-base px-4 py-2 rounded-l-full shadow-lg hidden group-hover:flex items-center gap-2 animate-fadeIn">
                 Go to Cart
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="2" stroke="currentColor" class="w-4 h-4">
@@ -628,43 +726,7 @@ $color = getData("color", "seller_settings", "(seller_id = '$sellerId' AND store
         </div>
     </a>
 
-    <style>
-        @keyframes slideOutRightPrompt {
-            0% {
-                transform: translateX(120%);
-                opacity: 0;
-            }
 
-            20%,
-            80% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateX(120%);
-                opacity: 0;
-            }
-        }
-
-        .animate-slide-outgroup {
-            animation: slideOutRightPrompt 10s ease-in-out infinite;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .animate-fadeIn {
-            animation: fadeIn 0.4s ease-out;
-        }
-    </style>
 
 </body>
 

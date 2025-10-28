@@ -11,7 +11,7 @@
                         <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center uppercase text-sm sm:text-base">
                             <?= substr($storeName, 0, 1) ?>
                         </div>
-                        <span class="font-extrabold text-lg sm:text-xl text-pink-600"><?= $storeName ?></span>
+                        <span class="font-extrabold text-lg sm:text-xl" style="color: var(--primary);"><?= $storeName ?></span>
                     </div>
                 <?php endif; ?>
             </a>
@@ -20,14 +20,14 @@
         <!-- Center: Pages -->
         <ul class="hidden md:flex gap-6 lg:gap-8 font-medium text-gray-700 relative flex-wrap">
             <li>
-                <a href="<?= $storeUrl ?>" class="hover:text-pink-500 transition-all duration-300">Home</a>
+                <a href="<?= $storeUrl ?>" class="transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">Home</a>
             </li>
 
             <!-- Shop All Dropdown -->
             <li class="relative">
-                <button class="flex items-center gap-1 hover:text-pink-500 focus:outline-none shop-toggle">
-                    <a href="<?= $storeUrl ?>shop-all"> <span>Shop All</span> </a>
-                    <i class="bx bx-chevron-down transition-transform duration-300"></i>
+                <button class="flex items-center gap-1 focus:outline-none shop-toggle transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'; this.querySelector('span').style.color='var(--hover-color)'; this.querySelector('i').style.color='var(--hover-color)'" onmouseout="this.style.color=''; this.querySelector('span').style.color=''; this.querySelector('i').style.color=''">
+                    <a href="<?= $storeUrl ?>shop-all"> <span class="transition-all duration-300">Shop All</span> </a>
+                    <i class="bx bx-chevron-down transition-transform duration-300 transition-all duration-300"></i>
                 </button>
 
                 <!-- Dropdown Menu -->
@@ -35,11 +35,11 @@
                     <?php
                     $categories = getCategories();
                     foreach ($categories as $category) :
-                        $categoryUrl = $storeUrl . "category/" . $category['slug']; // Create category URL same as reference
+                        $categoryUrl = $storeUrl . "category/" . $category['slug'];
                     ?>
                         <li>
                             <a href="<?= $categoryUrl ?>"
-                                class="block py-1 px-2 hover:text-pink-500 transition-colors duration-300">
+                                class="block py-1 px-2 transition-colors duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">
                                 <?= $category['name'] ?>
                             </a>
                         </li>
@@ -48,50 +48,59 @@
             </li>
 
             <li>
-                <a href="<?= $storeUrl ?>new-arrivals" class="hover:text-pink-500 transition-all duration-300">New Arrivals</a>
+                <a href="<?= $storeUrl ?>new-arrivals" class="transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">New Arrivals</a>
             </li>
         </ul>
 
         <!-- Right: Icons -->
         <div class="flex items-center gap-3 sm:gap-4">
             <!-- Desktop Search -->
-            <div class="hidden md:flex items-center gap-5 w-full sm:w-[220px] md:w-[260px] lg:w-[300px]">
+            <?php
+            $color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')");
+            $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')");
+            ?>
+
+            <div class="hidden md:flex items-center gap-5 w-full sm:w-[220px] md:w-[260px] lg:w-[300px]"
+                style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>; --hover-color: <?= htmlspecialchars($hover_color ?? '#ec4899') ?>;">
+
                 <div class="lg:w-[435px] w-full relative" id="searchForDesktop">
                     <div class="relative">
                         <input type="text"
-                            class="searchInput bg-white rounded-xl h-[52px] pl-3 pr-4 text-sm w-full placeholder-gray-500 border-2 border-pink-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100/50 transition-all duration-300 shadow-md"
-                            placeholder="Search...">
-                        <button type="button" class="searchBtn mgc_search_line text-2xl before:!text-primary-500 absolute top-[50%] right-[14px] -translate-y-[50%]"></button>
+                            class="searchInput bg-white rounded-xl h-[52px] pl-3 pr-4 text-sm w-full placeholder-gray-500 border-2 focus:ring-4 transition-all duration-300 shadow-md"
+                            placeholder="Search..."
+                            style="border-color: var(--primary); --tw-ring-color: var(--primary);">
+
+                        <button type="button" class="searchBtn mgc_search_line text-2xl absolute top-[50%] right-[14px] -translate-y-[50%] transition-all duration-300" style="color: var(--primary);" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color='var(--primary)'"></button>
                     </div>
                 </div>
             </div>
 
             <!-- Mobile Search Icon -->
             <div class="md:hidden">
-                <button id="mobileSearchToggle" class="hover:text-pink-500 transition-all duration-300">
-                    <i class='bx bx-search text-xl sm:text-2xl cursor-pointer'></i>
+                <button id="mobileSearchToggle" class="transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.querySelector('i').style.color='var(--hover-color)'" onmouseout="this.querySelector('i').style.color=''">
+                    <i class='bx bx-search text-xl sm:text-2xl cursor-pointer transition-all duration-300'></i>
                 </button>
             </div>
 
-            <a href="<?= $storeUrl ?>profile" class="inline-block hover:text-pink-500 transition-all duration-300">
-                <i class='bx bx-user text-xl sm:text-2xl cursor-pointer'></i>
+            <a href="<?= $storeUrl ?>profile" class="inline-block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.querySelector('i').style.color='var(--hover-color)'" onmouseout="this.querySelector('i').style.color=''">
+                <i class='bx bx-user text-xl sm:text-2xl cursor-pointer transition-all duration-300'></i>
             </a>
 
-            <a href="<?= $storeUrl ?>wishlists" class="hover:bg-rose-500/20 transition w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center rounded-md relative">
-                <i class='bx bx-heart text-xl sm:text-2xl cursor-pointer'></i>
+            <a href="<?= $storeUrl ?>wishlists" class="transition w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center rounded-md relative" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.backgroundColor='color-mix(in srgb, var(--hover-color) 20%, transparent)'; this.querySelector('i').style.color='var(--hover-color)'" onmouseout="this.style.backgroundColor=''; this.querySelector('i').style.color=''">
+                <i class='bx bx-heart text-xl sm:text-2xl cursor-pointer transition-all duration-300'></i>
                 <span class="w-[16px] h-[16px] sm:w-[19px] sm:h-[19px] rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] sm:text-[12px] absolute -top-1 -right-1 font-medium wishlistItemsCount"></span>
             </a>
 
-            <a href="<?= $storeUrl ?>cart" class="hover:bg-green-500/20 transition w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center rounded-md relative">
-                <i class='bx bx-cart text-xl sm:text-2xl cursor-pointer'></i>
+            <a href="<?= $storeUrl ?>cart" class="transition w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center rounded-md relative" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.backgroundColor='color-mix(in srgb, var(--hover-color) 20%, transparent)'; this.querySelector('i').style.color='var(--hover-color)'" onmouseout="this.style.backgroundColor=''; this.querySelector('i').style.color=''">
+                <i class='bx bx-cart text-xl sm:text-2xl cursor-pointer transition-all duration-300'></i>
                 <span class="w-[16px] h-[16px] sm:w-[19px] sm:h-[19px] rounded-full bg-green-500 text-white flex items-center justify-center text-[10px] sm:text-[12px] absolute -top-1 -right-1 font-medium cartItemsCount"></span>
             </a>
 
             <!-- Mobile Burger Icon-->
-            <div id="menu-btn" class="relative w-6 h-4 cursor-pointer transition duration-300 z-[110] md:hidden">
-                <span class="absolute top-0 left-0 h-[3px] w-full bg-pink-500 rounded transition duration-300"></span>
-                <span class="absolute top-[7px] left-0 h-[3px] w-full bg-pink-500 rounded transition duration-300"></span>
-                <span class="absolute top-[14px] left-0 h-[3px] w-full bg-pink-500 rounded transition duration-300"></span>
+            <div id="menu-btn" class="relative w-6 h-4 cursor-pointer transition duration-300 z-[110] md:hidden" style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>;">
+                <span class="absolute top-0 left-0 h-[3px] w-full rounded transition duration-300" style="background-color: var(--primary);"></span>
+                <span class="absolute top-[7px] left-0 h-[3px] w-full rounded transition duration-300" style="background-color: var(--primary);"></span>
+                <span class="absolute top-[14px] left-0 h-[3px] w-full rounded transition duration-300" style="background-color: var(--primary);"></span>
             </div>
         </div>
     </div>
@@ -111,25 +120,36 @@
         <!-- Header with close button -->
         <div class="flex justify-between items-center p-6 pt-12 border-b border-pink-100/50 bg-white/30 backdrop-blur-sm">
             <h2 class="text-xl font-bold text-gray-800">Search Products</h2>
-            <button id="mobileSearchClose" class="p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:bg-pink-50 transition-all duration-300 group">
-                <i class='bx bx-x text-2xl text-gray-600 group-hover:text-pink-500'></i>
+            <button id="mobileSearchClose" class="p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg transition-all duration-300 group" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.backgroundColor='color-mix(in srgb, var(--hover-color) 10%, white)'">
+                <i class='bx bx-x text-2xl text-gray-600 transition-all duration-300 group-hover:' style="color: var(--hover-color);"></i>
             </button>
         </div>
 
+        <?php
+        $color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')");
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')");
+        ?>
+
         <!-- Search Content -->
-        <div class="flex-1 flex flex-col items-center justify-center px-6 py-8">
+        <div class="flex-1 flex flex-col items-center justify-center px-6 py-8"
+            style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>; --hover-color: <?= htmlspecialchars($hover_color ?? '#ec4899') ?>;">
+
             <!-- Search Input -->
             <div class="w-full max-w-md">
                 <div class="relative">
                     <input type="text"
-                        class="searchInputMobile w-full h-16 pl-6 pr-16 text-lg bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-pink-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100/50 shadow-xl transition-all duration-300 placeholder-gray-500"
-                        placeholder="What are you looking for?">
-                    <button type="button" class="searchBtnMobile absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 hover:text-pink-600 transition-colors">
+                        class="searchInputMobile w-full h-16 pl-6 pr-16 text-lg bg-white/90 backdrop-blur-sm rounded-2xl border-2 focus:ring-4 shadow-xl transition-all duration-300 placeholder-gray-500"
+                        placeholder="What are you looking for?"
+                        style="border-color: var(--primary); --tw-ring-color: var(--primary);">
+                    <button type="button"
+                        class="searchBtnMobile absolute right-3 top-1/2 transform -translate-y-1/2 transition-colors transition-all duration-300"
+                        style="color: var(--primary);" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color='var(--primary)'">
                         <i class='bx bx-search text-xl'></i>
                     </button>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -152,31 +172,31 @@
                         <div class="w-7 h-7 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center uppercase text-sm">
                             <?= substr($storeName, 0, 1) ?>
                         </div>
-                        <span class="font-extrabold text-base text-pink-600"><?= $storeName ?></span>
+                        <span class="font-extrabold text-base" style="color: var(--primary);"><?= $storeName ?></span>
                     </div>
                 <?php endif; ?>
             </a>
 
-            <div id="close-menu" class="text-xl text-gray-700 cursor-pointer">
+            <div id="close-menu" class="text-xl text-gray-700 cursor-pointer transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">
                 <i class='bx bx-x'></i>
             </div>
         </div>
 
         <ul class="flex flex-col gap-4 font-medium text-gray-700">
-            <li><a href="<?= $storeUrl ?>" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">Home</a></li>
+            <li><a href="<?= $storeUrl ?>" class="text-base py-2 block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">Home</a></li>
 
             <!-- Shop All Dropdown For Mobile -->
             <li class="mobile-dropdown">
-                <button class="text-base py-2 w-full text-left flex justify-between items-center hover:text-pink-500 transition-all duration-300">
-                    <span>Shop All</span>
-                    <i class="bx bx-chevron-down transition-transform duration-300"></i>
+                <button class="text-base py-2 w-full text-left flex justify-between items-center transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'; this.querySelector('span').style.color='var(--hover-color)'; this.querySelector('i').style.color='var(--hover-color)'" onmouseout="this.style.color=''; this.querySelector('span').style.color=''; this.querySelector('i').style.color=''">
+                    <span class="transition-all duration-300">Shop All</span>
+                    <i class="bx bx-chevron-down transition-transform duration-300 transition-all duration-300"></i>
                 </button>
 
                 <!-- Dropdown Menu -->
                 <ul class="pl-3 mt-1 max-h-0 overflow-hidden overflow-y-auto transition-all duration-300 flex flex-col gap-1">
                     <li>
                         <a href="<?= $storeUrl ?>shop-all"
-                            class="block py-1 text-gray-600 hover:text-pink-500 transition-all duration-300 text-sm">
+                            class="block py-1 text-gray-600 transition-all duration-300 text-sm" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">
                             All Categories
                         </a>
                     </li>
@@ -184,37 +204,46 @@
                     <?php
                     $categories = getCategories();
                     foreach ($categories as $category) :
-                        $categoryUrl = $storeUrl . "category/" . $category['slug']; // Create category URL
+                        $categoryUrl = $storeUrl . "category/" . $category['slug'];
                     ?>
                         <li>
                             <a href="<?= $categoryUrl ?>"
-                                class="block py-1 text-gray-600 hover:text-pink-500 transition-all duration-300 text-sm">
+                                class="block py-1 text-gray-600 transition-all duration-300 text-sm" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">
                                 <?= $category['name'] ?>
                             </a>
                         </li>
                     <?php endforeach; ?>
                 </ul>
             </li>
-            <li><a href="<?= $storeUrl ?>new-arrivals" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">New Arrivals</a></li>
-            <li><a href="#" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">About</a></li>
-            <li><a href="#" class="text-base py-2 block hover:text-pink-500 transition-all duration-300">Contact</a></li>
+            <li><a href="<?= $storeUrl ?>new-arrivals" class="text-base py-2 block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">New Arrivals</a></li>
+            <li><a href="#" class="text-base py-2 block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">About</a></li>
+            <li><a href="#" class="text-base py-2 block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">Contact</a></li>
         </ul>
 
+        <?php
+        $color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')");
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')");
+        ?>
+
         <!-- Search in Mobile Menu -->
-        <div class="mt-6">
+        <div class="mt-6" style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>; --hover-color: <?= htmlspecialchars($hover_color ?? '#ec4899') ?>;">
             <div class="relative">
                 <input type="text"
-                    class="searchInput2 w-full h-12 pl-4 pr-12 bg-white rounded-xl border-2 border-pink-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100/50 transition-all duration-300 shadow-md placeholder-gray-500"
-                    placeholder="Search...">
-                <button type="button" class="searchBtn2 absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 hover:text-pink-600 transition-colors">
+                    class="searchInput2 w-full h-12 pl-4 pr-12 bg-white rounded-xl border-2 focus:ring-4 transition-all duration-300 shadow-md placeholder-gray-500"
+                    placeholder="Search..."
+                    style="border-color: var(--primary); --tw-ring-color: var(--primary);">
+                <button type="button"
+                    class="searchBtn2 absolute right-3 top-1/2 transform -translate-y-1/2 transition-colors transition-all duration-300"
+                    style="color: var(--primary);" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color='var(--primary)'">
                     <i class='bx bx-search text-xl'></i>
                 </button>
             </div>
         </div>
-
     </div>
 </div>
 <!-- Mobile Menu End -->
+
+
 
 <script>
     $(document).ready(function() {

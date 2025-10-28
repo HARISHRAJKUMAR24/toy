@@ -20,13 +20,7 @@
 
 <body class="font-sans bg-pink-50 flex flex-col min-h-screen">
 
-    <!-- Minimum Order Amount Start-->
-    <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
-        <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
-            Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
-        </div>
-    <?php endif; ?>
-    <!-- Minimum Order Amount End-->
+
 
     <!--Php File Include For Nav Bar-->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
@@ -38,12 +32,19 @@
 
             <!-- Header -->
             <div class="text-center mb-6">
-                <img src="https://img.icons8.com/color/48/toy-train.png" alt="Logo" class="mx-auto mb-2">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-pink-600">Login to your account</h2>
+                <?php if (getSettings("logo")) : ?>
+                    <img src="<?= UPLOADS_URL . getSettings("logo") ?>" alt="Logo" class="mx-auto mb-2 h-12 w-auto">
+                <?php else : ?>
+                    <div class="mx-auto mb-2 w-12 h-12 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center uppercase text-lg font-bold">
+                        <?= substr($storeName, 0, 1) ?>
+                    </div>
+                <?php endif; ?>
+                <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-hover"> Login to your account </h2>
+
                 <p class="text-gray-600 text-sm mt-1">Enter your details to continue</p>
             </div>
 
-            <!-- Form -->
+            <!-- Rest of your form code remains the same -->
             <form id="form" class="space-y-4">
                 <div id="step1">
                     <!-- Email/Phone -->
@@ -63,7 +64,7 @@
                     <div class="mb-4">
                         <div class="flex items-center justify-between">
                             <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
-                            <a href="<?= $storeUrl ?>forgot-password" class="text-pink-600 font-semibold hover:underline text-sm">Forgot Password?</a>
+                            <a href="<?= $storeUrl ?>forgot-password" class="text-hover font-semibold hover:underline text-sm">Forgot Password?</a>
                         </div>
                         <input type="password" name="password" id="password" placeholder="Enter a password" required
                             class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 transition">
@@ -71,7 +72,7 @@
 
                     <!-- Login Button -->
                     <button type="button" id="sendOtp"
-                        class="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:from-pink-500 hover:to-pink-700 transition-all login">
+                        class="w-full bg-primary-500 text-white py-3 rounded-xl font-semibold shadow-lg hover:bg-hover transition-all login">
                         Login
                     </button>
                 </div>
@@ -80,7 +81,7 @@
             <!-- Register Link -->
             <p class="text-center text-gray-600 text-sm mt-6">
                 Don't have an account?
-                <a href="<?= $storeUrl ?>register<?= isset($_GET['step']) ? '?step' : '' ?>" class="text-pink-600 font-semibold hover:underline">Create</a>
+                <a href="<?= $storeUrl ?>register<?= isset($_GET['step']) ? '?step' : '' ?>" class="text-hover font-semibold hover:underline">Create</a>
             </p>
 
         </div>

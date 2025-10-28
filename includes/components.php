@@ -444,9 +444,16 @@ function getProductHtml($id)
                 // Update image and prices
                 if (imageEl && img) imageEl.src = img;
                 if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(price).toLocaleString();
-                if (mrpEl) mrpEl.textContent = (mrp && mrp > price) ?
-                    "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString() :
-                    '';
+
+                // FIX: Show MRP if it exists (remove the mrp > price condition)
+                if (mrpEl) {
+                    if (mrp && mrp > 0) { // Changed condition - show MRP if it exists and is greater than 0
+                        mrpEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString();
+                        mrpEl.style.display = 'inline';
+                    } else {
+                        mrpEl.style.display = 'none';
+                    }
+                }
 
                 // Handle Add button
                 if (addBtn) {

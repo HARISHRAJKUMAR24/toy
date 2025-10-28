@@ -15,13 +15,6 @@
 
 <body class="font-sans bg-pink-50 flex flex-col min-h-screen">
 
-    <!-- Minimum Order Amount Start-->
-    <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
-        <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
-            Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
-        </div>
-    <?php endif; ?>
-    <!-- Minimum Order Amount End-->
 
     <!--Php File Include For Nav Bar-->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>

@@ -243,7 +243,7 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
             <div class="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition sticky top-4 sm:top-20">
                 <!-- Header -->
                 <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-                    <i class="fas fa-shopping-cart text-pink-600 text-lg sm:text-xl"></i> Summary
+                    <i class="fas fa-shopping-cart text-hover text-lg sm:text-xl"></i> Summary
                 </h2>
 
                 <?php
@@ -355,13 +355,13 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                     <?php if (!empty($minimumOrder) && $subTotalWithTax < $minimumOrder): ?>
                         <!-- Stylish Marketing-Themed Minimum Order Message -->
                         <div class="py-2 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl text-center bg-gradient-to-r from-pink-50 to-pink-100 border border-pink-200 shadow-sm">
-                            <p class="text-pink-700 font-semibold text-xs sm:text-sm">
+                            <p class="text-hover font-semibold text-xs sm:text-sm">
                                 Minimum order is
-                                <span class="font-bold text-pink-600">
+                                <span class="font-bold text-hover">
                                     <?= currencyToSymbol($storeCurrency) . number_format($minimumOrder, 2) ?>
                                 </span>
                             </p>
-                            <p class="text-xs text-pink-500 mt-1 italic">
+                            <p class="text-xs text-hover mt-1 italic">
                                 Great deals await when you checkout!
                             </p>
                         </div>
@@ -369,7 +369,7 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                         <!-- Checkout Button -->
                         <button
                             onclick="window.location.href='<?= $storeUrl ?>checkout';"
-                            class="w-full py-2 sm:py-3 mt-2 sm:mt-3 rounded-lg sm:rounded-xl font-semibold text-white bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 shadow-lg transition text-sm sm:text-base">
+                            class="w-full py-2 sm:py-3 mt-2 sm:mt-3 rounded-lg sm:rounded-xl font-semibold text-white bg-primary-500 hover:bg-hover shadow-lg transition text-sm sm:text-base">
                             Checkout Now
                         </button>
                     <?php endif; ?>

@@ -13,8 +13,15 @@
 
     <!-- Minimum Order Amount Start-->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
-        <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
-            Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
+        <?php
+        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+        ?>
+        <div class="w-full text-white text-center py-1.5 sm:py-2 md:py-2.5 lg:py-2 text-sm sm:text-base md:text-lg lg:text-base font-semibold transition-all duration-500 ease-out cursor-pointer"
+            style="background: linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);"
+            onmouseover="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 98%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 100%)'; this.style.transform='scale(1.01) translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';"
+            onmouseout="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%)'; this.style.transform='scale(1) translateY(0)'; this.style.boxShadow='none';">
+            Minimum Order: <?= currencyToSymbol($storeCurrency) . ' ' . getSettings("minimum_order_amount") ?>
         </div>
     <?php endif; ?>
     <!-- Minimum Order Amount End-->
@@ -223,7 +230,7 @@
                                 <?php if (getData("delivery_area_type", "seller_settings", "seller_id = '$sellerId'") == "zip_code") : ?>
                                     <p class="mt-4 text-sm text-gray-500">
                                         You can check our delivery pin codes from here
-                                        <a href="<?= $storeUrl ?>delivery-areas" class="text-primary-500 hover:underline font-medium">Delivery Areas</a>
+                                        <a href="<?= $storeUrl ?>delivery-areas" class="text-hover hover:underline font-medium">Delivery Areas</a>
                                     </p>
                                 <?php endif ?>
                                 <div id="deliveryNotes" class="mt-3"></div>
@@ -467,7 +474,7 @@
                                 <input type="text" id="couponCode" placeholder="Enter code"
                                     class="flex-1 min-w-0 px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-pink-400 focus:border-pink-400 focus:outline-none transition">
                                 <button id="applyCoupon" type="button"
-                                    class="px-6 py-3 bg-pink-500 text-white text-sm font-semibold rounded-xl hover:bg-pink-600 transition shadow-lg hover:shadow-xl">
+                                    class="px-6 py-3 bg-primary-500 text-white text-sm font-semibold rounded-xl hover:bg-hover transition shadow-lg hover:shadow-xl">
                                     Apply
                                 </button>
                             </div>
@@ -626,7 +633,7 @@
                                     </div>
                                 <?php else: ?>
                                     <button id="payBtn" type="submit"
-                                        class="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 shadow-lg hover:shadow-xl transition transform hover:scale-105 text-lg">
+                                        class="w-full py-4 rounded-xl font-bold text-white bg-primary-500 hover:bg-hover shadow-lg hover:shadow-xl transition transform hover:scale-105 text-lg">
                                         Place Order
                                     </button>
                                 <?php endif; ?>

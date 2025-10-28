@@ -87,8 +87,15 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
 
     <!-- Minimum Order Amount Start-->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
-        <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
-            Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
+        <?php
+        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+        ?>
+        <div class="w-full text-white text-center py-1.5 sm:py-2 md:py-2.5 lg:py-2 text-sm sm:text-base md:text-lg lg:text-base font-semibold transition-all duration-500 ease-out cursor-pointer"
+            style="background: linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);"
+            onmouseover="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 98%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 100%)'; this.style.transform='scale(1.01) translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';"
+            onmouseout="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%)'; this.style.transform='scale(1) translateY(0)'; this.style.boxShadow='none';">
+            Minimum Order: <?= currencyToSymbol($storeCurrency) . ' ' . getSettings("minimum_order_amount") ?>
         </div>
     <?php endif; ?>
     <!-- Minimum Order Amount End-->
@@ -341,7 +348,7 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                             $disableAdd = $inCartInitial || $isOutOfStock;
                             $btnClass = $disableAdd
                                 ? 'bg-gray-300 cursor-not-allowed'
-                                : 'bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700';
+                                : 'bg-primary-400 hover:from-pink-500 hover:to-pink-700';
                             $btnText = $inCartInitial ? 'Already in Cart' : ($isOutOfStock ? 'Sold Out' : 'Add to Cart');
                             ?>
                             <button id="addToCartBtn" class="px-5 py-2 rounded-lg <?= $btnClass ?> text-white font-semibold shadow-lg transition transform hover:scale-105 addToCartBtn text-sm sm:text-base <?= $inCartInitial ? 'hidden' : '' ?>"
@@ -351,7 +358,7 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                 <?= $btnText ?>
                             </button>
 
-                            <a id="viewCartBtn" href="<?= $storeUrl ?>cart" class="flex items-center px-4 py-2 rounded-lg bg-yellow-400 text-white font-semibold shadow hover:bg-yellow-500 transition transform hover:scale-105 text-sm sm:text-base <?= $inCartInitial ? '' : 'hidden' ?>">
+                            <a id="viewCartBtn" href="<?= $storeUrl ?>cart" class="flex items-center px-4 py-2 rounded-lg bg-hover text-white font-semibold shadow hover:bg-primary-500 transition transform hover:scale-105 text-sm sm:text-base <?= $inCartInitial ? '' : 'hidden' ?>">
                                 <i class="fas fa-shopping-cart mr-2"></i> View Cart
                             </a>
 
@@ -637,21 +644,21 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                         // Disable add to cart and show "Select Color and Size" message
                         addBtn.disabled = true;
                         addBtn.textContent = 'Select Color and Size';
-                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
+                        addBtn.classList.remove('bg-primary-500', 'hover:from-pink-500', 'hover:to-pink-700');
                         addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
                         viewBtn.classList.add('hidden');
                         addBtn.classList.remove('hidden');
                     } else if (isOutOfStock) {
                         addBtn.disabled = true;
                         addBtn.textContent = 'Sold Out';
-                        addBtn.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
+                        addBtn.classList.remove('bg-primary-500', 'hover:to-pink-700');
                         addBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
                         viewBtn.classList.add('hidden');
                         addBtn.classList.remove('hidden');
                     } else {
                         addBtn.disabled = false;
                         addBtn.textContent = 'Add to Cart';
-                        addBtn.classList.add('bg-gradient-to-r', 'from-pink-400', 'to-pink-600', 'hover:from-pink-500', 'hover:to-pink-700');
+                        addBtn.classList.add('bg-primary-500', 'hover:from-pink-500', 'hover:to-pink-700');
                         addBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
                         viewBtn.classList.add('hidden');
                         addBtn.classList.remove('hidden');

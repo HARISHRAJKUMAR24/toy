@@ -6,6 +6,10 @@
 <head>
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
     <style>
+        :root {
+            --primary: <?= htmlspecialchars(getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;
+        }
+
         /*<==========> Enhanced CSS Styles <==========>*/
 
         /*------------- Smooth Animations -------------*/
@@ -45,7 +49,7 @@
             left: 50%;
             width: 0;
             height: 3px;
-            background: linear-gradient(135deg, #ec4899, #f97316);
+            background: linear-gradient(135deg, var(--primary), #f97316);
             border-radius: 2px;
             transform: translateX(-50%);
             transition: width 0.3s ease;
@@ -71,8 +75,8 @@
 
         /*------------- Product Category Active Styles -------------*/
         .tab-button.active .tab-img {
-            border-color: #ec4899;
-            box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px color-mix(in srgb, var(--primary) 30%, transparent);
             transform: scale(1.08) rotate(5deg);
         }
 
@@ -81,7 +85,7 @@
         }
 
         .tab-button.active span {
-            color: #ec4899;
+            color: var(--primary);
             font-weight: 700;
             transform: scale(1.03);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -89,7 +93,7 @@
 
         /*------------- Gradient Text -------------*/
         .gradient-text {
-            background: linear-gradient(135deg, #ec4899, #f97316);
+            background: linear-gradient(135deg, var(--primary), #f97316);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -103,12 +107,18 @@
     </style>
 </head>
 
-<body class="font-sans min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-
+<body class="font-sans min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-50 to-gray-100" style="--primary: <?= htmlspecialchars(getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;">
     <!-- Minimum Order Amount Start-->
     <?php if (!empty(getSettings("minimum_order_amount"))) : ?>
-        <div class="w-full bg-pink-600 text-white text-center py-1 text-sm font-semibold">
-            Minimum Order: <?= currencyToSymbol($storeCurrency) . getSettings("minimum_order_amount") ?>
+        <?php
+        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+        ?>
+        <div class="w-full text-white text-center py-1.5 sm:py-2 md:py-2.5 lg:py-2 text-sm sm:text-base md:text-lg lg:text-base font-semibold transition-all duration-500 ease-out cursor-pointer"
+            style="background: linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);"
+            onmouseover="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 98%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 100%)'; this.style.transform='scale(1.01) translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';"
+            onmouseout="this.style.background='linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%)'; this.style.transform='scale(1) translateY(0)'; this.style.boxShadow='none';">
+            Minimum Order: <?= currencyToSymbol($storeCurrency) . ' ' . getSettings("minimum_order_amount") ?>
         </div>
     <?php endif; ?>
     <!-- Minimum Order Amount End-->
@@ -139,10 +149,14 @@
     ?>
 
         <!--Shop By Age Start-->
-        <section class="py-12 bg-gradient-to-r from-blue-100 via-pink-100 to-purple-100 animate-gradient-x">
+        <section class="py-12 animate-gradient-x">
             <div class="max-w-6xl mx-auto px-4">
                 <!--Heading - SAME SIZE AS SHOP BY CATEGORY -->
-                <?php $main_heading = getData("advance_category_main_heading", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'"); ?>
+                <?php
+                $main_heading = getData("advance_category_main_heading", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
+                $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+                $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+                ?>
                 <?php if (!empty($main_heading)) : ?>
                     <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 text-center">
                         <?= htmlspecialchars($main_heading) ?>
@@ -158,31 +172,34 @@
                         <!-- CHANGED: justify-center on all screens -->
 
                         <?php foreach ($advance_categories as $index => $category) :
-                            // Color for border animation (cycle through colors) - DARKER COLORS
-                            $border_colors = ['pink-500', 'blue-500', 'green-500', 'yellow-500', 'purple-500', 'pink-700'];
-                            $bg_colors = ['pink-600', 'blue-600', 'green-600', 'yellow-600', 'purple-600', 'pink-800'];
-                            $color_index = $index % count($border_colors);
+                            // Use dynamic colors from database instead of fixed colors
+                            $border_color = $index % 2 == 0 ? $primary_color : $hover_color;
+                            $bg_color = $index % 2 == 0 ? $hover_color : $primary_color;
                         ?>
-                            <div class="relative w-32 h-32 flex-shrink-0">
-                                <!-- Spinning border -->
-                                <div class="absolute inset-0 rounded-full border-4 border-dashed border-<?= $border_colors[$color_index] ?> animate-spin-slow"></div>
+                            <div class="relative w-32 h-32 flex-shrink-0 group">
+                                <!-- Spinning border with dynamic color and increased opacity -->
+                                <div class="absolute inset-0 rounded-full border-4 border-dashed animate-spin-slow opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                                    style="border-color: <?= htmlspecialchars($border_color) ?>;"></div>
                                 <!-- Image circle -->
-                                <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300">
+                                <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300 group-hover:shadow-xl transition-all duration-300">
                                     <?php if (!empty($category['link'])): ?>
                                         <a href="<?= $category['link'] ?>" target="_blank" class="block w-full h-full flex items-center justify-center">
                                             <img src="<?= UPLOADS_URL . $category['image'] ?>"
                                                 alt="<?= htmlspecialchars($category['name']) ?>"
-                                                class="w-full h-full object-cover object-center">
+                                                class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110">
                                         </a>
                                     <?php else: ?>
                                         <img src="<?= UPLOADS_URL . $category['image'] ?>"
                                             alt="<?= htmlspecialchars($category['name']) ?>"
-                                            class="w-full h-full object-cover object-center">
+                                            class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110">
                                     <?php endif; ?>
                                 </div>
-                                <!-- Category Name Box -->
+                                <!-- Category Name Box with dynamic background color and increased opacity -->
                                 <?php if (!empty($category['name'])): ?>
-                                    <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-0.5 bg-<?= $bg_colors[$color_index] ?> text-white text-sm font-semibold rounded-md shadow-lg text-center break-words max-w-[90%] border border-white/30">
+                                    <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-0.5 text-white text-sm font-semibold rounded-md shadow-lg text-center break-words max-w-[90%] border border-white/30 transition-all duration-300 hover:scale-105 opacity-95 group-hover:opacity-100"
+                                        style="background-color: <?= htmlspecialchars($bg_color) ?>;"
+                                        onmouseover="this.style.backgroundColor='<?= htmlspecialchars($primary_color) ?>'; this.style.opacity='1'"
+                                        onmouseout="this.style.backgroundColor='<?= htmlspecialchars($bg_color) ?>'; this.style.opacity='0.95'">
                                         <?= htmlspecialchars($category['name']) ?>
                                     </div>
                                 <?php endif; ?>
@@ -196,8 +213,37 @@
 
         <style>
             .animate-gradient-x {
+                background: linear-gradient(-45deg,
+                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 25%, white),
+                        /* Increased from 15% */
+                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 22%, white),
+                        /* Increased from 12% */
+                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 20%, white),
+                        /* Increased from 10% */
+                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 18%, white)
+                        /* Increased from 8% */
+                    );
                 background-size: 400% 400%;
-                animation: gradient 6s ease infinite;
+                animation: gradient 8s ease infinite;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .animate-gradient-x::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg,
+                        transparent,
+                        rgba(255, 255, 255, 0.6),
+                        /* Increased from 0.4 */
+                        transparent);
+                animation: shimmer 3s infinite;
+                opacity: 0.7;
+                /* Added opacity for better blending */
             }
 
             @keyframes gradient {
@@ -214,7 +260,17 @@
                 }
             }
 
-            /* Enhanced spin animation */
+            @keyframes shimmer {
+                0% {
+                    left: -100%;
+                }
+
+                100% {
+                    left: 100%;
+                }
+            }
+
+            /* Enhanced spin animation with dynamic colors */
             @keyframes spin-slow {
                 from {
                     transform: rotate(0deg);
@@ -229,10 +285,44 @@
                 animation: spin-slow 18s linear infinite;
             }
 
+            /* Hover effects for the entire section with increased opacity */
+            .animate-gradient-x:hover {
+                background: linear-gradient(-45deg,
+                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 28%, white),
+                        /* Increased from 18% */
+                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 25%, white),
+                        /* Increased from 15% */
+                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 22%, white),
+                        /* Increased from 12% */
+                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 20%, white)
+                        /* Increased from 10% */
+                    );
+                background-size: 400% 400%;
+            }
+
+            /* Enhanced hover effects for individual category items */
+            .group:hover .animate-spin-slow {
+                opacity: 1;
+                border-width: 5px;
+                /* Slightly thicker border on hover */
+            }
+
             /* Ensure images fill the circle properly */
             .relative.w-28.h-28 img {
                 min-width: 100%;
                 min-height: 100%;
+                transition: transform 0.3s ease;
+            }
+
+            /* Enhanced shadow effects */
+            .relative.w-28.h-28 {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                /* Added shadow to image container */
+            }
+
+            .relative.w-28.h-28:hover {
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                /* Enhanced shadow on hover */
             }
 
             /* Enhanced scroll container - hide scrollbar on desktop */
@@ -258,6 +348,7 @@
                 }
             }
         </style>
+        <!--Shop By Age End-->
         <!--Shop By Age End-->
 
     <?php endif; ?>
@@ -314,8 +405,9 @@
                     <div id="product-display-area">
                         <!-- Default message - will be replaced when category is clicked -->
                         <div class="text-center py-16">
-                            <div class="w-24 h-24 rounded-full bg-pink-100 flex items-center justify-center mb-4 mx-auto">
-                                <i class="fas fa-shopping-bag text-pink-600 text-3xl"></i>
+                            <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
+                                style="background-color: color-mix(in srgb, var(--primary) 20%, white);">
+                                <i class="fas fa-shopping-bag text-3xl" style="color: var(--primary);"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-800 mb-2">Select a Category</h3>
                             <p class="text-gray-500 mb-6 max-w-md mx-auto">Click on any category above to view products</p>
@@ -376,7 +468,7 @@
                 // Show loading state
                 productDisplayArea.innerHTML = `
                 <div class="text-center py-16">
-                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+                    <div class="inline-block rounded-full h-8 w-8 border-b-2 mx-auto" style="border-color: var(--primary); animation: spin 1s linear infinite;"></div>
                     <p class="mt-4 text-gray-600 font-medium">Loading ${categoryName} products...</p>
                 </div>
             `;
@@ -410,8 +502,9 @@
                         } else {
                             productDisplayArea.innerHTML = `
                             <div class="text-center py-16">
-                                <div class="w-24 h-24 rounded-full bg-pink-100 flex items-center justify-center mb-4 mx-auto">
-                                    <i class="fas fa-shopping-bag text-pink-600 text-3xl"></i>
+                                <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
+                                     style="background-color: color-mix(in srgb, var(--primary) 20%, white);">
+                                    <i class="fas fa-shopping-bag text-3xl" style="color: var(--primary);"></i>
                                 </div>
                                 <h3 class="text-xl font-semibold text-gray-800 mb-2">No Products Found</h3>
                                 <p class="text-gray-500 mb-6 max-w-md mx-auto">No products available in ${categoryName} category</p>
@@ -423,8 +516,9 @@
                         console.error('Error loading products:', error);
                         productDisplayArea.innerHTML = `
                         <div class="text-center py-16">
-                            <div class="w-24 h-24 rounded-full bg-red-100 flex items-center justify-center mb-4 mx-auto">
-                                <i class="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+                            <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
+                                 style="background-color: color-mix(in srgb, #ef4444 20%, white);">
+                                <i class="fas fa-exclamation-triangle text-3xl" style="color: #ef4444;"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-800 mb-2">Error Loading Products</h3>
                             <p class="text-gray-500 mb-6 max-w-md mx-auto">Unable to load products. Please try again.</p>
