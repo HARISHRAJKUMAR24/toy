@@ -257,17 +257,12 @@
                         $locationIcon = $location['location_type'] == "pickup" ? "bx-package" : "bx-store";
                     ?>
                         <div class="location-card rounded-2xl p-6 shadow-lg">
-                            <div class="flex items-start gap-4">
-                                <div class="relative flex-shrink-0">
-                                    <div class="number-badge w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                                        <?= $key ?>
-                                    </div>
-                                    <span class="absolute -top-2 -right-2 text-xs px-2 py-1 rounded-full <?= $locationTypeClass ?> font-medium shadow-lg">
-                                        <i class='bx <?= $locationIcon ?> mr-1'></i>
-                                        <?= $locationTypeText ?>
-                                    </span>
+                            <div class="flex justify-center mb-5">
+                                <div class="number-badge w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                    <?= $key ?>
                                 </div>
-
+                            </div>
+                            <div class="flex items-start gap-4">
                                 <div class="flex-1 min-w-0">
                                     <h5 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                                         <?= $location['name'] ?>
