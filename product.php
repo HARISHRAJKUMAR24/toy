@@ -348,7 +348,7 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                             $disableAdd = $inCartInitial || $isOutOfStock;
                             $btnClass = $disableAdd
                                 ? 'bg-gray-300 cursor-not-allowed'
-                                : 'bg-primary-400 hover:from-pink-500 hover:to-pink-700';
+                                : 'bg-primary-500 hover:from-pink-500 hover:to-pink-700';
                             $btnText = $inCartInitial ? 'Already in Cart' : ($isOutOfStock ? 'Sold Out' : 'Add to Cart');
                             ?>
                             <button id="addToCartBtn" class="px-5 py-2 rounded-lg <?= $btnClass ?> text-white font-semibold shadow-lg transition transform hover:scale-105 addToCartBtn text-sm sm:text-base <?= $inCartInitial ? 'hidden' : '' ?>"
