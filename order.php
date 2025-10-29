@@ -99,6 +99,13 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
             <!-- Main Content Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Left Side: Order Status Card -->
+                <?php
+                // Add these payment variables at the top of your theme9/order.php file
+                $payment_method = getData("payment_method", "seller_orders", "order_id = '$order_id'");
+                $payment_id = getData("payment_id", "seller_orders", "order_id = '$order_id'");
+                $payment_status = getData("payment_status", "seller_orders", "order_id = '$order_id'");
+                ?>
+
                 <div class="lg:col-span-1">
                     <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition sticky top-4 sm:top-20">
                         <div class="space-y-3">
