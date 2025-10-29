@@ -429,7 +429,256 @@
     <?php endif; ?>
 
     <!-- Enhanced JavaScript -->
+    <!-- Enhanced JavaScript -->
     <script>
+        // Custom toast function
+        function showCustomToast(message, type) {
+            // Remove any existing toasts
+            const existingToasts = document.querySelectorAll('.custom-product-toast');
+            existingToasts.forEach(toast => toast.remove());
+
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'custom-product-toast fixed top-4 right-4 z-50 transform transition-all duration-500 ease-in-out translate-x-full opacity-0';
+            toast.innerHTML = `
+            <div style="background-color: var(--primary-color) !important; color: white !important; border-color: var(--primary-dark) !important;" 
+                 class="px-4 py-3 rounded-lg shadow-lg border-l-4 flex items-center gap-3">
+                <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl'></i>
+                <span class="font-semibold">${message}</span>
+            </div>
+        `;
+
+            // Add to page
+            document.body.appendChild(toast);
+
+            // Animate in from right to left
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+                toast.classList.add('translate-x-0', 'opacity-100');
+            }, 10);
+
+            // Auto remove after 3 seconds with reverse animation
+            setTimeout(() => {
+                toast.classList.remove('translate-x-0', 'opacity-100');
+                toast.classList.add('translate-x-full', 'opacity-0');
+
+                // Remove from DOM after animation completes
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        // Update cart counts function
+        function updateCartCounts() {
+            $.ajax({
+                url: 'shop/ajax/get-product-count-and-price.php',
+                success: function(result) {
+                    try {
+                        const response = JSON.parse(result);
+                        // Update cart counts in the UI
+                        $('.cartItemsCount').text(response.itemsCount || '0');
+                        $('.cartItemsCountWithTxt').text((response.itemsCount || '0') + " Item");
+                        $('.cartPrice').text(response.price || '0');
+                    } catch (e) {
+                        console.warn('Could not update cart counts:', e);
+                    }
+                }
+            });
+        }
+
+        // Function to initialize product components for AJAX-loaded content
+        function initializeProductComponents() {
+            // Remove existing variant select event listeners by replacing elements
+            document.querySelectorAll('.variantSelect').forEach(select => {
+                const newSelect = select.cloneNode(true);
+                select.parentNode.replaceChild(newSelect, select);
+            });
+
+            // Initialize variant selects
+            document.querySelectorAll('.variantSelect').forEach(select => {
+                select.addEventListener('change', function() {
+                    const selected = this.options[this.selectedIndex];
+                    const card = this.closest('.group');
+                    const addBtn = card.querySelector('.customAddToCartBtn');
+
+                    const img = selected.dataset.image;
+                    const price = selected.dataset.price;
+                    const mrp = selected.dataset.mrp;
+                    const stock = Number(selected.dataset.stock) || 0;
+                    const unlimited = Number(selected.dataset.unlimited) || 0;
+                    const variantType = selected.dataset.variantType;
+                    const variantValue = selected.value;
+                    const isMain = selected.dataset.isMain === 'true';
+
+                    const imageEl = card.querySelector('.productImage');
+                    const priceEl = card.querySelector('.productPrice');
+                    const mrpEl = card.querySelector('.productMrp');
+
+                    // Update image and prices
+                    if (imageEl && img) imageEl.src = img;
+                    if (priceEl) priceEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(price).toLocaleString();
+
+                    if (mrpEl) {
+                        if (mrp && mrp > 0) {
+                            mrpEl.textContent = "<?= currencyToSymbol($storeCurrency) ?>" + Number(mrp).toLocaleString();
+                            mrpEl.style.display = 'inline';
+                        } else {
+                            mrpEl.style.display = 'none';
+                        }
+                    }
+
+                    // Handle Add button
+                    if (addBtn) {
+                        const isOutOfStock = stock <= 0 && unlimited !== 1;
+                        const hasAdvancedVariants = addBtn.dataset.hasAdvancedVariants === 'true';
+
+                        // Clear previous variant data
+                        addBtn.dataset.variant = "";
+                        addBtn.dataset.advancedvariant = "";
+
+                        // Set the correct data attributes based on variant type
+                        if (variantType === 'main') {
+                            addBtn.dataset.variant = "";
+                            addBtn.dataset.advancedvariant = "";
+                        } else if (variantType === 'advanced') {
+                            addBtn.dataset.advancedvariant = variantValue;
+                            addBtn.dataset.variant = "";
+                        } else {
+                            addBtn.dataset.variant = variantValue;
+                            addBtn.dataset.advancedvariant = "";
+                        }
+
+                        // FIXED RULE: If product has advanced variants, main product is ALWAYS disabled
+                        if (hasAdvancedVariants && isMain) {
+                            addBtn.disabled = true;
+                            addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Select';
+                            addBtn.classList.remove('bg-primary-500', 'text-white');
+                            addBtn.classList.add('bg-gray-300', 'cursor-not-allowed', 'text-gray-500');
+                        } else if (hasAdvancedVariants && !isMain) {
+                            if (isOutOfStock) {
+                                addBtn.disabled = true;
+                                addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
+                                addBtn.classList.remove('bg-primary-500', 'text-white');
+                                addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
+                            } else {
+                                addBtn.disabled = false;
+                                addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
+                                addBtn.classList.remove(
+                                    'bg-gray-100', 'cursor-not-allowed', 'text-gray-400',
+                                    'bg-gray-300', 'text-gray-500'
+                                );
+                                addBtn.classList.add('bg-primary-500', 'text-white');
+                            }
+                        } else {
+                            if (isOutOfStock) {
+                                addBtn.disabled = true;
+                                addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Sold Out';
+                                addBtn.classList.remove('bg-primary-500', 'text-white');
+                                addBtn.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-400');
+                            } else {
+                                addBtn.disabled = false;
+                                addBtn.innerHTML = '<span class="mr-1 text-sm md:text-base"></span> Add';
+                                addBtn.classList.remove(
+                                    'bg-gray-100', 'cursor-not-allowed', 'text-gray-400',
+                                    'bg-gray-300', 'text-gray-500'
+                                );
+                                addBtn.classList.add('bg-primary-500', 'text-white');
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        // FIXED: Single event listener for add to cart buttons - NO DUPLICATES
+        let addToCartHandler = function(e) {
+            // Only handle clicks on actual add to cart buttons
+            const addToCartBtn = e.target.closest('.customAddToCartBtn');
+            if (!addToCartBtn) return;
+
+            // Prevent default and stop propagation immediately
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            // Check if already processing
+            if (addToCartBtn.disabled) return;
+
+            const product_id = addToCartBtn.dataset.id;
+            const variant = addToCartBtn.dataset.variant || "";
+            const advanced_variant = addToCartBtn.dataset.advancedvariant || "";
+
+            // Add loading state
+            const originalText = addToCartBtn.innerHTML;
+            addToCartBtn.disabled = true;
+            addToCartBtn.innerHTML = '<span class="mr-1">⏳</span> Adding...';
+
+            $.ajax({
+                url: 'shop/ajax/add-to-cart.php',
+                type: 'POST',
+                data: {
+                    product_id: product_id,
+                    variant: variant,
+                    advanced_variant: advanced_variant
+                },
+                success: function(result) {
+                    addToCartBtn.disabled = false;
+                    addToCartBtn.innerHTML = originalText;
+
+                    let response;
+                    try {
+                        response = JSON.parse(result);
+                    } catch (e) {
+                        if (result.includes('success') || result.includes('Success')) {
+                            response = {
+                                success: true,
+                                message: "Product added to cart successfully!"
+                            };
+                        } else {
+                            response = {
+                                success: false,
+                                message: "Failed to add product to cart."
+                            };
+                        }
+                    }
+
+                    if (response.success) {
+                        showCustomToast(response.message || "Product added to cart successfully!", 'success');
+                        updateCartCounts();
+                        if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        }
+                    } else {
+                        const errorMessage = response.message || "";
+                        const isDuplicateError =
+                            errorMessage.includes('already') ||
+                            errorMessage.includes('duplicate') ||
+                            errorMessage.includes('exist') ||
+                            errorMessage.includes('Added') ||
+                            errorMessage.toLowerCase().includes('cart');
+
+                        if (!isDuplicateError) {
+                            showCustomToast(errorMessage || "Failed to add product to cart.", 'error');
+                        } else {
+                            updateCartCounts();
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    addToCartBtn.disabled = false;
+                    addToCartBtn.innerHTML = originalText;
+                    showCustomToast('Network error. Please try again.', 'error');
+                    console.error('AJAX Error:', error);
+                }
+            });
+        };
+
+        // Remove any existing listener and add fresh one
+        document.removeEventListener('click', addToCartHandler);
+        document.addEventListener('click', addToCartHandler, true); // Use capture phase
+
         document.addEventListener('DOMContentLoaded', () => {
             const menuTabs = document.getElementById('menu-tabs');
             const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
@@ -464,11 +713,11 @@
             function countRealProductsInHTML(html) {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = html;
-                const productElements = tempDiv.querySelectorAll('.gap-5, .addToCartBtn, [class*="group"]');
+                const productElements = tempDiv.querySelectorAll('.gap-5, .customAddToCartBtn, [class*="group"]');
                 return Array.from(productElements).filter(el =>
                     el.innerHTML.includes('product/') ||
                     el.innerHTML.includes('₹') ||
-                    el.innerHTML.includes('addToCartBtn')
+                    el.innerHTML.includes('customAddToCartBtn')
                 ).length;
             }
 
@@ -476,11 +725,11 @@
             function loadCategoryProducts(categoryId, categoryName) {
                 // Show loading state
                 productDisplayArea.innerHTML = `
-                <div class="text-center py-16">
-                    <div class="inline-block rounded-full h-8 w-8 border-b-2 mx-auto" style="border-color: var(--primary); animation: spin 1s linear infinite;"></div>
-                    <p class="mt-4 text-gray-600 font-medium">Loading ${categoryName} products...</p>
-                </div>
-            `;
+            <div class="text-center py-16">
+                <div class="inline-block rounded-full h-8 w-8 border-b-2 mx-auto" style="border-color: var(--primary); animation: spin 1s linear infinite;"></div>
+                <p class="mt-4 text-gray-600 font-medium">Loading ${categoryName} products...</p>
+            </div>
+        `;
 
                 // AJAX call to get products using your existing file
                 $.ajax({
@@ -500,39 +749,42 @@
                             const productCount = countRealProductsInHTML(trimmed);
 
                             productDisplayArea.innerHTML = `
-                            <div class="mb-6">
-                                <h3 class="text-2xl font-bold text-gray-800 text-center">${categoryName} Products</h3>
-                                <p class="text-gray-600 text-center mt-2">${productCount}+ amazing products waiting for you</p>
-                            </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6 items-stretch">
-                                ${trimmed}
-                            </div>
-                        `;
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-bold text-gray-800 text-center">${categoryName} Products</h3>
+                            <p class="text-gray-600 text-center mt-2">${productCount}+ amazing products waiting for you</p>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6 items-stretch">
+                            ${trimmed}
+                        </div>
+                    `;
+
+                            // Initialize components for AJAX-loaded products
+                            setTimeout(initializeProductComponents, 100);
                         } else {
                             productDisplayArea.innerHTML = `
-                            <div class="text-center py-16">
-                                <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
-                                     style="background-color: color-mix(in srgb, var(--primary) 20%, white);">
-                                    <i class="fas fa-shopping-bag text-3xl" style="color: var(--primary);"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold text-gray-800 mb-2">No Products Found</h3>
-                                <p class="text-gray-500 mb-6 max-w-md mx-auto">No products available in ${categoryName} category</p>
+                        <div class="text-center py-16">
+                            <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
+                                 style="background-color: color-mix(in srgb, var(--primary) 20%, white);">
+                                <i class="fas fa-shopping-bag text-3xl" style="color: var(--primary);"></i>
                             </div>
-                        `;
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">No Products Found</h3>
+                            <p class="text-gray-500 mb-6 max-w-md mx-auto">No products available in ${categoryName} category</p>
+                        </div>
+                    `;
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error('Error loading products:', error);
                         productDisplayArea.innerHTML = `
-                        <div class="text-center py-16">
-                            <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
-                                 style="background-color: color-mix(in srgb, #ef4444 20%, white);">
-                                <i class="fas fa-exclamation-triangle text-3xl" style="color: #ef4444;"></i>
-                            </div>
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Error Loading Products</h3>
-                            <p class="text-gray-500 mb-6 max-w-md mx-auto">Unable to load products. Please try again.</p>
+                    <div class="text-center py-16">
+                        <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
+                             style="background-color: color-mix(in srgb, #ef4444 20%, white);">
+                            <i class="fas fa-exclamation-triangle text-3xl" style="color: #ef4444;"></i>
                         </div>
-                    `;
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Error Loading Products</h3>
+                        <p class="text-gray-500 mb-6 max-w-md mx-auto">Unable to load products. Please try again.</p>
+                    </div>
+                `;
                     }
                 });
             }
@@ -584,6 +836,7 @@
                 centerTab(tabs[0]);
             }
         });
+
         // Enhanced scrolling for Shop By Age section
         document.addEventListener('DOMContentLoaded', function() {
             const shopByAgeContainer = document.querySelector('.scroll-container');

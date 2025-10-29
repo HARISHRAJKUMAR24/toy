@@ -97,191 +97,242 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
             </div>
 
             <!-- Main Content Grid -->
-            <div class="flex flex-col lg:flex-row gap-4 sm:gap-6">
-                <!-- Order Status Card -->
-                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg lg:w-[35%]">
-                    <ul class="space-y-3">
-                        <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
-                            style="background-color: color-mix(in srgb, var(--primary) 8%, white); border-color: color-mix(in srgb, var(--primary) 20%, transparent);">
-                            <span class="col-span-4" style="color: var(--primary);">Ordered At</span>
-                            <span class="col-span-1" style="color: var(--primary); opacity: 0.7;">:</span>
-                            <span class="col-span-6 font-semibold" style="color: var(--primary);"><?= $ordered_date ?></span>
-                        </li>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                <!-- Left Side: Order Status Card -->
+                <div class="lg:col-span-1">
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition sticky top-4 sm:top-20">
+                        <div class="space-y-3">
+                            <!-- Ordered At -->
+                            <div class="flex items-center justify-between w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                style="background-color: color-mix(in srgb, var(--primary) 8%, white); border-color: color-mix(in srgb, var(--primary) 20%, transparent);">
+                                <span class="flex-1" style="color: var(--primary);">Ordered At</span>
+                                <span class="font-semibold ml-2" style="color: var(--primary);"><?= $ordered_date ?></span>
+                            </div>
 
-                        <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
-                            style="background-color: color-mix(in srgb, #10b981 8%, white); border-color: color-mix(in srgb, #10b981 20%, transparent);">
-                            <span class="col-span-4 text-green-700">Status</span>
-                            <span class="col-span-1 text-green-500">:</span>
-                            <span class="col-span-6 font-semibold text-green-600"><?= $status ?></span>
-                        </li>
+                            <!-- Status -->
+                            <div class="flex items-center justify-between w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                style="background-color: color-mix(in srgb, #10b981 8%, white); border-color: color-mix(in srgb, #10b981 20%, transparent);">
+                                <span class="flex-1 text-green-700">Status</span>
+                                <span class="font-semibold ml-2 text-green-600"><?= $status ?></span>
+                            </div>
 
-                        <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
-                            style="background-color: color-mix(in srgb, var(--hover-color) 8%, white); border-color: color-mix(in srgb, var(--hover-color) 20%, transparent);">
-                            <span class="col-span-4" style="color: var(--hover-color);">Payment Status</span>
-                            <span class="col-span-1" style="color: var(--hover-color); opacity: 0.7;">:</span>
-                            <span class="col-span-6 font-semibold" style="color: var(--hover-color);"><?= $payment_status ?></span>
-                        </li>
+                            <!-- Payment Status -->
+                            <div class="flex items-center justify-between w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                style="background-color: color-mix(in srgb, var(--hover-color) 8%, white); border-color: color-mix(in srgb, var(--hover-color) 20%, transparent);">
+                                <span class="flex-1" style="color: var(--hover-color);">Payment Status</span>
+                                <span class="font-semibold ml-2" style="color: var(--hover-color);"><?= $payment_status ?></span>
+                            </div>
 
-                        <?php if ($courier_service) : ?>
-                            <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
-                                style="background-color: color-mix(in srgb, #06b6d4 8%, white); border-color: color-mix(in srgb, #06b6d4 20%, transparent);">
-                                <span class="col-span-4 text-cyan-700">Courier Service</span>
-                                <span class="col-span-1 text-cyan-500">:</span>
-                                <span class="col-span-6 text-cyan-600 font-semibold"><?= $courier_service ? $courier_service : 'update soon' ?></span>
-                            </li>
+                            <!-- Payment Gateway Information -->
+                            <div class="flex items-center justify-between w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                style="background-color: color-mix(in srgb, #8b5cf6 8%, white); border-color: color-mix(in srgb, #8b5cf6 20%, transparent);">
+                                <span class="flex-1 text-purple-700">Payment Method</span>
+                                <span class="font-semibold ml-2 text-purple-600"><?= $payment_method ?></span>
+                            </div>
+
+                            <!-- Payment ID - Only show if exists -->
+                            <?php if (!empty($payment_id)) : ?>
+                                <div class="flex items-center justify-between w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                    style="background-color: color-mix(in srgb, #06b6d4 8%, white); border-color: color-mix(in srgb, #06b6d4 20%, transparent);">
+                                    <span class="flex-1 text-cyan-700">Payment ID</span>
+                                    <span class="font-semibold ml-2 text-cyan-600 text-sm break-all text-right max-w-[60%]"><?= $payment_id ?></span>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($courier_service) : ?>
+                                <div class="flex items-center justify-between w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                    style="background-color: color-mix(in srgb, #06b6d4 8%, white); border-color: color-mix(in srgb, #06b6d4 20%, transparent);">
+                                    <span class="flex-1 text-cyan-700">Courier Service</span>
+                                    <span class="font-semibold ml-2 text-cyan-600"><?= $courier_service ? $courier_service : 'update soon' ?></span>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($expected_delivery_date) : ?>
+                                <div class="flex items-center justify-between w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
+                                    style="background-color: color-mix(in srgb, #f59e0b 8%, white); border-color: color-mix(in srgb, #f59e0b 20%, transparent);">
+                                    <span class="flex-1 text-orange-700">Expected Delivery</span>
+                                    <span class="font-semibold ml-2 text-orange-600"><?= $expected_delivery_date ? date('M d, Y', strtotime($expected_delivery_date)) : 'update soon' ?></span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if ($payment_status == "Unpaid") : ?>
+                            <div class="mt-4 p-3 rounded-lg border transition-all duration-300" style="color: #ef4444; background-color: color-mix(in srgb, #ef4444 8%, white); border-color: color-mix(in srgb, #ef4444 20%, transparent);">
+                                <p class="text-sm">
+                                    <b>Note:</b> Once you paid manually it can takes 3-5 hours time to verify the payment made
+                                </p>
+                            </div>
                         <?php endif; ?>
-
-                        <?php if ($expected_delivery_date) : ?>
-                            <li class="grid grid-cols-11 text-sm w-full font-medium p-3 rounded-xl border transition-all duration-300 hover:shadow-md"
-                                style="background-color: color-mix(in srgb, #f59e0b 8%, white); border-color: color-mix(in srgb, #f59e0b 20%, transparent);">
-                                <span class="col-span-4 text-orange-700">Expected Delivery</span>
-                                <span class="col-span-1 text-orange-500">:</span>
-                                <span class="col-span-6 text-orange-600 font-semibold"><?= $expected_delivery_date ? date('M d, Y', strtotime($expected_delivery_date)) : 'update soon' ?></span>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-
-                    <?= $payment_status == "Unpaid" ? "<p class='block text-sm mt-4 p-3 rounded-lg border transition-all duration-300' style='color: #ef4444; background-color: color-mix(in srgb, #ef4444 8%, white); border-color: color-mix(in srgb, #ef4444 20%, transparent);'><b>Note:</b> Once you paid manually it can takes 3-5hours time to verify the payment made</p>" : null ?>
+                    </div>
                 </div>
 
-                <!-- Ordered Products - Responsive Table -->
-                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg lg:w-[65%]">
-                    <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                        <span class='mgc_package_2_fill text-2xl' style="color: var(--primary);"></span> Ordered Products
-                    </h3>
+                <!-- Right Side: Ordered Products -->
+                <div class="lg:col-span-2">
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg">
+                        <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
+                            <span class='mgc_package_2_fill text-2xl' style="color: var(--primary);"></span> Ordered Products
+                        </h3>
 
-                    <!-- Desktop Table -->
-                    <div class="hidden md:block w-full overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="bg-primary-gradient">
-                                    <th class="p-3 font-semibold text-left text-white">Product</th>
-                                    <th class="p-3 font-semibold text-left text-white">Price</th>
-                                    <th class="p-3 font-semibold text-left text-white">MRP Price</th>
-                                    <th class="p-3 font-semibold text-left text-white">Qty</th>
-                                    <th class="p-3 font-semibold text-left text-white">Sub Total</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-gray-700">
-                                <?php
-                                $products = getOrderedProducts(array("orderId" => $order_id));
-                                $subTotal = 0;
-
-                                foreach ($products as $key => $product) :
-                                    $subTotal += $product['price'] * $product['quantity'];
-
-                                    $image = getData("image", "seller_products", "id = '{$product['product_id']}'");
-                                    if ($product['other'] && getData("image", "seller_product_variants", "id = '{$product['other']}'")) {
-                                        $image = getData("image", "seller_product_variants", "id = '{$product['other']}'");
-                                    }
-
-                                    $other = "";
-                                    $advanced_variant = "";
-                                    if ($product['other']) {
-                                        $other = " - " . getData("variation", "seller_product_variants", "id = '{$product['other']}'");
-                                    }
-                                    if ($product && $product['advanced_variant']) {
-                                        $size = getData("size", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
-                                        $color = getData("color", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
-                                        $color = getData("color_name", "product_colors", "id = '$color'");
-
-                                        $advanced_variant = "Size: $size | Color: $color";
-
-                                        if (getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'")) $image = getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
-                                    }
-                                ?>
-                                    <tr class="border-t hover:bg-gray-50 transition">
-                                        <td class="p-3 border-t">
-                                            <?php
-                                            $variant_param = '';
-                                            if (!empty($product['advanced_variant'])) {
-                                                $variant_param = "?variation=" . $product['advanced_variant'];
-                                            } elseif (!empty($product['other'])) {
-                                                $variant_param = "?variation=" . $product['other'];
-                                            }
-                                            ?>
-                                            <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") . $variant_param ?>"
-                                                class="flex items-center gap-3 transition hover-primary"
-                                                style="color: var(--primary);">
-                                                <img class="object-contain w-12 h-12 rounded-lg shadow-sm" src="<?= UPLOADS_URL . $image ?>" alt="<?= getData("name", "seller_products", "id = '{$product['product_id']}'") . $other ?>">
-                                                <div>
-                                                    <span class="font-bold block text-sm"><?= limit_characters(getData("name", "seller_products", "id = '{$product['product_id']}'") . $other, 35) ?></span>
-                                                    <span class="block text-xs text-gray-400 mt-1"><?= $advanced_variant ?></span>
-                                                </div>
-                                            </a>
-                                        </td>
-                                        <td class="p-3 border-t font-medium"><?= currencyToSymbol($currency) . number_format($product['price'], 2) ?></td>
-                                        <td class="p-3 border-t text-gray-500"><?= currencyToSymbol($currency) . number_format($product['mrp_price'], 2) ?></td>
-                                        <td class="p-3 border-t font-medium"><?= $product['quantity'] ?></td>
-                                        <td class="p-3 border-t font-semibold text-green-600"><?= currencyToSymbol($currency) . number_format($product['price'] * $product['quantity'], 2) ?></td>
+                        <!-- Desktop Table - Enhanced Style -->
+                        <div class="hidden md:block w-full overflow-x-auto rounded-xl border border-gray-200">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="bg-primary-gradient">
+                                        <th class="p-4 font-semibold text-left text-white rounded-tl-xl">Product</th>
+                                        <th class="p-4 font-semibold text-left text-white">Price</th>
+                                        <th class="p-4 font-semibold text-left text-white">MRP</th>
+                                        <th class="p-4 font-semibold text-left text-white">Qty</th>
+                                        <th class="p-4 font-semibold text-left text-white rounded-tr-xl">Total</th>
                                     </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <?php
+                                    $products = getOrderedProducts(array("orderId" => $order_id));
+                                    $subTotal = 0;
 
-                    <!-- Mobile Cards -->
-                    <div class="md:hidden space-y-4">
-                        <?php
-                        $products = getOrderedProducts(array("orderId" => $order_id));
-                        foreach ($products as $key => $product) :
-                            $image = getData("image", "seller_products", "id = '{$product['product_id']}'");
-                            if ($product['other'] && getData("image", "seller_product_variants", "id = '{$product['other']}'")) {
-                                $image = getData("image", "seller_product_variants", "id = '{$product['other']}'");
-                            }
+                                    foreach ($products as $key => $product) :
+                                        $subTotal += $product['price'] * $product['quantity'];
 
-                            $other = "";
-                            $advanced_variant = "";
-                            if ($product['other']) {
-                                $other = " - " . getData("variation", "seller_product_variants", "id = '{$product['other']}'");
-                            }
-                            if ($product && $product['advanced_variant']) {
-                                $size = getData("size", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
-                                $color = getData("color", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
-                                $color = getData("color_name", "product_colors", "id = '$color'");
-                                $advanced_variant = "Size: $size | Color: $color";
-                                if (getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'")) $image = getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
-                            }
-                        ?>
-                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 transition-all duration-300 hover:shadow-md">
-                                <div class="flex items-start gap-3">
-                                    <img class="object-contain w-16 h-16 rounded-lg shadow-sm flex-shrink-0" src="<?= UPLOADS_URL . $image ?>" alt="<?= getData("name", "seller_products", "id = '{$product['product_id']}'") . $other ?>">
-                                    <div class="flex-1 min-w-0">
-                                        <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") . $variant_param ?>"
-                                            class="font-bold block text-sm text-gray-800 transition mb-1 hover-primary"
-                                            style="color: var(--primary);">
-                                            <?= limit_characters(getData("name", "seller_products", "id = '{$product['product_id']}'") . $other, 40) ?>
-                                        </a>
-                                        <?php if ($advanced_variant) : ?>
-                                            <p class="text-xs text-gray-500 mb-2"><?= $advanced_variant ?></p>
-                                        <?php endif; ?>
+                                        $image = getData("image", "seller_products", "id = '{$product['product_id']}'");
+                                        if ($product['other'] && getData("image", "seller_product_variants", "id = '{$product['other']}'")) {
+                                            $image = getData("image", "seller_product_variants", "id = '{$product['other']}'");
+                                        }
 
-                                        <div class="grid grid-cols-2 gap-2 text-sm">
-                                            <div>
-                                                <span class="text-gray-600">Price:</span>
-                                                <span class="font-medium block"><?= currencyToSymbol($currency) . number_format($product['price'], 2) ?></span>
-                                            </div>
-                                            <div>
-                                                <span class="text-gray-600">MRP:</span>
-                                                <span class="text-gray-500 block"><?= currencyToSymbol($currency) . number_format($product['mrp_price'], 2) ?></span>
-                                            </div>
-                                            <div>
-                                                <span class="text-gray-600">Qty:</span>
-                                                <span class="font-medium block"><?= $product['quantity'] ?></span>
-                                            </div>
-                                            <div>
-                                                <span class="text-gray-600">Total:</span>
-                                                <span class="font-semibold text-green-600 block"><?= currencyToSymbol($currency) . number_format($product['price'] * $product['quantity'], 2) ?></span>
+                                        $other = "";
+                                        $advanced_variant = "";
+                                        if ($product['other']) {
+                                            $other = " - " . getData("variation", "seller_product_variants", "id = '{$product['other']}'");
+                                        }
+                                        if ($product && $product['advanced_variant']) {
+                                            $size = getData("size", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
+                                            $color = getData("color", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
+                                            $color = getData("color_name", "product_colors", "id = '$color'");
+
+                                            $advanced_variant = "Size: $size | Color: $color";
+
+                                            if (getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'")) $image = getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
+                                        }
+                                    ?>
+                                        <tr class="group hover:bg-gray-50 transition-all duration-200">
+                                            <td class="p-4">
+                                                <?php
+                                                $variant_param = '';
+                                                if (!empty($product['advanced_variant'])) {
+                                                    $variant_param = "?variation=" . $product['advanced_variant'];
+                                                } elseif (!empty($product['other'])) {
+                                                    $variant_param = "?variation=" . $product['other'];
+                                                }
+                                                ?>
+                                                <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") . $variant_param ?>"
+                                                    class="flex items-center gap-4 transition-all duration-200 group-hover:translate-x-1">
+                                                    <div class="relative">
+                                                        <img class="object-cover w-14 h-14 rounded-lg shadow-sm border border-gray-200"
+                                                            src="<?= UPLOADS_URL . $image ?>"
+                                                            alt="<?= getData("name", "seller_products", "id = '{$product['product_id']}'") . $other ?>">
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <span class="font-semibold text-gray-800 block text-sm leading-tight">
+                                                            <?= limit_characters(getData("name", "seller_products", "id = '{$product['product_id']}'") . $other, 30) ?>
+                                                        </span>
+                                                        <?php if ($advanced_variant) : ?>
+                                                            <span class="text-xs text-gray-500 mt-1 block"><?= $advanced_variant ?></span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <td class="p-4">
+                                                <div class="flex flex-col">
+                                                    <span class="font-semibold text-gray-800"><?= currencyToSymbol($currency) . number_format($product['price'], 2) ?></span>
+                                                </div>
+                                            </td>
+                                            <td class="p-4">
+                                                <span class="text-gray-500 line-through text-sm"><?= currencyToSymbol($currency) . number_format($product['mrp_price'], 2) ?></span>
+                                            </td>
+                                            <td class="p-4">
+                                                <span class="font-medium text-gray-700 bg-gray-100 px-2 py-1 rounded-md"><?= $product['quantity'] ?></span>
+                                            </td>
+                                            <td class="p-4">
+                                                <span class="font-bold text-green-600 text-sm"><?= currencyToSymbol($currency) . number_format($product['price'] * $product['quantity'], 2) ?></span>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Mobile Cards - Enhanced Style -->
+                        <div class="md:hidden space-y-4">
+                            <?php
+                            $products = getOrderedProducts(array("orderId" => $order_id));
+                            foreach ($products as $key => $product) :
+                                $image = getData("image", "seller_products", "id = '{$product['product_id']}'");
+                                if ($product['other'] && getData("image", "seller_product_variants", "id = '{$product['other']}'")) {
+                                    $image = getData("image", "seller_product_variants", "id = '{$product['other']}'");
+                                }
+
+                                $other = "";
+                                $advanced_variant = "";
+                                if ($product['other']) {
+                                    $other = " - " . getData("variation", "seller_product_variants", "id = '{$product['other']}'");
+                                }
+                                if ($product && $product['advanced_variant']) {
+                                    $size = getData("size", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
+                                    $color = getData("color", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
+                                    $color = getData("color_name", "product_colors", "id = '$color'");
+                                    $advanced_variant = "Size: $size | Color: $color";
+                                    if (getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'")) $image = getData("image", "seller_product_advanced_variants", "id = '{$product['advanced_variant']}'");
+                                }
+                            ?>
+                                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md hover:border-gray-300">
+                                    <div class="flex items-start gap-4">
+                                        <div class="relative flex-shrink-0">
+                                            <img class="object-cover w-16 h-16 rounded-lg shadow-sm border border-gray-200"
+                                                src="<?= UPLOADS_URL . $image ?>"
+                                                alt="<?= getData("name", "seller_products", "id = '{$product['product_id']}'") . $other ?>">
+                                        </div>
+
+                                        <div class="flex-1 min-w-0">
+                                            <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") . $variant_param ?>"
+                                                class="font-semibold text-gray-800 block text-sm leading-tight mb-1 transition-colors duration-200 hover-primary"
+                                                style="color: var(--primary);">
+                                                <?= limit_characters(getData("name", "seller_products", "id = '{$product['product_id']}'") . $other, 35) ?>
+                                            </a>
+
+                                            <?php if ($advanced_variant) : ?>
+                                                <p class="text-xs text-gray-500 mb-3"><?= $advanced_variant ?></p>
+                                            <?php endif; ?>
+
+                                            <!-- Price Grid -->
+                                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                                <div class="space-y-1">
+                                                    <div class="flex justify-between items-center">
+                                                        <span class="text-gray-600 text-xs">Price:</span>
+                                                        <span class="font-semibold text-gray-800"><?= currencyToSymbol($currency) . number_format($product['price'], 2) ?></span>
+                                                    </div>
+                                                    <div class="flex justify-between items-center">
+                                                        <span class="text-gray-600 text-xs">MRP:</span>
+                                                        <span class="text-gray-400 line-through text-xs"><?= currencyToSymbol($currency) . number_format($product['mrp_price'], 2) ?></span>
+                                                    </div>
+                                                </div>
+                                                <div class="space-y-1">
+                                                    <div class="flex justify-between items-center">
+                                                        <span class="text-gray-600 text-xs">Quantity:</span>
+                                                        <span class="font-medium text-gray-700 bg-gray-100 px-2 py-1 rounded text-xs"><?= $product['quantity'] ?></span>
+                                                    </div>
+                                                    <div class="flex justify-between items-center">
+                                                        <span class="text-gray-600 text-xs">Total:</span>
+                                                        <span class="font-bold text-green-600"><?= currencyToSymbol($currency) . number_format($product['price'] * $product['quantity'], 2) ?></span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
-
             <!-- Additional Information Cards -->
             <div class="grid gap-4 sm:gap-6 mt-6 lg:grid-cols-3 md:grid-cols-2">
 
@@ -347,35 +398,98 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                     </ul>
                 </div>
 
-                <!-- Delivery Address -->
-                <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
-                    <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
-                        <span class='mgc_truck_fill text-2xl' style="color: var(--hover-color);"></span> Delivery Address
-                    </h3>
-                    <ul class="space-y-4">
-                        <li class="grid grid-cols-11 max-w-[350px] text-sm">
-                            <span class="col-span-4 font-semibold text-gray-700">Name</span>
-                            <span class="col-span-1 text-gray-500">:</span>
-                            <span class="col-span-6 font-medium"><?= getData("name", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></span>
-                        </li>
-                        <li class="grid grid-cols-11 max-w-[350px] text-sm">
-                            <span class="col-span-4 font-semibold text-gray-700">Phone</span>
-                            <span class="col-span-1 text-gray-500">:</span>
-                            <span class="col-span-6 font-medium"><?= getData("phone", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></span>
-                        </li>
-                        <li class="grid grid-cols-11 max-w-[350px] text-sm">
-                            <span class="col-span-4 font-semibold text-gray-700">Email</span>
-                            <span class="col-span-1 text-gray-500">:</span>
-                            <span class="col-span-6 font-medium"><?= getData("email", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></span>
-                        </li>
-                        <div class="text-sm p-3 rounded-lg border transition-all duration-300"
-                            style="background-color: color-mix(in srgb, var(--primary) 3%, white); border-color: color-mix(in srgb, var(--primary) 10%, transparent);">
-                            <span class="block mb-2 font-semibold text-gray-700">Address:</span>
-                            <p class="mt-1 text-gray-600"><?= getData("address", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></p>
-                            <p class="mt-1 text-gray-600"><?= getData("city", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?>, <?= getData("state", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?> <?= getData("pin_code", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></p>
-                        </div>
-                    </ul>
-                </div>
+                <?php
+                // Get delivery option from order
+                $delivery_option = getData("delivery_option", "seller_orders", "order_id = '$order_id'");
+                ?>
+
+                <?php if ($delivery_option == 'delivery') : ?>
+                    <!-- Delivery Address -->
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
+                        <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
+                            <span class='mgc_truck_fill text-2xl' style="color: var(--hover-color);"></span> Delivery Address
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="grid grid-cols-11 max-w-[350px] text-sm">
+                                <span class="col-span-4 font-semibold text-gray-700">Name</span>
+                                <span class="col-span-1 text-gray-500">:</span>
+                                <span class="col-span-6 font-medium"><?= getData("name", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></span>
+                            </li>
+                            <li class="grid grid-cols-11 max-w-[350px] text-sm">
+                                <span class="col-span-4 font-semibold text-gray-700">Phone</span>
+                                <span class="col-span-1 text-gray-500">:</span>
+                                <span class="col-span-6 font-medium"><?= getData("phone", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></span>
+                            </li>
+                            <li class="grid grid-cols-11 max-w-[350px] text-sm">
+                                <span class="col-span-4 font-semibold text-gray-700">Email</span>
+                                <span class="col-span-1 text-gray-500">:</span>
+                                <span class="col-span-6 font-medium"><?= getData("email", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></span>
+                            </li>
+                            <div class="text-sm p-3 rounded-lg border transition-all duration-300"
+                                style="background-color: color-mix(in srgb, var(--primary) 3%, white); border-color: color-mix(in srgb, var(--primary) 10%, transparent);">
+                                <span class="block mb-2 font-semibold text-gray-700">Address:</span>
+                                <p class="mt-1 text-gray-600"><?= getData("address", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></p>
+                                <p class="mt-1 text-gray-600"><?= getData("city", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?>, <?= getData("state", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?> <?= getData("pin_code", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></p>
+                            </div>
+                        </ul>
+                    </div>
+                <?php else : ?>
+                    <!-- Pickup Information - Only from seller_orders table -->
+                    <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
+                        <h3 class="mb-6 text-xl font-semibold text-gray-800 flex items-center gap-3">
+                            <span class='mgc_store_2_fill text-2xl' style="color: var(--hover-color);"></span> Pickup Information
+                        </h3>
+                        <ul class="space-y-4">
+                            <?php
+                            // Get pickup details directly from seller_orders table
+                            $pickup_point = getData("pickup_point", "seller_orders", "order_id = '$order_id'");
+                            $pickup_day = getData("pickup_day", "seller_orders", "order_id = '$order_id'");
+                            $pickup_time = getData("pickup_time", "seller_orders", "order_id = '$order_id'");
+
+                            // Check if we have valid pickup data (not 'null')
+                            $has_pickup_data = ($pickup_point && $pickup_point != 'null') ||
+                                ($pickup_day && $pickup_day != 'null') ||
+                                ($pickup_time && $pickup_time != 'null');
+
+                            if ($has_pickup_data) : ?>
+
+                                <?php if ($pickup_point && $pickup_point != 'null') : ?>
+                                    <li class="grid grid-cols-11 max-w-[350px] text-sm">
+                                        <span class="col-span-4 font-semibold text-gray-700">Pickup Point ID</span>
+                                        <span class="col-span-1 text-gray-500">:</span>
+                                        <span class="col-span-6 font-medium"><?= $pickup_point ?></span>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php if ($pickup_day && $pickup_day != 'null') : ?>
+                                    <li class="grid grid-cols-11 max-w-[350px] text-sm">
+                                        <span class="col-span-4 font-semibold text-gray-700">Pickup Day</span>
+                                        <span class="col-span-1 text-gray-500">:</span>
+                                        <span class="col-span-6 font-medium"><?= $pickup_day ?></span>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php if ($pickup_time && $pickup_time != 'null') : ?>
+                                    <li class="grid grid-cols-11 max-w-[350px] text-sm">
+                                        <span class="col-span-4 font-semibold text-gray-700">Pickup Time</span>
+                                        <span class="col-span-1 text-gray-500">:</span>
+                                        <span class="col-span-6 font-medium"><?= $pickup_time ?></span>
+                                    </li>
+                                <?php endif; ?>
+
+                                <div class="text-sm p-3 rounded-lg border transition-all duration-300"
+                                    style="background-color: color-mix(in srgb, var(--primary) 3%, white); border-color: color-mix(in srgb, var(--primary) 10%, transparent);">
+                                    <span class="block mb-2 font-semibold text-gray-700">Pickup Instructions:</span>
+                                    <p class="mt-1 text-gray-600">Please collect your order from the designated pickup point</p>
+                                    <p class="mt-1 text-gray-600">Bring your order confirmation and ID for verification</p>
+                                </div>
+
+                            <?php else : ?>
+                                <li class="text-sm text-gray-500 italic">Pickup details will be provided soon</li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Billing Address -->
                 <div class="p-4 sm:p-6 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl">
