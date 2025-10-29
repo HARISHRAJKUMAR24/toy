@@ -1,5 +1,19 @@
 <!-- Footer Start-->
-<footer class="bg-pink-50 relative overflow-hidden py-10" style="--primary: <?= htmlspecialchars(getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>; --hover-color: <?= htmlspecialchars(getData('hover_color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;">
+<?php
+$primary = getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+function hexToRgba($hex, $opacity = 0.08)
+{
+    $hex = str_replace('#', '', $hex);
+    if (strlen($hex) == 3) $hex = "$hex[0]$hex[0]$hex[1]$hex[1]$hex[2]$hex[2]";
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+    return "rgba($r, $g, $b, $opacity)";
+}
+?>
+<footer class="relative overflow-hidden py-10"
+    style="background-color: <?= hexToRgba($primary, 0.1) ?>;">
+
     <div class="container mx-auto px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
 
         <!-- Logo & Small Address -->

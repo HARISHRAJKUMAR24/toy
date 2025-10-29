@@ -180,6 +180,29 @@
                 font-size: 1rem;
             }
         }
+
+        /* Custom toastr colors to match theme */
+        .toast-success {
+            background-color: <?= htmlspecialchars(getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?> !important;
+            border-color: <?= htmlspecialchars(getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?> !important;
+        }
+
+        .toast-info {
+            background-color: <?= htmlspecialchars(getData('hover_color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?> !important;
+            border-color: <?= htmlspecialchars(getData('hover_color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?> !important;
+        }
+
+        .toast-success .toast-close-button,
+        .toast-info .toast-close-button {
+            color: white !important;
+            opacity: 0.8;
+        }
+
+        .toast-success .toast-close-button:hover,
+        .toast-info .toast-close-button:hover {
+            opacity: 1;
+            color: white !important;
+        }
     </style>
 
     <?php
@@ -196,7 +219,7 @@
                 <?php include_once __DIR__ . "/includes/checkout-step.php"; ?>
             </div>
 
-            <?php if (countData("*", "customer_cart", "customer_id = '$cookie_id' AND seller_id = '$sellerId'")) { ?>
+            <?php if (countData("*", "customer_cart", "customer_id = '$cookie_id' AND (seller_id = '$sellerId' AND store_id = '$storeId')")) { ?>
                 <form id="placeOrderForm" onkeydown="return event.key != 'Enter';" class="flex flex-col gap-6 lg:flex-row lg:gap-8">
                     <!-- Left Column - Steps with Timeline -->
                     <div class="lg:w-3/5 flex flex-col gap-6 checkout-timeline">
@@ -205,19 +228,19 @@
                             <div class="step-number active">01</div>
                             <div class="step-content p-4 sm:p-6 bg-white rounded-2xl shadow-lg border-2 border-pink-200">
                                 <h3 class="mb-2 text-xl sm:text-2xl font-semibold text-gray-800">
-                                    <?= getData("delivery_area_type", "seller_settings", "seller_id = '$sellerId'") == "zip_code" ? "Check Pin Code" : "Select State" ?>
+                                    <?= getData("delivery_area_type", "seller_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") == "zip_code" ? "Check Pin Code" : "Select State" ?>
                                 </h3>
                                 <p class="text-sm text-gray-600 mb-4">
-                                    <?= getData("delivery_area_type", "seller_settings", "seller_id = '$sellerId'") == "zip_code" ? 'Please select a pin code' : 'Please select a state' ?>
+                                    <?= getData("delivery_area_type", "seller_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") == "zip_code" ? 'Please select a pin code' : 'Please select a state' ?>
                                 </p>
                                 <div class="flex items-center gap-3">
                                     <select class="custom-select px-4 h-[45px] border-2 rounded-full w-full transition focus:border-primary-500 text-sm font-[400] focus:bg-gray-50 step-field"
                                         id="deliveryArea"
                                         name="delivery_area"
                                         data-step="1"
-                                        <?= getData("delivery_area_type", "seller_settings", "seller_id = '$sellerId'") == "zip_code" ? 'data-pincode="true"' : null ?>>
+                                        <?= getData("delivery_area_type", "seller_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") == "zip_code" ? 'data-pincode="true"' : null ?>>
                                         <option value="" hidden selected>
-                                            <?= getData("delivery_area_type", "seller_settings", "seller_id = '$sellerId'") == "state" ? "Select State" : "Select Pin Code" ?>
+                                            <?= getData("delivery_area_type", "seller_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") == "state" ? "Select State" : "Select Pin Code" ?>
                                         </option>
                                         <?php
                                         $areas = getDeliveryAreas();
@@ -227,7 +250,7 @@
                                         ?>
                                     </select>
                                 </div>
-                                <?php if (getData("delivery_area_type", "seller_settings", "seller_id = '$sellerId'") == "zip_code") : ?>
+                                <?php if (getData("delivery_area_type", "seller_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") == "zip_code") : ?>
                                     <p class="mt-4 text-sm text-gray-500">
                                         You can check our delivery pin codes from here
                                         <a href="<?= $storeUrl ?>delivery-areas" class="text-hover hover:underline font-medium">Delivery Areas</a>
@@ -252,7 +275,7 @@
                                             <span class="text-gray-700 font-medium">Delivery</span>
                                         </div>
                                     </label>
-                                    <?php if (getData("id", "seller_locations", "seller_id = '$sellerId' AND location_type = 'pickup'")) : ?>
+                                    <?php if (getData("id", "seller_locations", "(seller_id = '$sellerId' AND store_id = '$storeId') AND location_type = 'pickup'")) : ?>
                                         <label for="deliveryPickup" class="cursor-pointer flex flex-col items-center">
                                             <div class="w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center bg-orange-50 rounded-xl hover:bg-orange-100 transition">
                                                 <img src="<?= APP_URL ?>assets/img/pickup.png" alt="Pickup" class="w-16 h-16 sm:w-20 sm:h-20">
@@ -321,6 +344,12 @@
                                         <h3 class="text-xl sm:text-2xl font-semibold text-gray-800">Delivery Address</h3>
                                         <button class="underline addAddressToggle text-primary-500 font-medium hover:text-primary-600 transition" type="button">Add Address</button>
                                     </div>
+                                    <div class="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                        <p class="text-sm text-blue-700 flex items-center gap-2">
+                                            <i class="bx bx-info-circle text-blue-500"></i>
+                                            Selecting a delivery address will automatically set the same address for billing
+                                        </p>
+                                    </div>
                                     <div class="grid gap-4 lg:grid-cols-2 shippingAddressList">
                                         <!-- Address cards will be loaded here -->
                                     </div>
@@ -335,6 +364,12 @@
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
                                     <h3 class="text-xl sm:text-2xl font-semibold text-gray-800">Billing Address</h3>
                                     <button class="underline addAddressToggle text-primary-500 font-medium hover:text-primary-600 transition" type="button">Add Address</button>
+                                </div>
+                                <div class="mb-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                                    <p class="text-sm text-yellow-700 flex items-center gap-2">
+                                        <i class="bx bx-info-circle text-yellow-500"></i>
+                                        Same as delivery address by default. You can select a different billing address if needed.
+                                    </p>
                                 </div>
                                 <div class="grid gap-4 lg:grid-cols-2 billingAddressList">
                                     <!-- Billing address cards will be loaded here -->
@@ -624,9 +659,9 @@
                                 $minimumOrder = getSettings("minimum_order_amount");
                                 if (!empty($minimumOrder) && $subTotal < $minimumOrder): ?>
                                     <div class="py-3 px-4 rounded-xl text-center bg-gradient-to-r from-pink-50 to-pink-100 border border-pink-200 shadow-sm">
-                                        <p class="text-pink-700 font-semibold text-sm">
+                                        <p class="text-hover font-semibold text-sm">
                                             Minimum order is
-                                            <span class="font-bold text-pink-600">
+                                            <span class="font-bold text-hover">
                                                 <?= currencyToSymbol($storeCurrency) . number_format($minimumOrder, 2) ?>
                                             </span>
                                         </p>
@@ -989,6 +1024,46 @@
 
             // You can add similar checks for other pre-selected radios if needed
         }
+        // Auto-select billing address when delivery address is selected
+        $(document).on('change', '.shipping_address', function() {
+            const selectedAddressId = $(this).val();
+
+            if (selectedAddressId) {
+                // Find the corresponding billing address radio button and check it
+                $(`.billing_address[value="${selectedAddressId}"]`).prop('checked', true);
+
+                // Trigger change event to update UI
+                $(`.billing_address[value="${selectedAddressId}"]`).trigger('change');
+
+                // Show success message with primary color
+                toastr.success('Billing address set to match delivery address', '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: "toast-top-right",
+                    timeOut: 3000,
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut"
+                });
+            }
+        });
+
+        // When user manually changes billing address, show info message
+        $(document).on('change', '.billing_address', function() {
+            const shippingAddress = $('.shipping_address:checked').val();
+            const billingAddress = $(this).val();
+
+            if (shippingAddress && billingAddress !== shippingAddress) {
+                // Show info message with hover color styling
+                toastr.info('You have selected a different billing address', '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: "toast-top-right",
+                    timeOut: 3000,
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut"
+                });
+            }
+        });
     </script>
     <script>
         const phoneInputField = document.querySelector("#phone");

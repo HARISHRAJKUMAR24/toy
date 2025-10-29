@@ -257,7 +257,7 @@
                                         class="w-full px-3 py-2 text-sm font-[400] bg-gray-100 rounded-md"
                                         placeholder="Max (<?= currencyToSymbol($storeCurrency) ?>)">
                                 </div>
-                                <button type="submit" class="flex items-center gap-2 px-3 py-2 text-sm font-[400] text-white transition rounded-lg bg-primary-500 hover:opacity-90 w-full mt-5 justify-center">
+                                <button type="submit" class="flex items-center gap-2 px-3 py-2 text-sm font-[400] text-white transition rounded-lg bg-primary-500 hover:bg-hover w-full mt-5 justify-center">
                                     Apply <i class='text-lg bx bxs-check-circle'></i>
                                 </button>
                             </form>
@@ -325,11 +325,14 @@
                                         No products found in <?= $name ?> category.
                                     </p>
 
+
                                     <a href="<?= $storeUrl ?>"
-                                        class="inline-block px-6 py-3 text-white font-medium rounded-lg hover:opacity-90 transition"
-                                        style="background-color: var(--primary);">
+                                        style="background-color: var(--primary);color: white; padding: 12px 24px; border-radius: 8px; font-weight: 500; text-decoration: none; transition: background-color 0.3s ease;"
+                                        onmouseover="this.style.backgroundColor='var(--hover-color)'"
+                                        onmouseout="this.style.backgroundColor='var(--primary)'">
                                         Back to Store
                                     </a>
+
                                 </div>
                             </div>
                         <?php endif; ?>

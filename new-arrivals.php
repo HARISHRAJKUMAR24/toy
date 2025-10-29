@@ -177,7 +177,7 @@
                                         class="w-full px-3 py-2 text-sm font-[400] bg-gray-100 rounded-md"
                                         placeholder="Max (<?= currencyToSymbol($storeCurrency) ?>)">
                                 </div>
-                                <button type="submit" class="flex items-center gap-2 px-3 py-2 text-sm font-[400] text-white transition rounded-lg bg-primary-500 hover:opacity-90 w-full mt-5 justify-center">
+                                <button type="submit" class="flex items-center gap-2 px-3 py-2 text-sm font-[400] text-white transition rounded-lg bg-primary-500 hover:bg-hover w-full mt-5 justify-center">
                                     Apply <i class='text-lg bx bxs-check-circle'></i>
                                 </button>
                             </form>
@@ -238,7 +238,7 @@
                                     </p>
 
                                     <a href="<?= $storeUrl ?>"
-                                        class="inline-block px-6 py-3 text-white font-medium rounded-lg hover:opacity-90 transition"
+                                        class="inline-block px-6 py-3 text-white font-medium rounded-lg hover:bg-hover transition"
                                         style="background-color: var(--primary);">
                                         Back to Store
                                     </a>

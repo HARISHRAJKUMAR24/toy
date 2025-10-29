@@ -655,7 +655,7 @@
 
     <?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
         <section
-            class="py-16 px-4 bg-gradient-to-r from-[var(--primary)] via-white to-[var(--primary)] opacity-100"
+            class="py-16 px-4 bg-gradient-to-r from-[var(--primary)] via-white to-[var(--primary)] opacity-70"
             style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>;">
 
 
@@ -680,11 +680,11 @@
                 <!-- Right: Text Content -->
                 <?php if (!empty($aboutContent)) : ?>
                     <div class="<?= !empty($aboutImage) ? 'w-full md:w-1/2' : 'w-full' ?> flex flex-col justify-center">
-                        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-2
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-black mb-2
                         <?= empty($aboutImage) ? 'text-center' : 'text-left md:text-left' ?>">
                             About <?= $storeName ?? 'Our Brand' ?>
                         </h2>
-                        <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto
+                        <p class="text-base sm:text-lg md:text-xl text-black max-w-2xl mx-auto
                         <?= empty($aboutImage) ? 'text-center' : 'md:mx-0 text-left' ?>
                         leading-relaxed">
                             <?= htmlspecialchars($aboutContent) ?>

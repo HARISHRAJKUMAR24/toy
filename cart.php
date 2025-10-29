@@ -8,7 +8,7 @@
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
 </head>
 
-<body class="font-sans bg-pink-50 min-h-screen">
+<body class="font-sans bg-gray-50 min-h-screen">
 
 
     <!-- Minimum Order Amount Start-->
