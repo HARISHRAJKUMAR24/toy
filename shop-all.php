@@ -428,7 +428,41 @@
         <!--Product Category End -->
     <?php endif; ?>
 
-    <!-- Enhanced JavaScript -->
+    <!-- Random Product Section Start-->
+
+    <section class="py-16 bg-gray-50 md:px-4">
+        <div class="container mx-auto md:max-w-none max-w-6xl px-4 md:px-20">
+
+            <!-- Section Heading -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                    Explore our latest and most exciting products
+                </p>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
+                <?php
+                $productsStmt = getProducts();   // This is PDOStatement
+                $products = $productsStmt->fetchAll(PDO::FETCH_ASSOC); // Convert to array
+
+                shuffle($products); // Now works fine
+
+                foreach ($products as $product) {
+                    echo getProductHtml(
+                        $product["id"],
+                        "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col"
+                    );
+                }
+
+
+                ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Random Product Section End -->
     <!-- Enhanced JavaScript -->
     <script>
         // Custom toast function
