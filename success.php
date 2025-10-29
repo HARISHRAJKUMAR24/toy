@@ -7,12 +7,16 @@
     <!--Php File Include For Head Links & Scripts-->
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
     <style>
+        :root {
+            --primary: <?= htmlspecialchars(getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;
+        }
+
         /* Simple confetti animation */
         .confetti {
             position: absolute;
             width: 10px;
             height: 10px;
-            background: linear-gradient(45deg, #ec4899, #f97316, #8b5cf6, #06b6d4);
+            background: linear-gradient(45deg, var(--primary), #f97316, #8b5cf6, #06b6d4);
             opacity: 0.8;
             animation: confetti-fall 3s ease-in-out infinite;
         }
@@ -66,7 +70,7 @@ if (isset($_GET['order_id']) && getData("id", "seller_orders", "order_id = '{$_G
 
 ?>
 
-<body class="bg-gradient-to-br from-pink-50 to-rose-50 font-sans min-h-screen">
+<body class="bg-gradient-to-br from-pink-50 to-rose-50 font-sans min-h-screen" style="--primary: <?= htmlspecialchars(getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;">
     <!--Php File Include For Nav Bar-->
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
@@ -75,7 +79,8 @@ if (isset($_GET['order_id']) && getData("id", "seller_orders", "order_id = '{$_G
             <!-- Success Card -->
             <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center border border-pink-100">
                 <!-- Animated Checkmark -->
-                <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
+                <div class="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center shadow-lg"
+                    style="background: linear-gradient(to bottom right, var(--primary), #f472b6);">
                     <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
@@ -94,7 +99,8 @@ if (isset($_GET['order_id']) && getData("id", "seller_orders", "order_id = '{$_G
                 <h3 class="text-lg font-semibold text-gray-600 mb-2">Hey <?= htmlspecialchars($name) ?>,</h3>
 
                 <!-- Main Heading -->
-                <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-4">
+                <h1 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent mb-4"
+                    style="background: linear-gradient(to right, var(--primary), #f472b6); -webkit-background-clip: text; background-clip: text;">
                     Your Order is Confirmed!
                 </h1>
 
@@ -108,7 +114,8 @@ if (isset($_GET['order_id']) && getData("id", "seller_orders", "order_id = '{$_G
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <!-- Check Status Button -->
                     <a href="<?= $storeUrl . "order?id=" . $order_id ?>"
-                        class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center gap-2">
+                        class="text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center gap-2"
+                        style="background: linear-gradient(to right, var(--primary), #f472b6);">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -130,7 +137,12 @@ if (isset($_GET['order_id']) && getData("id", "seller_orders", "order_id = '{$_G
                 <!-- Additional Info -->
                 <div class="mt-8 pt-6 border-t border-pink-100">
                     <p class="text-sm text-gray-500">
-                        Order ID: <span class="font-mono text-pink-600 font-semibold"><?= htmlspecialchars($order_id) ?></span>
+                        Order ID:
+                        <a href="<?= $storeUrl . "order?id=" . $order_id ?>"
+                            class="font-mono font-semibold underline hover:opacity-80 transition"
+                            style="color: var(--primary);">
+                            #<?= htmlspecialchars($order_id) ?>
+                        </a>
                     </p>
                     <p class="text-sm text-gray-500 mt-2">
                         We'll send you shipping confirmation soon!
@@ -139,8 +151,6 @@ if (isset($_GET['order_id']) && getData("id", "seller_orders", "order_id = '{$_G
             </div>
         </div>
     </div>
-
-
 
     <!--Footer File Includes that file has all JS Files includes links-->
     <?php include_once __DIR__ . "/includes/footer.php"; ?>
