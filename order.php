@@ -16,19 +16,19 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
             --primary: <?= htmlspecialchars($primary_color) ?>;
             --hover-color: <?= htmlspecialchars($hover_color) ?>;
         }
-        
+
         .bg-primary-gradient {
             background: linear-gradient(135deg, var(--primary), var(--hover-color));
         }
-        
+
         .text-primary {
             color: var(--primary);
         }
-        
+
         .border-primary {
             border-color: var(--primary);
         }
-        
+
         .hover-primary:hover {
             color: var(--primary);
         }
@@ -90,8 +90,8 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
             <!-- Header Section -->
             <div class="flex flex-col items-center justify-between gap-4 sm:gap-5 mb-6 sm:mb-8">
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-800 text-center sm:text-left">Order: #<?= $order_id ?></h1>
-                <a href="<?= $storeUrl ?>download-invoice?id=<?= $order_id ?>" 
-                   class="text-white text-sm font-medium py-2 px-4 flex items-center gap-2 rounded-lg transition hover:opacity-90 justify-center shadow-lg hover:shadow-xl w-full sm:w-auto bg-primary-gradient">
+                <a href="<?= $storeUrl ?>download-invoice?id=<?= $order_id ?>"
+                    class="text-white text-sm font-medium py-2 px-4 flex items-center gap-2 rounded-lg transition hover:opacity-90 justify-center shadow-lg hover:shadow-xl w-full sm:w-auto bg-primary-gradient">
                     <i class='bx bxs-download'></i> Download Invoice
                 </a>
             </div>
@@ -192,9 +192,17 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                                 ?>
                                     <tr class="border-t hover:bg-gray-50 transition">
                                         <td class="p-3 border-t">
-                                            <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") ?>" 
-                                               class="flex items-center gap-3 transition hover-primary"
-                                               style="color: var(--primary);">
+                                            <?php
+                                            $variant_param = '';
+                                            if (!empty($product['advanced_variant'])) {
+                                                $variant_param = "?variation=" . $product['advanced_variant'];
+                                            } elseif (!empty($product['other'])) {
+                                                $variant_param = "?variation=" . $product['other'];
+                                            }
+                                            ?>
+                                            <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") . $variant_param ?>"
+                                                class="flex items-center gap-3 transition hover-primary"
+                                                style="color: var(--primary);">
                                                 <img class="object-contain w-12 h-12 rounded-lg shadow-sm" src="<?= UPLOADS_URL . $image ?>" alt="<?= getData("name", "seller_products", "id = '{$product['product_id']}'") . $other ?>">
                                                 <div>
                                                     <span class="font-bold block text-sm"><?= limit_characters(getData("name", "seller_products", "id = '{$product['product_id']}'") . $other, 35) ?></span>
@@ -239,9 +247,9 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                                 <div class="flex items-start gap-3">
                                     <img class="object-contain w-16 h-16 rounded-lg shadow-sm flex-shrink-0" src="<?= UPLOADS_URL . $image ?>" alt="<?= getData("name", "seller_products", "id = '{$product['product_id']}'") . $other ?>">
                                     <div class="flex-1 min-w-0">
-                                        <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") ?>" 
-                                           class="font-bold block text-sm text-gray-800 transition mb-1 hover-primary"
-                                           style="color: var(--primary);">
+                                        <a href="<?= $storeUrl . "product/" . getData("slug", "seller_products", "id = '{$product['product_id']}'") . $variant_param ?>"
+                                            class="font-bold block text-sm text-gray-800 transition mb-1 hover-primary"
+                                            style="color: var(--primary);">
                                             <?= limit_characters(getData("name", "seller_products", "id = '{$product['product_id']}'") . $other, 40) ?>
                                         </a>
                                         <?php if ($advanced_variant) : ?>
@@ -283,7 +291,7 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                             <span class='mgc_bank_fill text-2xl' style="color: var(--primary);"></span> Bank Information
                         </h3>
                         <div class="p-4 mt-2 space-y-3 rounded-xl text-sm leading-6 border transition-all duration-300"
-                             style="background-color: color-mix(in srgb, var(--primary) 5%, white); border-color: color-mix(in srgb, var(--primary) 15%, transparent);">
+                            style="background-color: color-mix(in srgb, var(--primary) 5%, white); border-color: color-mix(in srgb, var(--primary) 15%, transparent);">
                             <?= nl2br(getSettings("bank_details")) ?>
                         </div>
                     </div>
@@ -295,7 +303,7 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                             <span class='text-2xl mgc_fast_forward_fill' style="color: var(--hover-color);"></span> UPI Payment
                         </h3>
                         <div class="p-4 mt-2 space-y-3 rounded-xl text-sm leading-6 border transition-all duration-300"
-                             style="background-color: color-mix(in srgb, var(--hover-color) 5%, white); border-color: color-mix(in srgb, var(--hover-color) 15%, transparent);">
+                            style="background-color: color-mix(in srgb, var(--hover-color) 5%, white); border-color: color-mix(in srgb, var(--hover-color) 15%, transparent);">
                             <img src="<?= UPLOADS_URL . getSettings("upi_qr_code") ?>" alt="UPI QR Code" class="max-h-[180px] mx-auto rounded-lg shadow-sm">
                         </div>
                     </div>
@@ -361,7 +369,7 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                             <span class="col-span-6 font-medium"><?= getData("email", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></span>
                         </li>
                         <div class="text-sm p-3 rounded-lg border transition-all duration-300"
-                             style="background-color: color-mix(in srgb, var(--primary) 3%, white); border-color: color-mix(in srgb, var(--primary) 10%, transparent);">
+                            style="background-color: color-mix(in srgb, var(--primary) 3%, white); border-color: color-mix(in srgb, var(--primary) 10%, transparent);">
                             <span class="block mb-2 font-semibold text-gray-700">Address:</span>
                             <p class="mt-1 text-gray-600"><?= getData("address", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></p>
                             <p class="mt-1 text-gray-600"><?= getData("city", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?>, <?= getData("state", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?> <?= getData("pin_code", "seller_order_address", "type = 'shipping' AND order_id = '$order_id'") ?></p>
@@ -391,7 +399,7 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                             <span class="col-span-6 font-medium"><?= getData("email", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?></span>
                         </li>
                         <div class="text-sm p-3 rounded-lg border transition-all duration-300"
-                             style="background-color: color-mix(in srgb, var(--hover-color) 3%, white); border-color: color-mix(in srgb, var(--hover-color) 10%, transparent);">
+                            style="background-color: color-mix(in srgb, var(--hover-color) 3%, white); border-color: color-mix(in srgb, var(--hover-color) 10%, transparent);">
                             <span class="block mb-2 font-semibold text-gray-700">Address:</span>
                             <p class="mt-1 text-gray-600"><?= getData("address", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?></p>
                             <p class="mt-1 text-gray-600"><?= getData("city", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?>, <?= getData("state", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?> <?= getData("pin_code", "seller_order_address", "type = 'billing' AND order_id = '$order_id'") ?></p>
@@ -432,7 +440,7 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                         <span class='mgc_gift_fill text-2xl' style="color: var(--primary);"></span> Customized Gift
                     </h3>
                     <div class="[&_ul]:ml-8 [&_ul]:mt-2 [&_ul]:list-disc [&_a]:underline bg-pink-50 p-4 rounded-xl border border-pink-100 transition-all duration-300"
-                         style="background-color: color-mix(in srgb, var(--primary) 5%, white); border-color: color-mix(in srgb, var(--primary) 15%, transparent);">
+                        style="background-color: color-mix(in srgb, var(--primary) 5%, white); border-color: color-mix(in srgb, var(--primary) 15%, transparent);">
                         <?= preg_replace('/customers\/\//', UPLOADS_URL . 'customers//', $customized_gift) ?>
                     </div>
                 </div>
@@ -440,7 +448,7 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
 
             <!-- Contact Information -->
             <p class="mt-6 sm:mt-8 font-medium text-center bg-white p-4 rounded-2xl shadow-lg text-sm sm:text-base transition-all duration-300 hover:shadow-xl"
-               style="color: var(--primary); background-color: color-mix(in srgb, var(--primary) 5%, white);">
+                style="color: var(--primary); background-color: color-mix(in srgb, var(--primary) 5%, white);">
                 Contact us for any help at <?= getSettings("phone") ?> - We're always here to assist you with your shopping needs!
             </p>
         </div>
