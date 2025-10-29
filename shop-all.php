@@ -158,16 +158,13 @@
                 $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
                 ?>
                 <?php if (!empty($main_heading)) : ?>
-                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 text-center">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 text-center mb-6">
                         <?= htmlspecialchars($main_heading) ?>
                     </h2>
-                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto text-center mb-4">
-                        Discover our carefully curated collections tailored just for you
-                    </p>
                 <?php endif; ?>
 
                 <!-- Scroll Container - FIXED: Center on desktop, scroll on mobile -->
-                <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 -mx-4 lg:mx-0 hide-scrollbar">
+                <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 -mx-4 lg:mx-0 hide-scrollbar mt-4">
                     <div class="flex flex-nowrap justify-center lg:justify-center gap-6 md:gap-8 min-w-min">
                         <!-- CHANGED: justify-center on all screens -->
 
@@ -387,7 +384,7 @@
                 <div class="text-center mb-8">
                     <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">Shop By Category</h2>
                     <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                        Explore our diverse collection of products for all your needs
+                        Explore what’s new, what’s now and what’s right for you.
                     </p>
                 </div>
 
@@ -435,7 +432,7 @@
 
             <!-- Section Heading -->
             <div class="text-center mb-8">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">Best Selling</h2>
                 <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
                     Explore our latest and most exciting products
                 </p>

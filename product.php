@@ -480,7 +480,7 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
             <div class="text-center mb-8">
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
                 <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                    Explore our latest and most exciting products
+                   Fresh collections just in explore new arrivals designed
                 </p>
             </div>
 

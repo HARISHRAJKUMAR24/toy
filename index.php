@@ -158,7 +158,6 @@
 
 
     <!-- Header Slide Start -->
-    <!-- Header Slide Start -->
     <?php
     // Fetch banner images and links
     $banners = [];
@@ -229,7 +228,7 @@
                         Shop By Category
                     </h2>
                     <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                        Explore our diverse collection of toys for all ages and interests
+                        Take a quick look inside. Explore trending picks and discover what’s made just for you.
                     </p>
                 </div>
 
@@ -312,7 +311,7 @@
             <div class="text-center mb-8">
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
                 <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                    Explore our latest and most exciting products
+                    Explore what’s trending with fresh styles and endless inspiration.
                 </p>
             </div>
 
@@ -355,8 +354,7 @@
                 <!-- Special Offer Heading -->
                 <div class="text-center mb-8">
                     <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Special Offers</h3>
-                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Grab the best deals before
-                        they're gone!</p>
+                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Big savings for a limited time. Explore today’s best deals and save more.</p>
                 </div>
 
                 <!-- 3D fade slider wrapper -->
@@ -417,15 +415,15 @@
 
 
     <!-- Random Product Section Start-->
-     
+
     <section class="py-16 bg-gray-50 md:px-4">
         <div class="container mx-auto md:max-w-none max-w-6xl px-4 md:px-20">
 
             <!-- Section Heading -->
             <div class="text-center mb-8">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">Popular Products</h2>
                 <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                    Explore our latest and most exciting products
+                    Explore our best selling products from top brands
                 </p>
             </div>
 
@@ -458,19 +456,19 @@
             <!--Why Shop With Us Heading-->
             <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Why Shop With <span
                     class="text-hover">Us</span></h2>
-            <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">We offer the best products,
-                quality service, and seamless shopping
-                experience to make your life easier and fun!</p>
+            <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">We bring you quality products with honest service and an easy shopping experience.</p>
 
             <!-- Cards Grid-->
             <div
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 justify-center">
 
                 <!-- Card 1 -->
-                <div class="bg-gray-200 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
+                <div class="bg-sky-500/50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
        w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
                     <?php $img1 = getData("featured_image_1", "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')"); ?>
-                    <img src="<?= !empty($img1) ? UPLOADS_URL . $img1 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s' ?>"
+                    <img src="<?= !empty($img1)
+                                    ? UPLOADS_URL . $img1
+                                    : APP_URL . 'assets/image/theme_9_fd.jpg' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
@@ -479,13 +477,15 @@
                 </div>
 
                 <!-- Card 2 -->
-                <div class="bg-sky-500/50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
+                <div class=" bg-yellow-200 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
        w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
                     <?php $img2 = getData("featured_image_2", "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')"); ?>
-                    <img src="<?= !empty($img2) ? UPLOADS_URL . $img2 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTImNf14UOHtFVN3T2-HELY9-dv3PkJOJPdiA&s' ?>"
+                    <img src="<?= !empty($img1)
+                                    ? UPLOADS_URL . $img1
+                                    : APP_URL . 'assets/image/theme_9_s&s.jpg' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Safe & Secure</h3>
                     <p class="text-gray-500 text-sm">Get your orders delivered quickly with our reliable shipping
                         partners.</p>
                 </div>
@@ -494,10 +494,11 @@
                 <div class="bg-cyan-100 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
        w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
                     <?php $img3 = getData("featured_image_3", "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')"); ?>
-                    <img src="<?= !empty($img3) ? UPLOADS_URL . $img3 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3yf-ZigU47H1qW8DLYCWi7C95rdFjjP9jFQ&s' ?>"
+                    <img src="<?= !empty($img1)
+                                    ? UPLOADS_URL . $img1
+                                    : APP_URL . 'assets/image/theme_9_hc.jpg' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
-
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">100 + Happy Customers</h3>
                     <p class="text-gray-500 text-sm">Get your orders delivered quickly with our reliable shipping
                         partners.</p>
                 </div>
