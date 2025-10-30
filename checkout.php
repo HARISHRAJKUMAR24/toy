@@ -408,7 +408,7 @@
                                         </label>
                                     <?php endif ?>
 
-                                    <?php if ((!empty(getSettings("phonepe_key")) || !empty(getSettings("phonepe_client_id"))) && plan("payment_phonepe")) : ?>
+                                     <?php if ((!empty(getSettings("phonepe_key")) || !empty(getSettings("phonepe_client_id"))) && plan("payment_phonepe")) : ?>
                                         <label for="paymentPhonePe" class="flex items-center gap-3 p-4 bg-purple-50 rounded-2xl cursor-pointer hover:bg-purple-100 transition border-2 border-transparent hover:border-purple-200">
                                             <input type="radio" name="payment_method" id="paymentPhonePe" class="accent-purple-500 w-4 h-4 paymentMethod step-field" value="PhonePe" data-step="5">
                                             <div class="flex items-center gap-3">
