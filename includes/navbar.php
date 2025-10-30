@@ -247,8 +247,6 @@
                     </a>
                 </li>
             <?php endif; ?>
-
-            <li><a href="#" class="text-base py-2 block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">Contact</a></li>
         </ul>
 
         <?php
