@@ -229,8 +229,16 @@ include_once __DIR__ . "/includes/files_includes.php";
           },
           {
             "data": "created_at",
-            "className": "px-4 py-3 whitespace-nowrap"
-          },
+            "className": "px-4 py-3 whitespace-nowrap",
+            "render": function(data, type, row) {
+              if (!data) return "";
+              const date = new Date(data);
+              const day = String(date.getDate()).padStart(2, '0');
+              const month = String(date.getMonth() + 1).padStart(2, '0');
+              const year = date.getFullYear();
+              return `${day}/${month}/${year}`;
+            }
+          }, 
           {
             "data": "total",
             "className": "px-4 py-3 whitespace-nowrap"

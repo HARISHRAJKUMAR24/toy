@@ -465,7 +465,7 @@
                                                     <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
                                                         <span class="text-base sm:text-lg font-semibold text-primary-600 flex-1 truncate"><?= getSettings("upi_id") ?></span>
                                                         <button type="button"
-                                                            onclick="copyUPIID(this, '<?= getSettings("upi_id") ?>')"
+                                                            onclick="copyUPIID(this, &quot;<?= getSettings('upi_id') ?>&quot;)"
                                                             class="px-3 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition flex items-center gap-2">
                                                             <i class='bx bx-copy text-sm'></i> Copy
                                                         </button>
@@ -511,7 +511,7 @@
                                                 <div class="flex items-start gap-3">
                                                     <i class='bx bx-info-circle text-yellow-500 text-xl'></i>
                                                     <p class="text-sm text-yellow-700">
-                                                        After making payment, keep the transaction ID ready. Your order will confirm automatically once payment is received.
+                                                        Note: If you pay manually via UPI, it may take 3–5 hours to verify your payment and process your order.
                                                     </p>
                                                 </div>
                                             </div>

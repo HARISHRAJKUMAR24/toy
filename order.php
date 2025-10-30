@@ -103,7 +103,6 @@ $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId'
                 // Add these payment variables at the top of your theme9/order.php file
                 $payment_method = getData("payment_method", "seller_orders", "order_id = '$order_id'");
                 $payment_id = getData("payment_id", "seller_orders", "order_id = '$order_id'");
-                $payment_status = getData("payment_status", "seller_orders", "order_id = '$order_id'");
                 ?>
 
                 <div class="lg:col-span-1">
