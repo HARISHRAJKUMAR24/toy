@@ -497,8 +497,7 @@
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
-                    <p class="text-gray-500 text-sm">We deliver speed and reliability your order moves fast from our store to your door.
-                        partners.</p>
+                    <p class="text-gray-500 text-sm">We deliver speed and reliability your order moves fast from our store to your door.</p>
                 </div>
 
                 <!-- Card 2 -->
@@ -511,8 +510,7 @@
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Safe & Secure</h3>
-                    <p class="text-gray-500 text-sm">Your payments and personal details are always protected with our trusted security system
-                        partners.</p>
+                    <p class="text-gray-500 text-sm">We keep your payments and personal details completely safe and secure</p>
                 </div>
 
                 <!-- Card 3 -->
@@ -524,8 +522,7 @@
                                     : APP_URL . 'assets/image/theme_9_hc.jpg' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">100 + Happy Customers</h3>
-                    <p class="text-gray-500 text-sm">Over a hundred shoppers already love us shop now and see why they stay.
-                        partners.</p>
+                    <p class="text-gray-500 text-sm">Over a hundred shoppers already love us shop now and see why they stay.</p>
                 </div>
 
             </div>
