@@ -50,6 +50,24 @@
             <li>
                 <a href="<?= $storeUrl ?>new-arrivals" class="transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">New Arrivals</a>
             </li>
+
+            <!-- About Link - Conditionally Show -->
+            <?php
+            $aboutContent = $sellerId ? getData("about_content", "homepage_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") : '';
+            $aboutImage = $sellerId ? getData("about_image", "homepage_settings", "(seller_id = '$sellerId' AND store_id = '$storeId')") : '';
+            ?>
+
+            <?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
+                <li>
+                    <a href="#about-section"
+                        class="transition-all duration-300 about-nav-link"
+                        style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;"
+                        onmouseover="this.style.color='var(--hover-color)'"
+                        onmouseout="this.style.color=''">
+                        About
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
 
         <!-- Right: Icons -->
@@ -177,7 +195,7 @@
                 <?php endif; ?>
             </a>
 
-            <div id="close-menu" class="text-xl text-gray-700 cursor-pointer transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">
+            <div id="close_menu" class="text-xl text-gray-700 cursor-pointer transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">
                 <i class='bx bx-x'></i>
             </div>
         </div>
@@ -216,7 +234,20 @@
                 </ul>
             </li>
             <li><a href="<?= $storeUrl ?>new-arrivals" class="text-base py-2 block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">New Arrivals</a></li>
-            <li><a href="#" class="text-base py-2 block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">About</a></li>
+
+            <!-- About Link in Mobile Menu - Conditionally Show -->
+            <?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
+                <li>
+                    <a href="#about-section"
+                        class="text-base py-2 block transition-all duration-300 about-nav-link"
+                        style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;"
+                        onmouseover="this.style.color='var(--hover-color)'"
+                        onmouseout="this.style.color=''">
+                        About
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <li><a href="#" class="text-base py-2 block transition-all duration-300" style="--hover-color: <?= htmlspecialchars(getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899') ?>;" onmouseover="this.style.color='var(--hover-color)'" onmouseout="this.style.color=''">Contact</a></li>
         </ul>
 
@@ -325,6 +356,67 @@
                     $(".searchBtn2").click();
                 }
             }
+        });
+
+        // Function to close mobile navigation
+        function closeMobileNav() {
+            $('#mobileMenu').removeClass('right-0').addClass('-right-full');
+            $('#menu-overlay').removeClass('opacity-100 visible').addClass('opacity-0 invisible');
+        }
+
+        // Smooth scroll to About section
+        $(document).on('click', '.about-nav-link', function(e) {
+            e.preventDefault();
+
+            // Close mobile menu if open
+            closeMobileNav();
+
+            const aboutSection = document.getElementById('about-section');
+            if (aboutSection) {
+                // Smooth scroll to about section
+                aboutSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            } else {
+                // If about section doesn't exist on current page, navigate to home
+                window.location.href = '<?= $storeUrl ?>#about-section';
+            }
+        });
+
+        // Handle About link from other pages
+        $(document).on('click', 'a[href="#about-section"]', function(e) {
+            e.preventDefault();
+
+            // Close mobile menu if open
+            closeMobileNav();
+
+            const currentPage = window.location.pathname;
+            const homePage = '<?= $storeUrl ?>';
+
+            // If not on home page, navigate to home with hash
+            if (!currentPage.endsWith('/') && currentPage !== homePage.replace(/\/$/, '')) {
+                window.location.href = homePage + '#about-section';
+            } else {
+                // If on home page, smooth scroll
+                const aboutSection = document.getElementById('about-section');
+                if (aboutSection) {
+                    aboutSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+
+        // Mobile menu toggle functionality (if not already implemented)
+        $('#menu-btn').on('click', function() {
+            $('#mobileMenu').toggleClass('right-0 -right-full');
+            $('#menu-overlay').toggleClass('opacity-100 visible opacity-0 invisible');
+        });
+
+        $('#close_menu, #menu-overlay').on('click', function() {
+            closeMobileNav();
         });
     });
 </script>

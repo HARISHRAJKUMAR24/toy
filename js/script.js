@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===============================
-    // BURGER MENU (Mobile Nav)
+    // BURGER MENU (Mobile Nav) - UPDATED WITH AUTO-CLOSE
     // ===============================
     const menuBtn = document.getElementById("menu-btn");
     const mobileMenu = document.getElementById("mobileMenu");
@@ -65,9 +65,46 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.style.overflow = mobileMenu.classList.contains("!right-0") ? "hidden" : "";
         }
 
+        function closeMobileMenu() {
+            menuBtn.classList.remove("active");
+            mobileMenu.classList.remove("!right-0");
+            menuOverlay.classList.remove("opacity-100", "visible");
+            document.body.style.overflow = "";
+        }
+
         menuBtn.addEventListener("click", toggleMenu);
-        closeMenu.addEventListener("click", toggleMenu);
-        menuOverlay.addEventListener("click", toggleMenu);
+        closeMenu.addEventListener("click", closeMobileMenu);
+        menuOverlay.addEventListener("click", closeMobileMenu);
+
+        // AUTO-CLOSE MOBILE MENU WHEN NAV LINKS ARE CLICKED
+        const mobileNavLinks = mobileMenu.querySelectorAll('a');
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Don't close for dropdown toggles
+                if (link.parentElement.classList.contains('mobile-dropdown') || 
+                    link.classList.contains('shop-toggle')) {
+                    return;
+                }
+                
+                // Don't close for search buttons
+                if (link.classList.contains('searchBtn2')) {
+                    return;
+                }
+                
+                // Close mobile menu for regular navigation links
+                setTimeout(closeMobileMenu, 100);
+            });
+        });
+
+        // Handle About link specifically
+        const aboutLinks = document.querySelectorAll('.about-nav-link, a[href="#about-section"]');
+        aboutLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (mobileMenu.classList.contains('!right-0')) {
+                    closeMobileMenu();
+                }
+            });
+        });
     }
 
     // ===============================
@@ -137,39 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===============================
-    // CATEGORY ITEMS ANIMATION (COMMENTED OUT TO PREVENT REFRESH ISSUES)
-    // ===============================
-    /*
-    const categoryItems = document.querySelectorAll('.group');
-    if (categoryItems.length > 0) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = "1";
-                    entry.target.style.transform = "translateY(0)";
-                }
-            });
-        }, { threshold: 0.1 });
-
-        categoryItems.forEach(item => {
-            item.style.opacity = "0";
-            item.style.transform = "translateY(20px)";
-            item.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-            observer.observe(item);
-
-            item.addEventListener('click', function () {
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 200);
-                console.log('Category clicked:', this.querySelector('h3')?.textContent);
-            });
-        });
-    }
-    */
-
-
-    // ===============================
     // OFFER SECTION CAROUSEL 
     // ===============================
     const offerSlides = document.querySelectorAll('#offerTrack > div');
@@ -227,13 +231,10 @@ document.addEventListener("DOMContentLoaded", () => {
         showSlide(0);
         startAutoplay();
     }
-});
 
-// ===============================
-// js For Video-Com pop up
-// ===============================
-
-document.addEventListener("DOMContentLoaded", () => {
+    // ===============================
+    // Video-Com pop up
+    // ===============================
     const videoCards = document.querySelectorAll(".video-card");
     const videoModal = document.getElementById("videoModal");
     const videoFrame = document.getElementById("videoFrame");
@@ -243,168 +244,232 @@ document.addEventListener("DOMContentLoaded", () => {
     const productPrice = document.getElementById("productPrice");
 
     // Thumbnail click
-    videoCards.forEach((card) => {
-        card.addEventListener("click", () => {
-            const videoUrl = card.getAttribute("data-video") || "https://www.youtube.com/embed/tgbNymZ7vqY";
-            const name = card.getAttribute("data-name") || "Sample Product";
-            const price = card.getAttribute("data-price") || "₹999";
+    if (videoCards.length > 0 && videoModal && videoFrame) {
+        videoCards.forEach((card) => {
+            card.addEventListener("click", () => {
+                const videoUrl = card.getAttribute("data-video") || "https://www.youtube.com/embed/tgbNymZ7vqY";
+                const name = card.getAttribute("data-name") || "Sample Product";
+                const price = card.getAttribute("data-price") || "₹999";
 
-            videoFrame.src = videoUrl + "?autoplay=1";
-            productName.textContent = name;
-            productPrice.textContent = price;
+                videoFrame.src = videoUrl + "?autoplay=1";
+                productName.textContent = name;
+                productPrice.textContent = price;
 
-            videoModal.classList.remove("hidden");
+                videoModal.classList.remove("hidden");
+            });
         });
-    });
 
-    // Close modal
-    closeModal.addEventListener("click", (e) => {
-        e.stopPropagation();
-        videoModal.classList.add("hidden");
-        videoFrame.src = "";
-    });
-
-    // Close when clicking outside
-    videoModal.addEventListener("click", (e) => {
-        if (e.target === videoModal) {
+        // Close modal
+        closeModal.addEventListener("click", (e) => {
+            e.stopPropagation();
             videoModal.classList.add("hidden");
             videoFrame.src = "";
-        }
-    });
-});
+        });
 
-// ===============================
-// product category
-// ===============================
+        // Close when clicking outside
+        videoModal.addEventListener("click", (e) => {
+            if (e.target === videoModal) {
+                videoModal.classList.add("hidden");
+                videoFrame.src = "";
+            }
+        });
+    }
 
-document.addEventListener('DOMContentLoaded', () => {
+    // ===============================
+    // product category
+    // ===============================
     const menuTabs = document.getElementById('menu-tabs');
-    const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
-    const sections = document.querySelectorAll('.menu-section');
+    if (menuTabs) {
+        const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
+        const sections = document.querySelectorAll('.menu-section');
 
-    // Highlight tab and show section
-    function updateActiveTab(activeTab) {
-        tabs.forEach(tab => tab.classList.remove('active'));
-        if (!activeTab) return;
-        activeTab.classList.add('active');
-        sections.forEach(sec => sec.classList.toggle('hidden', sec.id !== activeTab.dataset.section));
+        // Highlight tab and show section
+        function updateActiveTab(activeTab) {
+            tabs.forEach(tab => tab.classList.remove('active'));
+            if (!activeTab) return;
+            activeTab.classList.add('active');
+            sections.forEach(sec => sec.classList.toggle('hidden', sec.id !== activeTab.dataset.section));
+        }
+
+        // Center a tab
+        function centerTab(tab) {
+            if (!tab) return;
+            const containerWidth = menuTabs.clientWidth;
+            const tabCenter = tab.offsetLeft + tab.offsetWidth / 2;
+            let targetScroll = tabCenter - containerWidth / 2;
+            menuTabs.scrollTo({ left: targetScroll, behavior: 'smooth' });
+            updateActiveTab(tab);
+        }
+
+        // Click to center
+        tabs.forEach(tab => tab.addEventListener('click', () => centerTab(tab)));
+
+        // Drag scrolling
+        let isDown = false, startX, scrollLeft;
+        menuTabs.addEventListener('mousedown', e => {
+            isDown = true;
+            menuTabs.classList.add('cursor-grabbing');
+            startX = e.pageX - menuTabs.offsetLeft;
+            scrollLeft = menuTabs.scrollLeft;
+        });
+        menuTabs.addEventListener('mouseleave', () => isDown = false);
+        menuTabs.addEventListener('mouseup', () => isDown = false);
+        menuTabs.addEventListener('mousemove', e => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - menuTabs.offsetLeft;
+            const walk = (x - startX) * 2;
+            menuTabs.scrollLeft = scrollLeft - walk;
+        });
+
+        // Snap closest tab after scroll
+        let scrollTimeout;
+        menuTabs.addEventListener('scroll', () => {
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                const containerCenter = menuTabs.scrollLeft + menuTabs.clientWidth / 2;
+                let closestTab = tabs[0];
+                let minDistance = Infinity;
+                tabs.forEach(tab => {
+                    const tabCenter = tab.offsetLeft + tab.offsetWidth / 2;
+                    const distance = Math.abs(containerCenter - tabCenter);
+                    if (distance < minDistance) { minDistance = distance; closestTab = tab; }
+                });
+                centerTab(closestTab);
+            }, 100);
+        });
+
+        // Initialize first tab
+        centerTab(tabs[0]);
     }
 
-    // Center a tab
-    function centerTab(tab) {
-        if (!tab) return;
-        const containerWidth = menuTabs.clientWidth;
-        const tabCenter = tab.offsetLeft + tab.offsetWidth / 2;
-        let targetScroll = tabCenter - containerWidth / 2;
-        menuTabs.scrollTo({ left: targetScroll, behavior: 'smooth' });
-        updateActiveTab(tab);
-    }
+    // ===============================================
+    // product Image View For Thumbail To Main Image 
+    // ===============================================
+    const mainImage = document.getElementById('mainProductImage');
+    const thumbnails = document.querySelectorAll('.thumbnail');
 
-    // Click to center
-    tabs.forEach(tab => tab.addEventListener('click', () => centerTab(tab)));
+    if (mainImage && thumbnails.length > 0) {
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', () => {
+                // Change main image
+                mainImage.src = thumbnail.src;
 
-    // Drag scrolling
-    let isDown = false, startX, scrollLeft;
-    menuTabs.addEventListener('mousedown', e => {
-        isDown = true;
-        menuTabs.classList.add('cursor-grabbing');
-        startX = e.pageX - menuTabs.offsetLeft;
-        scrollLeft = menuTabs.scrollLeft;
-    });
-    menuTabs.addEventListener('mouseleave', () => isDown = false);
-    menuTabs.addEventListener('mouseup', () => isDown = false);
-    menuTabs.addEventListener('mousemove', e => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - menuTabs.offsetLeft;
-        const walk = (x - startX) * 2;
-        menuTabs.scrollLeft = scrollLeft - walk;
-    });
+                // Remove border from all thumbnails
+                thumbnails.forEach(img => img.classList.remove('border-pink-500'));
+                thumbnails.forEach(img => img.classList.add('border-gray-200'));
 
-    // Snap closest tab after scroll
-    let scrollTimeout;
-    menuTabs.addEventListener('scroll', () => {
-        if (scrollTimeout) clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            const containerCenter = menuTabs.scrollLeft + menuTabs.clientWidth / 2;
-            let closestTab = tabs[0];
-            let minDistance = Infinity;
-            tabs.forEach(tab => {
-                const tabCenter = tab.offsetLeft + tab.offsetWidth / 2;
-                const distance = Math.abs(containerCenter - tabCenter);
-                if (distance < minDistance) { minDistance = distance; closestTab = tab; }
+                // Highlight selected thumbnail
+                thumbnail.classList.add('border-pink-500');
+                thumbnail.classList.remove('border-gray-200');
             });
-            centerTab(closestTab);
-        }, 100);
-    });
+        });
+    }
 
-    // Initialize first tab
-    centerTab(tabs[0]);
-});
+    // ===============================================
+    // Report Product Form Pop Up 
+    // ===============================================
+    const reportBtn = document.querySelector('.report-btn');
+    const reportModal = document.getElementById('reportModal');
+    const closeReportModal = document.getElementById('closeReportModal');
+    const reportForm = document.getElementById('reportForm');
 
+    if (reportBtn && reportModal && closeReportModal && reportForm) {
+        // Open Modal
+        reportBtn.addEventListener('click', () => {
+            reportModal.classList.remove('opacity-0', 'invisible');
+            reportModal.classList.add('opacity-100', 'visible');
+        });
 
-// ===============================================
-// product Image View For Thumbail To Main Image 
-// ===============================================
+        // Close Modal
+        closeReportModal.addEventListener('click', () => {
+            reportModal.classList.add('opacity-0', 'invisible');
+            reportModal.classList.remove('opacity-100', 'visible');
+        });
 
-const mainImage = document.getElementById('mainProductImage');
-const thumbnails = document.querySelectorAll('.thumbnail');
+        // Submit Form
+        reportForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Report submitted successfully!');
+            reportModal.classList.add('opacity-0', 'invisible');
+            reportModal.classList.remove('opacity-100', 'visible');
+            reportForm.reset();
+        });
 
-thumbnails.forEach(thumbnail => {
-    thumbnail.addEventListener('click', () => {
-        // Change main image
-        mainImage.src = thumbnail.src;
+        // Close modal on clicking outside
+        reportModal.addEventListener('click', (e) => {
+            if (e.target === reportModal) {
+                reportModal.classList.add('opacity-0', 'invisible');
+                reportModal.classList.remove('opacity-100', 'visible');
+            }
+        });
+    }
 
-        // Remove border from all thumbnails
-        thumbnails.forEach(img => img.classList.remove('border-pink-500'));
-        thumbnails.forEach(img => img.classList.add('border-gray-200'));
+    // ===============================
+    // SEARCH FUNCTIONALITY - ADDED TO PREVENT CONFLICTS
+    // ===============================
+    // Desktop Search
+    const searchBtn = document.querySelector('.searchBtn');
+    const searchInput = document.querySelector('.searchInput');
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let url = '<?= $storeUrl ?>search/' + searchInput.value;
+            if (searchInput.value !== "") window.location.href = url;
+        });
 
-        // Highlight selected thumbnail
-        thumbnail.classList.add('border-pink-500');
-        thumbnail.classList.remove('border-gray-200');
-    });
-});
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.which === 13) {
+                e.preventDefault();
+                let url = '<?= $storeUrl ?>search/' + searchInput.value;
+                if (searchInput.value !== "") window.location.href = url;
+            }
+        });
+    }
 
+    // Mobile Search Overlay
+    const searchToggle = document.getElementById("mobileSearchToggle");
+    const searchOverlay = document.getElementById("mobileSearchOverlay");
+    const searchClose = document.getElementById("mobileSearchClose");
+    const searchInputMobile = document.querySelector(".searchInputMobile");
 
-// ===============================================
-// Report Product Form Pop Up 
-// ===============================================
+    if (searchToggle && searchOverlay && searchClose && searchInputMobile) {
+        // Open search overlay (slide down)
+        searchToggle.addEventListener("click", () => {
+            searchOverlay.classList.remove("hidden");
+            setTimeout(() => {
+                searchOverlay.classList.remove("-translate-y-full");
+                if (searchInputMobile) searchInputMobile.focus();
+            }, 10);
+        });
 
-// Elements
-const reportBtn = document.querySelector('.report-btn');
-const reportModal = document.getElementById('reportModal');
-const closeReportModal = document.getElementById('closeReportModal');
-const reportForm = document.getElementById('reportForm');
+        // Close search overlay (slide up)
+        searchClose.addEventListener("click", () => {
+            searchOverlay.classList.add("-translate-y-full");
+            setTimeout(() => {
+                searchOverlay.classList.add("hidden");
+                if (searchInputMobile) searchInputMobile.value = "";
+            }, 500);
+        });
 
-// Open Modal
-reportBtn.addEventListener('click', () => {
-    reportModal.classList.remove('opacity-0', 'invisible');
-    reportModal.classList.add('opacity-100', 'visible');
-});
+        // Close search overlay when clicking outside
+        searchOverlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                searchOverlay.classList.add("-translate-y-full");
+                setTimeout(() => {
+                    searchOverlay.classList.add("hidden");
+                    if (searchInputMobile) searchInputMobile.value = "";
+                }, 500);
+            }
+        });
 
-// Close Modal
-closeReportModal.addEventListener('click', () => {
-    reportModal.classList.add('opacity-0', 'invisible');
-    reportModal.classList.remove('opacity-100', 'visible');
-});
-
-// Submit Form
-reportForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    alert('Report submitted successfully!');
-    reportModal.classList.add('opacity-0', 'invisible');
-    reportModal.classList.remove('opacity-100', 'visible');
-    reportForm.reset();
-});
-
-// Close modal on clicking outside
-reportModal.addEventListener('click', (e) => {
-    if (e.target === reportModal) {
-        reportModal.classList.add('opacity-0', 'invisible');
-        reportModal.classList.remove('opacity-100', 'visible');
+        // Enter key for mobile search
+        searchInputMobile.addEventListener('keypress', (e) => {
+            if (e.which === 13) {
+                e.preventDefault();
+                let url = '<?= $storeUrl ?>search/' + searchInputMobile.value;
+                if (searchInputMobile.value !== "") window.location.href = url;
+            }
+        });
     }
 });
-
-
-
-

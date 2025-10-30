@@ -355,6 +355,7 @@
 
     <!--Latest Product Section End -->
 
+
     <!-- Special Offer Section Start -->
     <?php
     // Fetch max 2 offer images
@@ -369,8 +370,11 @@
 
     // Only render section if there are images
     if (!empty($offerSlides)):
+        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
     ?>
-        <section class="py-8 bg-pink-50">
+        <section class="py-8 transition-all duration-500 ease-out"
+            style="background: linear-gradient(90deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 40%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);">
             <div class="container mx-auto max-w-6xl px-4">
 
                 <!-- Special Offer Heading -->
@@ -397,36 +401,31 @@
                 </div>
 
                 <!-- Buttons below slider -->
-                <?php
-                $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
-                $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
-                ?>
-
                 <div class="flex justify-center gap-4 mt-4 px-2">
                     <!-- Prev -->
                     <button id="prevOffer"
                         class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-lg backdrop-blur-md border border-white/30 transition-all duration-300"
-                        style="background: linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%);"
-                        onmouseover="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($hover_color) ?> 0%, <?= htmlspecialchars($primary_color) ?> 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
-                        onmouseout="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
+                        style="background: linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);"
+                        onmouseover="this.style.background='linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 98%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
+                        onmouseout="this.style.background='linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
                         <i class='bx bx-chevron-left text-lg'></i>
                     </button>
 
                     <!-- Play/Pause -->
                     <button id="toggleAutoplay"
                         class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-lg backdrop-blur-md border border-white/30 transition-all duration-300"
-                        style="background: linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%);"
-                        onmouseover="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($hover_color) ?> 0%, <?= htmlspecialchars($primary_color) ?> 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
-                        onmouseout="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
+                        style="background: linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);"
+                        onmouseover="this.style.background='linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 98%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
+                        onmouseout="this.style.background='linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
                         <i class='bx bx-pause text-lg'></i>
                     </button>
 
                     <!-- Next -->
                     <button id="nextOffer"
                         class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-lg backdrop-blur-md border border-white/30 transition-all duration-300"
-                        style="background: linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%);"
-                        onmouseover="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($hover_color) ?> 0%, <?= htmlspecialchars($primary_color) ?> 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
-                        onmouseout="this.style.background='linear-gradient(135deg, <?= htmlspecialchars($primary_color) ?> 0%, <?= htmlspecialchars($hover_color) ?> 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
+                        style="background: linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%);"
+                        onmouseover="this.style.background='linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 98%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 100%)'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';"
+                        onmouseout="this.style.background='linear-gradient(135deg, color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 95%, transparent) 0%, color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 90%, transparent) 100%)'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)';">
                         <i class='bx bx-chevron-right text-lg'></i>
                     </button>
                 </div>
@@ -435,8 +434,6 @@
         </section>
     <?php endif; ?>
     <!-- Special Offer Section End -->
-
-
     <!-- Random Product Section Start-->
 
     <section class="py-16 bg-gray-50 md:px-4">
@@ -678,7 +675,7 @@
     ?>
 
     <?php if (!empty($aboutContent) || !empty($aboutImage)) : ?>
-        <section
+        <section id="about-section"
             class="py-16 px-4 bg-gradient-to-r from-[var(--primary)] via-white to-[var(--primary)] opacity-70"
             style="--primary: <?= htmlspecialchars($color ?? '#ff007f') ?>;">
 

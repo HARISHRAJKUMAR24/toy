@@ -148,93 +148,93 @@
     if (!empty($advance_categories)) :
     ?>
 
-        <!--Shop By Age Start-->
-        <section class="py-12 animate-gradient-x">
-            <div class="max-w-6xl mx-auto px-4">
-                <!--Heading - SAME SIZE AS SHOP BY CATEGORY -->
+<!--Shop By Age Start-->
+<section class="py-12 animate-gradient-x">
+    <div class="max-w-6xl mx-auto px-4">
+        <!--Heading - SAME SIZE AS SHOP BY CATEGORY -->
+        <?php
+        $main_heading = getData("advance_category_main_heading", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
+        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+        ?>
+        <?php if (!empty($main_heading)) : ?>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 text-center mb-6">
+                <?= htmlspecialchars($main_heading) ?>
+            </h2>
+        <?php endif; ?>
+
+        <!-- Scroll Container - FIXED: Center on desktop, scroll on mobile -->
+        <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 -mx-4 lg:mx-0 hide-scrollbar mt-4">
+            <div class="flex flex-nowrap justify-center lg:justify-center gap-8 md:gap-10 min-w-min">
+                <!-- CHANGED: justify-center on all screens -->
+
                 <?php
-                $main_heading = getData("advance_category_main_heading", "seller_banners", "seller_id = '$sellerId' AND store_id = '$storeId'");
-                $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
-                $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+                // Array of beautiful random colors for variety
+                $random_colors = [
+                    '#FF6B6B',
+                    '#4ECDC4',
+                    '#45B7D1',
+                    '#96CEB4',
+                    '#FFEAA7',
+                    '#DDA0DD',
+                    '#98D8C8',
+                    '#F7DC6F',
+                    '#BB8FCE',
+                    '#85C1E9',
+                    '#F8C471',
+                    '#82E0AA',
+                    '#F1948A',
+                    '#85C1E9',
+                    '#D7BDE2',
+                    '#A9DFBF',
+                    '#F9E79F',
+                    '#D2B4DE',
+                    '#AED6F1',
+                    '#F5B7B1',
+                    '#76D7C4',
+                    '#F7DC6F',
+                    '#BB8FCE',
+                    '#85C1E9',
+                    '#F8C471'
+                ];
+
+                foreach ($advance_categories as $index => $category) :
+                    // Get random colors for each category
+                    $border_color = $random_colors[$index % count($random_colors)];
+                    $label_color = $random_colors[($index + 5) % count($random_colors)]; // Different color for label
                 ?>
-                <?php if (!empty($main_heading)) : ?>
-                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 text-center mb-6">
-                        <?= htmlspecialchars($main_heading) ?>
-                    </h2>
-                <?php endif; ?>
-
-                <!-- Scroll Container - FIXED: Center on desktop, scroll on mobile -->
-                <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 -mx-4 lg:mx-0 hide-scrollbar mt-4">
-                    <div class="flex flex-nowrap justify-center lg:justify-center gap-6 md:gap-8 min-w-min">
-                        <!-- CHANGED: justify-center on all screens -->
-
-                        <?php
-                        // Array of beautiful random colors for variety
-                        $random_colors = [
-                            '#FF6B6B',
-                            '#4ECDC4',
-                            '#45B7D1',
-                            '#96CEB4',
-                            '#FFEAA7',
-                            '#DDA0DD',
-                            '#98D8C8',
-                            '#F7DC6F',
-                            '#BB8FCE',
-                            '#85C1E9',
-                            '#F8C471',
-                            '#82E0AA',
-                            '#F1948A',
-                            '#85C1E9',
-                            '#D7BDE2',
-                            '#A9DFBF',
-                            '#F9E79F',
-                            '#D2B4DE',
-                            '#AED6F1',
-                            '#F5B7B1',
-                            '#76D7C4',
-                            '#F7DC6F',
-                            '#BB8FCE',
-                            '#85C1E9',
-                            '#F8C471'
-                        ];
-
-                        foreach ($advance_categories as $index => $category) :
-                            // Get random colors for each category
-                            $border_color = $random_colors[$index % count($random_colors)];
-                            $label_color = $random_colors[($index + 5) % count($random_colors)]; // Different color for label
-                        ?>
-                            <div class="relative w-32 h-32 flex-shrink-0">
-                                <!-- Spinning border with random color -->
-                                <div class="absolute inset-0 rounded-full border-4 border-dashed animate-spin-slow opacity-90 transition-opacity duration-300"
-                                    style="border-color: <?= htmlspecialchars($border_color) ?>;"></div>
-                                <!-- Image circle -->
-                                <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300 transition-all duration-300">
-                                    <?php if (!empty($category['link'])): ?>
-                                        <a href="<?= $category['link'] ?>" target="_blank" class="block w-full h-full flex items-center justify-center">
-                                            <img src="<?= UPLOADS_URL . $category['image'] ?>"
-                                                alt="<?= htmlspecialchars($category['name']) ?>"
-                                                class="w-full h-full object-cover object-center">
-                                        </a>
-                                    <?php else: ?>
-                                        <img src="<?= UPLOADS_URL . $category['image'] ?>"
-                                            alt="<?= htmlspecialchars($category['name']) ?>"
-                                            class="w-full h-full object-cover object-center">
-                                    <?php endif; ?>
-                                </div>
-                                <!-- Category Name Box with random background color -->
-                                <?php if (!empty($category['name'])): ?>
-                                    <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-2 py-0.5 text-white text-sm font-semibold rounded-md shadow-lg text-center break-words max-w-[90%] border border-white/30 opacity-95"
-                                        style="background-color: <?= htmlspecialchars($label_color) ?>;">
-                                        <?= htmlspecialchars($category['name']) ?>
-                                    </div>
-                                <?php endif; ?>
+                    <div class="relative w-36 h-36 flex-shrink-0 flex flex-col items-center"> <!-- Increased height for label space -->
+                        <!-- Spinning border with random color - ORIGINAL STYLE -->
+                        <div class="absolute top-0 inset-x-0 w-32 h-32 rounded-full border-4 border-dashed animate-spin-slow opacity-90 transition-opacity duration-300 mx-auto"
+                            style="border-color: <?= htmlspecialchars($border_color) ?>;"></div>
+                        <!-- Image circle - ORIGINAL STYLE -->
+                        <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300 transition-all duration-300">
+                            <?php if (!empty($category['link'])): ?>
+                                <a href="<?= $category['link'] ?>" target="_blank" class="block w-full h-full flex items-center justify-center">
+                                    <img src="<?= UPLOADS_URL . $category['image'] ?>"
+                                        alt="<?= htmlspecialchars($category['name']) ?>"
+                                        class="w-full h-full object-cover object-center">
+                                </a>
+                            <?php else: ?>
+                                <img src="<?= UPLOADS_URL . $category['image'] ?>"
+                                    alt="<?= htmlspecialchars($category['name']) ?>"
+                                    class="w-full h-full object-cover object-center">
+                            <?php endif; ?>
+                        </div>
+                        <!-- Category Name - ORIGINAL POSITION but FLEXIBLE WIDTH -->
+                        <?php if (!empty($category['name'])): ?>
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 px-3 py-1.5 text-white text-sm font-semibold rounded-md shadow-lg text-center break-words w-full max-w-[140px] border border-white/30 opacity-95"
+                                style="background-color: <?= htmlspecialchars($label_color) ?>;">
+                                <?= htmlspecialchars($category['name']) ?>
                             </div>
-                        <?php endforeach; ?>
-
+                        <?php endif; ?>
                     </div>
-                </div>
+                <?php endforeach; ?>
+
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
         <style>
             /*------------- Shop By Age Bg Animation Taken From DB  -------------*/
