@@ -163,10 +163,10 @@
                     </h2>
                 <?php endif; ?>
 
-                <!-- Scroll Container - FIXED: Center on desktop, scroll on mobile -->
-                <div class="scroll-container overflow-x-auto pb-4 px-4 md:px-6 lg:px-0 -mx-4 lg:mx-0 hide-scrollbar mt-4">
-                    <div class="flex flex-nowrap justify-center lg:justify-center gap-8 md:gap-10 min-w-min">
-                        <!-- CHANGED: justify-center on all screens -->
+                <!-- Scroll Container - FIXED: Centered but scrollable -->
+                <div class="overflow-x-auto pb-4 hide-scrollbar mt-4">
+                    <div class="flex flex-nowrap gap-8 md:gap-10 justify-center min-w-max px-4 md:px-8 lg:px-12">
+                        <!-- ADDED: justify-center for centering but with min-w-max for overflow -->
 
                         <?php
                         // Array of beautiful random colors for variety
@@ -203,31 +203,33 @@
                             $border_color = $random_colors[$index % count($random_colors)];
                             $label_color = $random_colors[($index + 5) % count($random_colors)]; // Different color for label
                         ?>
-                            <div class="relative w-36 h-36 flex-shrink-0 flex flex-col items-center"> <!-- Increased height for label space -->
-                                <!-- Spinning border with random color - ORIGINAL STYLE -->
-                                <div class="absolute top-0 inset-x-0 w-32 h-32 rounded-full border-4 border-dashed animate-spin-slow opacity-90 transition-opacity duration-300 mx-auto"
-                                    style="border-color: <?= htmlspecialchars($border_color) ?>;"></div>
-                                <!-- Image circle - ORIGINAL STYLE -->
-                                <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300 transition-all duration-300">
-                                    <?php if (!empty($category['link'])): ?>
-                                        <a href="<?= $category['link'] ?>" target="_blank" class="block w-full h-full flex items-center justify-center">
+                            <div class="flex-shrink-0">
+                                <div class="relative w-36 h-36 flex flex-col items-center">
+                                    <!-- Spinning border with random color - ORIGINAL STYLE -->
+                                    <div class="absolute top-0 inset-x-0 w-32 h-32 rounded-full border-4 border-dashed animate-spin-slow opacity-90 transition-opacity duration-300 mx-auto"
+                                        style="border-color: <?= htmlspecialchars($border_color) ?>;"></div>
+                                    <!-- Image circle - ORIGINAL STYLE -->
+                                    <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300 transition-all duration-300">
+                                        <?php if (!empty($category['link'])): ?>
+                                            <a href="<?= $category['link'] ?>" target="_blank" class="block w-full h-full flex items-center justify-center">
+                                                <img src="<?= UPLOADS_URL . $category['image'] ?>"
+                                                    alt="<?= htmlspecialchars($category['name']) ?>"
+                                                    class="w-full h-full object-cover object-center">
+                                            </a>
+                                        <?php else: ?>
                                             <img src="<?= UPLOADS_URL . $category['image'] ?>"
                                                 alt="<?= htmlspecialchars($category['name']) ?>"
                                                 class="w-full h-full object-cover object-center">
-                                        </a>
-                                    <?php else: ?>
-                                        <img src="<?= UPLOADS_URL . $category['image'] ?>"
-                                            alt="<?= htmlspecialchars($category['name']) ?>"
-                                            class="w-full h-full object-cover object-center">
+                                        <?php endif; ?>
+                                    </div>
+                                    <!-- Category Name - ORIGINAL POSITION but FLEXIBLE WIDTH -->
+                                    <?php if (!empty($category['name'])): ?>
+                                        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 px-3 py-1.5 text-white text-sm font-semibold rounded-md shadow-lg text-center break-words w-full max-w-[140px] border border-white/30 opacity-95"
+                                            style="background-color: <?= htmlspecialchars($label_color) ?>;">
+                                            <?= htmlspecialchars($category['name']) ?>
+                                        </div>
                                     <?php endif; ?>
                                 </div>
-                                <!-- Category Name - ORIGINAL POSITION but FLEXIBLE WIDTH -->
-                                <?php if (!empty($category['name'])): ?>
-                                    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 px-3 py-1.5 text-white text-sm font-semibold rounded-md shadow-lg text-center break-words w-full max-w-[140px] border border-white/30 opacity-95"
-                                        style="background-color: <?= htmlspecialchars($label_color) ?>;">
-                                        <?= htmlspecialchars($category['name']) ?>
-                                    </div>
-                                <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
 
@@ -316,48 +318,35 @@
                 }
             }
 
+            /* Only keep the essential animations */
             .animate-spin-slow {
                 animation: spin-slow 25s linear infinite;
-                /* Slower spin */
             }
 
-            /* Ensure images fill the circle properly */
-            .relative.w-28.h-28 img {
-                min-width: 100%;
-                min-height: 100%;
-            }
+            @keyframes spin-slow {
+                from {
+                    transform: rotate(0deg);
+                }
 
-            /* Enhanced shadow effects */
-            .relative.w-28.h-28 {
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            }
-
-            /* Enhanced scroll container - hide scrollbar on desktop */
-            .scroll-container {
-                cursor: grab;
-            }
-
-            .scroll-container:active {
-                cursor: grabbing;
-            }
-
-            /* Hide overflow and scrollbar on desktop */
-            @media (min-width: 1024px) {
-                .scroll-container {
-                    overflow: hidden !important;
+                to {
+                    transform: rotate(360deg);
                 }
             }
 
-            /* Show scrolling on mobile */
-            @media (max-width: 1023px) {
-                .scroll-container {
-                    overflow-x: auto !important;
-                }
+            /* Keep the gradient animation only */
+            .animate-gradient-x {
+                background: linear-gradient(-45deg,
+                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 35%, white),
+                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 32%, white),
+                        color-mix(in srgb, <?= htmlspecialchars($primary_color) ?> 30%, white),
+                        color-mix(in srgb, <?= htmlspecialchars($hover_color) ?> 28%, white));
+                background-size: 400% 400%;
+                animation: gradient 15s ease infinite;
             }
         </style>
 
-
     <?php endif; ?>
+    <!--Shop By Age End-->
     <!--Shop By Age End-->
 
 
