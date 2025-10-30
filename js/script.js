@@ -168,8 +168,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     */
 
+
     // ===============================
-    // OFFER SECTION CAROUSEL
+    // OFFER SECTION CAROUSEL 
     // ===============================
     const offerSlides = document.querySelectorAll('#offerTrack > div');
     const prevBtn = document.getElementById('prevOffer');
@@ -179,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (offerSlides.length > 0 && prevBtn && nextBtn && toggleBtn) {
         let index = 0;
         const slideCount = offerSlides.length;
-        const autoplayInterval = 3000;
+        const autoplayInterval = 3000; // Timing control
         let autoplay = true;
         let autoplayTimer = null;
 
@@ -187,13 +188,12 @@ document.addEventListener("DOMContentLoaded", () => {
             index = ((i % slideCount) + slideCount) % slideCount;
             offerSlides.forEach((slide, idx) => {
                 if (idx === index) {
-                    slide.style.opacity = '1';
-                    slide.style.transform = 'scale(1.05)';
-                    slide.style.zIndex = '10';
+                    // Use CSS classes instead of inline styles
+                    slide.classList.remove('opacity-0', 'z-0');
+                    slide.classList.add('opacity-100', 'z-10', 'scale-105');
                 } else {
-                    slide.style.opacity = '0';
-                    slide.style.transform = 'scale(0.95)';
-                    slide.style.zIndex = '1';
+                    slide.classList.remove('opacity-100', 'z-10', 'scale-105');
+                    slide.classList.add('opacity-0', 'z-0');
                 }
             });
         }

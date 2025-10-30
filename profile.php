@@ -7,6 +7,17 @@
     <?php include_once __DIR__ . "/includes/head_links.php"; ?>
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    
+    <style>
+        :root {
+            --primary: <?= htmlspecialchars(getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?>;
+        }
+
+        /* Custom Toast Styles */
+        .custom-product-toast {
+            z-index: 9999;
+        }
+    </style>
 </head>
 
 <body class="bg-pink-50 font-sans min-h-screen">
@@ -171,6 +182,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 
     <script>
+        // Custom toast function (same as product page)
+        function showCustomToast(message, type) {
+            // Remove any existing toasts
+            const existingToasts = document.querySelectorAll('.custom-product-toast');
+            existingToasts.forEach(toast => toast.remove());
+
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'custom-product-toast fixed top-4 right-4 z-50 transform transition-all duration-500 ease-in-out translate-x-full opacity-0';
+            toast.innerHTML = `
+                <div style="background-color: var(--primary) !important; color: white !important; border-color: color-mix(in srgb, var(--primary) 70%, #10b981) !important;" 
+                     class="px-4 py-3 rounded-lg shadow-lg border-l-4 flex items-center gap-3">
+                    <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl'></i>
+                    <span class="font-semibold">${message}</span>
+                </div>
+            `;
+
+            // Add to page
+            document.body.appendChild(toast);
+
+            // Animate in from right to left
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+                toast.classList.add('translate-x-0', 'opacity-100');
+            }, 10);
+
+            // Auto remove after 3 seconds with reverse animation
+            setTimeout(() => {
+                toast.classList.remove('translate-x-0', 'opacity-100');
+                toast.classList.add('translate-x-full', 'opacity-0');
+
+                // Remove from DOM after animation completes
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 500);
+            }, 3000);
+        }
+
         // Phone Input (India only)
         const phoneInputField = document.querySelector("#phone");
         const phoneInput = window.intlTelInput(phoneInputField, {
@@ -199,7 +250,7 @@
             }
         });
 
-        // AJAX Save Profile - Fixed FormData handling
+        // AJAX Save Profile - Fixed FormData handling with custom toast
         $(document).on("submit", "#form", function(e) {
             e.preventDefault();
 
@@ -208,15 +259,18 @@
 
             // Get the full phone number with country code
             const fullPhoneNumber = phoneInput.getNumber();
-            console.log("Full Phone Number:", fullPhoneNumber); // For debugging
+            console.log("Full Phone Number:", fullPhoneNumber);
 
             // Append the full phone number to FormData
             formData.append("phone[full]", fullPhoneNumber);
 
-            // Log FormData contents for debugging
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
+            // Show loading state on button
+            const submitBtn = $(this).find('button[type="submit"]');
+            const originalText = submitBtn.html();
+            submitBtn.prop('disabled', true).html(`
+                <i class='bx bx-loader-alt animate-spin mr-2'></i>
+                Saving...
+            `);
 
             $.ajax({
                 url: "shop/ajax/profile.php",
@@ -225,25 +279,35 @@
                 contentType: false,
                 processData: false,
                 success: function(result) {
-                    console.log("Server Response:", result); // For debugging
+                    console.log("Server Response:", result);
+                    
+                    // Reset button state
+                    submitBtn.prop('disabled', false).html(originalText);
+                    
                     try {
                         const response = result && JSON.parse(result);
                         if (response) {
                             if (response.success) {
-                                toastr.success(response.message);
+                                // Use custom toast for success
+                                showCustomToast(response.message || "Profile updated successfully!", 'success');
                                 setTimeout(() => window.location.reload(), 1500);
                             } else {
-                                toastr.error(response.message);
+                                // Use custom toast for error
+                                showCustomToast(response.message || "Failed to update profile.", 'error');
                             }
+                        } else {
+                            showCustomToast("Invalid response from server.", 'error');
                         }
                     } catch (error) {
                         console.error("Error parsing response:", error);
-                        toastr.error("Invalid response from server.");
+                        showCustomToast("Invalid response from server.", 'error');
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", error);
-                    toastr.error("Something went wrong. Please try again.");
+                    // Reset button state
+                    submitBtn.prop('disabled', false).html(originalText);
+                    showCustomToast("Something went wrong. Please try again.", 'error');
                 }
             });
         });

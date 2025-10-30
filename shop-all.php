@@ -410,14 +410,14 @@
                     <!-- This is where products will be shown when category is clicked -->
                     <div id="product-display-area">
                         <!-- Default message - will be replaced when category is clicked -->
-                        <div class="text-center py-16">
+                        <!-- <div class="text-center py-16">
                             <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
                                 style="background-color: color-mix(in srgb, var(--primary) 20%, white);">
                                 <i class="fas fa-shopping-bag text-3xl" style="color: var(--primary);"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-800 mb-2">Select a Category</h3>
                             <p class="text-gray-500 mb-6 max-w-md mx-auto">Click on any category above to view products</p>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -441,25 +441,28 @@
             <!-- Product Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
                 <?php
+                // Random products - Limit to 10
                 $productsStmt = getProducts();   // This is PDOStatement
                 $products = $productsStmt->fetchAll(PDO::FETCH_ASSOC); // Convert to array
 
-                shuffle($products); // Now works fine
+                shuffle($products); // Randomize the array
 
+                $counter = 0;
                 foreach ($products as $product) {
+                    if ($counter >= 10) break; // Stop after 10 products
                     echo getProductHtml(
                         $product["id"],
                         "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col"
                     );
+                    $counter++;
                 }
-
-
                 ?>
             </div>
         </div>
     </section>
 
     <!-- Random Product Section End -->
+
     <!-- Enhanced JavaScript -->
     <script>
         // Custom toast function
@@ -710,10 +713,17 @@
         document.removeEventListener('click', addToCartHandler);
         document.addEventListener('click', addToCartHandler, true); // Use capture phase
 
+        // FIXED: Shop By Category - No Double Loading
         document.addEventListener('DOMContentLoaded', () => {
             const menuTabs = document.getElementById('menu-tabs');
-            const tabs = Array.from(menuTabs.getElementsByClassName('tab-button'));
+            const tabs = Array.from(menuTabs?.getElementsByClassName('tab-button') || []);
             const productDisplayArea = document.getElementById('product-display-area');
+
+            if (!menuTabs || tabs.length === 0 || !productDisplayArea) return;
+
+            let currentCategoryId = null;
+            let isLoading = false;
+            let currentAjaxRequest = null;
 
             // Highlight tab and show products
             function updateActiveTab(activeTab) {
@@ -724,6 +734,13 @@
                 // Load products for this category
                 const categoryId = activeTab.dataset.categoryId;
                 const categoryName = activeTab.querySelector('span').textContent;
+
+                // Prevent loading same category again
+                if (currentCategoryId === categoryId && !isLoading) {
+                    return;
+                }
+
+                currentCategoryId = categoryId;
                 loadCategoryProducts(categoryId, categoryName);
             }
 
@@ -752,76 +769,96 @@
                 ).length;
             }
 
-            // Load products for a category
+            // Load products for a category - FIXED with duplicate prevention
             function loadCategoryProducts(categoryId, categoryName) {
+                // Cancel previous request if still loading
+                if (currentAjaxRequest) {
+                    currentAjaxRequest.abort();
+                }
+
+                isLoading = true;
+
                 // Show loading state
                 productDisplayArea.innerHTML = `
-            <div class="text-center py-16">
-                <div class="inline-block rounded-full h-8 w-8 border-b-2 mx-auto" style="border-color: var(--primary); animation: spin 1s linear infinite;"></div>
-                <p class="mt-4 text-gray-600 font-medium">Loading ${categoryName} products...</p>
-            </div>
-        `;
+                <div class="text-center py-16">
+                    <div class="inline-block rounded-full h-8 w-8 border-b-2 mx-auto" style="border-color: var(--primary); animation: spin 1s linear infinite;"></div>
+                    <p class="mt-4 text-gray-600 font-medium">Loading ${categoryName} products...</p>
+                </div>
+            `;
 
-                // AJAX call to get products using your existing file
-                $.ajax({
+                // AJAX call to get products
+                currentAjaxRequest = $.ajax({
                     url: "shop/ajax/get-category-wise-product.php",
                     type: "POST",
                     data: {
-                        page: 1, // Start from page 1
+                        page: 1,
                         category: categoryId,
                         min_price: '',
                         max_price: '',
                         q: ''
                     },
                     success: function(response) {
+                        isLoading = false;
+                        currentAjaxRequest = null;
                         const trimmed = response.trim();
 
                         if (trimmed && trimmed !== '') {
                             const productCount = countRealProductsInHTML(trimmed);
 
                             productDisplayArea.innerHTML = `
-                        <div class="mb-6">
-                            <h3 class="text-2xl font-bold text-gray-800 text-center">${categoryName} Products</h3>
-                            <p class="text-gray-600 text-center mt-2">${productCount}+ amazing products waiting for you</p>
-                        </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6 items-stretch">
-                            ${trimmed}
-                        </div>
-                    `;
+                            <div class="mb-6">
+                                <h3 class="text-2xl font-bold text-gray-800 text-center">${categoryName} Products</h3>
+                                <p class="text-gray-600 text-center mt-2">${productCount}+ amazing products waiting for you</p>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6 items-stretch">
+                                ${trimmed}
+                            </div>
+                        `;
 
                             // Initialize components for AJAX-loaded products
                             setTimeout(initializeProductComponents, 100);
                         } else {
                             productDisplayArea.innerHTML = `
-                        <div class="text-center py-16">
-                            <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
-                                 style="background-color: color-mix(in srgb, var(--primary) 20%, white);">
-                                <i class="fas fa-shopping-bag text-3xl" style="color: var(--primary);"></i>
+                            <div class="text-center py-16">
+                                <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
+                                     style="background-color: color-mix(in srgb, var(--primary) 20%, white);">
+                                    <i class="fas fa-shopping-bag text-3xl" style="color: var(--primary);"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">No Products Found</h3>
+                                <p class="text-gray-500 mb-6 max-w-md mx-auto">No products available in ${categoryName} category</p>
                             </div>
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">No Products Found</h3>
-                            <p class="text-gray-500 mb-6 max-w-md mx-auto">No products available in ${categoryName} category</p>
-                        </div>
-                    `;
+                        `;
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error loading products:', error);
-                        productDisplayArea.innerHTML = `
-                    <div class="text-center py-16">
-                        <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
-                             style="background-color: color-mix(in srgb, #ef4444 20%, white);">
-                            <i class="fas fa-exclamation-triangle text-3xl" style="color: #ef4444;"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Error Loading Products</h3>
-                        <p class="text-gray-500 mb-6 max-w-md mx-auto">Unable to load products. Please try again.</p>
-                    </div>
-                `;
+                        isLoading = false;
+                        currentAjaxRequest = null;
+
+                        // Don't show error if request was aborted
+                        if (status !== 'abort') {
+                            console.error('Error loading products:', error);
+                            productDisplayArea.innerHTML = `
+                            <div class="text-center py-16">
+                                <div class="w-24 h-24 rounded-full flex items-center justify-center mb-4 mx-auto"
+                                     style="background-color: color-mix(in srgb, #ef4444 20%, white);">
+                                    <i class="fas fa-exclamation-triangle text-3xl" style="color: #ef4444;"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">Error Loading Products</h3>
+                                <p class="text-gray-500 mb-6 max-w-md mx-auto">Unable to load products. Please try again.</p>
+                            </div>
+                        `;
+                        }
                     }
                 });
             }
 
-            // Click to center and load products
-            tabs.forEach(tab => tab.addEventListener('click', () => centerTab(tab)));
+            // FIXED: Single click handler with event delegation - NO DUPLICATES
+            menuTabs.addEventListener('click', (e) => {
+                const tab = e.target.closest('.tab-button');
+                if (tab) {
+                    centerTab(tab);
+                }
+            });
 
             // Drag scrolling
             let isDown = false,

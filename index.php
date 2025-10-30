@@ -32,6 +32,28 @@
             }
         }
 
+        #offer {
+            height: 400px;
+            /* Desktop */
+            max-height: 80vh;
+        }
+
+        @media (max-width: 768px) {
+            #offer {
+                height: 350px;
+                /* Tablet */
+                max-height: 60vh;
+            }
+        }
+
+        @media (max-width: 640px) {
+            #offer {
+                height: 250px;
+                /* Mobile */
+                max-height: 40vh;
+            }
+        }
+
         /*------------- Video Commerce Section -------------*/
         @keyframes wave {
             0% {
@@ -348,29 +370,30 @@
     // Only render section if there are images
     if (!empty($offerSlides)):
     ?>
-        <section class="py-12 bg-pink-50">
+        <section class="py-8 bg-pink-50">
             <div class="container mx-auto max-w-6xl px-4">
 
                 <!-- Special Offer Heading -->
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-800 mb-1">Special Offers</h3>
-                    <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Big savings for a limited time. Explore today’s best deals and save more.</p>
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-1">Special Offers</h3>
+                    <p class="text-base sm:text-lg md:text-lg text-gray-600 max-w-2xl mx-auto">Big savings for a limited time. Explore today's best deals and save more.</p>
                 </div>
 
-                <!-- 3D fade slider wrapper -->
-                <div id="offerWrapper" class="relative perspective-[1200px] w-full sm:w-[95%] mx-auto my-4
-           h-[25vh] sm:h-[35vh] rounded-2xl overflow-hidden px-2">
+                <!-- FIXED: Reduced height for better responsiveness -->
+                <div id="offerWrapper" class="relative w-[95%] mx-auto my-4 h-[250px] sm:h-[300px] md:h-[350px]">
                     <div id="offerTrack" class="relative w-full h-full">
                         <?php foreach ($offerSlides as $index => $slideImg): ?>
-                            <div
-                                class="absolute inset-0 rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-1000 ease-in-out opacity-0 scale-95">
-                                <a href="<?= $storeUrl ?>shop-all">
+                            <div class="absolute inset-0 flex items-center justify-center transition-opacity duration-1000 offer-slide <?= $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' ?>">
+                                <a href="<?= $storeUrl ?>shop-all" class="block w-full h-full flex items-center justify-center">
                                     <img src="<?= UPLOADS_URL . $slideImg ?>" alt="Offer <?= $index + 1 ?>"
-                                        class="w-full h-full object-cover">
+                                        class="max-w-full max-h-full w-auto h-auto rounded-2xl shadow-2xl object-contain">
                                 </a>
                             </div>
                         <?php endforeach; ?>
                     </div>
+
+                    <!-- Dots indicator -->
+                    <div id="offerDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
                 </div>
 
                 <!-- Buttons below slider -->
@@ -379,7 +402,7 @@
                 $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
                 ?>
 
-                <div class="flex justify-center gap-4 mt-6 px-2">
+                <div class="flex justify-center gap-4 mt-4 px-2">
                     <!-- Prev -->
                     <button id="prevOffer"
                         class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-lg backdrop-blur-md border border-white/30 transition-all duration-300"
@@ -430,19 +453,21 @@
             <!-- Product Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
                 <?php
+                // Random products - Limit to 10
                 $productsStmt = getProducts();   // This is PDOStatement
                 $products = $productsStmt->fetchAll(PDO::FETCH_ASSOC); // Convert to array
 
-                shuffle($products); // Now works fine
+                shuffle($products); // Randomize the array
 
+                $counter = 0;
                 foreach ($products as $product) {
+                    if ($counter >= 10) break; // Stop after 10 products
                     echo getProductHtml(
                         $product["id"],
                         "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col"
                     );
+                    $counter++;
                 }
-
-
                 ?>
             </div>
         </div>
