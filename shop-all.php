@@ -198,17 +198,18 @@
                             '#F8C471'
                         ];
 
+
                         foreach ($advance_categories as $index => $category) :
-                            // Get random colors for each category
-                            $border_color = $random_colors[$index % count($random_colors)];
-                            $label_color = $random_colors[($index + 5) % count($random_colors)]; // Different color for label
+                            // Get random colors for each category - USE SAME COLOR FOR BORDER AND LABEL
+                            $label_color = $random_colors[$index % count($random_colors)];
+                            $border_color = $label_color; // Same color for both border and label
                         ?>
                             <div class="flex-shrink-0">
                                 <div class="relative w-36 h-36 flex flex-col items-center">
-                                    <!-- Spinning border with random color - ORIGINAL STYLE -->
+                                    <!-- Spinning border with SAME COLOR as label -->
                                     <div class="absolute top-0 inset-x-0 w-32 h-32 rounded-full border-4 border-dashed animate-spin-slow opacity-90 transition-opacity duration-300 mx-auto"
                                         style="border-color: <?= htmlspecialchars($border_color) ?>;"></div>
-                                    <!-- Image circle - ORIGINAL STYLE -->
+                                    <!-- Image circle -->
                                     <div class="relative w-28 h-28 rounded-full overflow-hidden shadow-lg mx-auto top-2 bg-white flex items-center justify-center border-2 border-gray-300 transition-all duration-300">
                                         <?php if (!empty($category['link'])): ?>
                                             <a href="<?= $category['link'] ?>" target="_blank" class="block w-full h-full flex items-center justify-center">
@@ -222,7 +223,7 @@
                                                 class="w-full h-full object-cover object-center">
                                         <?php endif; ?>
                                     </div>
-                                    <!-- Category Name - ORIGINAL POSITION but FLEXIBLE WIDTH -->
+                                    <!-- Category Name with SAME COLOR as border -->
                                     <?php if (!empty($category['name'])): ?>
                                         <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 px-3 py-1.5 text-white text-sm font-semibold rounded-md shadow-lg text-center break-words w-full max-w-[140px] border border-white/30 opacity-95"
                                             style="background-color: <?= htmlspecialchars($label_color) ?>;">
@@ -232,7 +233,6 @@
                                 </div>
                             </div>
                         <?php endforeach; ?>
-
                     </div>
                 </div>
             </div>
