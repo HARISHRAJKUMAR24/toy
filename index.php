@@ -488,7 +488,7 @@
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 justify-center">
 
                 <!-- Card 1 -->
-                <div class="bg-sky-500/50 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
+                <div class="bg-zinc-200 p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:-translate-y-4 hover:scale-105
        w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
                     <?php $img1 = getData("featured_image_1", "seller_banners", "(seller_id = '$sellerId' AND store_id = '$storeId')"); ?>
                     <img src="<?= !empty($img1)
@@ -497,7 +497,7 @@
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
-                    <p class="text-gray-500 text-sm">Get your orders delivered quickly with our reliable shipping
+                    <p class="text-gray-500 text-sm">We deliver speed and reliability your order moves fast from our store to your door.
                         partners.</p>
                 </div>
 
@@ -511,7 +511,7 @@
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
 
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Safe & Secure</h3>
-                    <p class="text-gray-500 text-sm">Get your orders delivered quickly with our reliable shipping
+                    <p class="text-gray-500 text-sm">Your payments and personal details are always protected with our trusted security system
                         partners.</p>
                 </div>
 
@@ -524,7 +524,7 @@
                                     : APP_URL . 'assets/image/theme_9_hc.jpg' ?>"
                         alt="Fast Delivery" class="mx-auto w-24 h-24 object-cover rounded-full mb-5 shadow-md">
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">100 + Happy Customers</h3>
-                    <p class="text-gray-500 text-sm">Get your orders delivered quickly with our reliable shipping
+                    <p class="text-gray-500 text-sm">Over a hundred shoppers already love us shop now and see why they stay.
                         partners.</p>
                 </div>
 
