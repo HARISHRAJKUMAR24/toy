@@ -380,94 +380,172 @@
                         <!-- Step 5: Payment Method -->
                         <div class="flex gap-4 step-container" id="step-5">
                             <div class="step-number">05</div>
+
                             <div class="step-content p-4 sm:p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100">
                                 <h3 class="mb-4 text-xl sm:text-2xl font-semibold text-gray-800">Payment Method</h3>
-                                <div class="grid grid-cols-1 space-y-4 payment-options">
+
+                                <!-- PAYMENT OPTIONS -->
+                                <div class="flex flex-col gap-3" id="paymentOptions">
+
                                     <?php if (!empty(getSettings("cod")) && plan("payment_cod")) : ?>
-                                        <label for="paymentCOD" class="flex items-center gap-3 p-4 bg-red-50 rounded-2xl cursor-pointer hover:bg-red-100 transition border-2 border-transparent hover:border-red-200">
-                                            <input type="radio" name="payment_method" id="paymentCOD" class="accent-red-500 w-4 h-4 paymentMethod step-field" value="COD" data-step="5">
-                                            <div class="flex items-center gap-3">
-                                                <img src="<?= APP_URL ?>assets/img/cod.png" alt="COD" class="w-8 h-8">
-                                                <div>
-                                                    <h3 class="font-semibold text-gray-800">Cash On Delivery (COD)</h3>
-                                                    <?php if (getSettings("cod_charges")): ?>
-                                                        <p class="text-sm text-gray-600">Extra <?= currencyToSymbol($storeCurrency) . getSettings("cod_charges") ?> charges for COD</p>
-                                                    <?php endif; ?>
-                                                </div>
+                                        <label for="paymentCOD" class="flex items-center gap-3 p-4 bg-red-50 rounded-xl cursor-pointer hover:bg-red-100 transition border-2 border-transparent hover:border-red-200">
+                                            <input type="radio" name="payment_method" id="paymentCOD" class="accent-red-500 w-5 h-5 paymentMethod step-field" value="COD" data-step="5">
+                                            <img src="<?= APP_URL ?>assets/img/cod.png" alt="COD" class="w-8 h-8 flex-shrink-0">
+                                            <div>
+                                                <h3 class="font-semibold text-gray-800 leading-tight">Cash On Delivery (COD)</h3>
+                                                <?php if (getSettings("cod_charges")): ?>
+                                                    <p class="text-sm text-gray-600">Extra <?= currencyToSymbol($storeCurrency) . getSettings("cod_charges") ?> charges</p>
+                                                <?php endif; ?>
                                             </div>
                                         </label>
                                     <?php endif ?>
 
                                     <?php if (!empty(getSettings("razorpay_key_id")) && plan("payment_razorpay")) : ?>
-                                        <label for="paymentRazorpay" class="flex items-center gap-3 p-4 bg-indigo-50 rounded-2xl cursor-pointer hover:bg-indigo-100 transition border-2 border-transparent hover:border-indigo-200">
-                                            <input type="radio" name="payment_method" id="paymentRazorpay" class="accent-indigo-500 w-4 h-4 paymentMethod step-field" value="Razorpay" data-step="5">
-                                            <div class="flex items-center gap-3">
-                                                <img src="<?= APP_URL ?>assets/img/razorpay.png" alt="Razorpay" class="w-8 h-8">
-                                                <h3 class="font-semibold text-gray-800">Razorpay</h3>
-                                            </div>
+                                        <label for="paymentRazorpay" class="flex items-center gap-3 p-4 bg-indigo-50 rounded-xl cursor-pointer hover:bg-indigo-100 transition border-2 border-transparent hover:border-indigo-200">
+                                            <input type="radio" name="payment_method" id="paymentRazorpay" class="accent-indigo-500 w-5 h-5 paymentMethod step-field" value="Razorpay" data-step="5">
+                                            <img src="<?= APP_URL ?>assets/img/razorpay.png" alt="Razorpay" class="w-8 h-8 flex-shrink-0">
+                                            <h3 class="font-semibold text-gray-800 leading-tight">Razorpay</h3>
                                         </label>
                                     <?php endif ?>
 
-                                     <?php if ((!empty(getSettings("phonepe_key")) || !empty(getSettings("phonepe_client_id"))) && plan("payment_phonepe")) : ?>
-                                        <label for="paymentPhonePe" class="flex items-center gap-3 p-4 bg-purple-50 rounded-2xl cursor-pointer hover:bg-purple-100 transition border-2 border-transparent hover:border-purple-200">
-                                            <input type="radio" name="payment_method" id="paymentPhonePe" class="accent-purple-500 w-4 h-4 paymentMethod step-field" value="PhonePe" data-step="5">
-                                            <div class="flex items-center gap-3">
-                                                <img src="<?= APP_URL ?>assets/img/phonepe.png" alt="PhonePe" class="w-8 h-8">
-                                                <h3 class="font-semibold text-gray-800">PhonePe</h3>
-                                            </div>
+                                    <?php if ((!empty(getSettings("phonepe_key")) || !empty(getSettings("phonepe_client_id"))) && plan("payment_phonepe")) : ?>
+                                        <label for="paymentPhonePe" class="flex items-center gap-3 p-4 bg-purple-50 rounded-xl cursor-pointer hover:bg-purple-100 transition border-2 border-transparent hover:border-purple-200">
+                                            <input type="radio" name="payment_method" id="paymentPhonePe" class="accent-purple-500 w-5 h-5 paymentMethod step-field" value="PhonePe" data-step="5">
+                                            <img src="<?= APP_URL ?>assets/img/phonepe.png" alt="PhonePe" class="w-8 h-8 flex-shrink-0">
+                                            <h3 class="font-semibold text-gray-800 leading-tight">PhonePe</h3>
                                         </label>
                                     <?php endif ?>
 
                                     <?php if (!empty(getSettings("ippo_pay_public_key")) && plan("payment_ippopay")) : ?>
-                                        <label for="paymentIppoPay" class="flex items-center gap-3 p-4 bg-blue-50 rounded-2xl cursor-pointer hover:bg-blue-100 transition border-2 border-transparent hover:border-blue-200">
-                                            <input type="radio" name="payment_method" id="paymentIppoPay" class="accent-blue-500 w-4 h-4 paymentMethod step-field" value="IppoPay" data-step="5">
-                                            <div class="flex items-center gap-3">
-                                                <img src="<?= APP_URL ?>assets/img/ippo-pay.png" alt="IppoPay" class="w-8 h-8">
-                                                <h3 class="font-semibold text-gray-800">IppoPay</h3>
-                                            </div>
+                                        <label for="paymentIppoPay" class="flex items-center gap-3 p-4 bg-blue-50 rounded-xl cursor-pointer hover:bg-blue-100 transition border-2 border-transparent hover:border-blue-200">
+                                            <input type="radio" name="payment_method" id="paymentIppoPay" class="accent-blue-500 w-5 h-5 paymentMethod step-field" value="IppoPay" data-step="5">
+                                            <img src="<?= APP_URL ?>assets/img/ippo-pay.png" alt="IppoPay" class="w-8 h-8 flex-shrink-0">
+                                            <h3 class="font-semibold text-gray-800 leading-tight">IppoPay</h3>
                                         </label>
                                     <?php endif ?>
 
                                     <?php if (!empty(getSettings("bank_details")) && plan("payment_bank")) : ?>
-                                        <label for="paymentBankTransfer" class="flex items-center gap-3 p-4 bg-teal-50 rounded-2xl cursor-pointer hover:bg-teal-100 transition border-2 border-transparent hover:border-teal-200">
-                                            <input type="radio" name="payment_method" id="paymentBankTransfer" class="accent-teal-500 w-4 h-4 paymentMethod step-field" value="Bank Transfer" data-step="5">
-                                            <div class="flex items-center gap-3">
-                                                <img src="<?= APP_URL ?>assets/img/bank.png" alt="Bank Transfer" class="w-8 h-8">
-                                                <h3 class="font-semibold text-gray-800">Bank Transfer</h3>
-                                            </div>
+                                        <label for="paymentBankTransfer" class="flex items-center gap-3 p-4 bg-teal-50 rounded-xl cursor-pointer hover:bg-teal-100 transition border-2 border-transparent hover:border-teal-200">
+                                            <input type="radio" name="payment_method" id="paymentBankTransfer" class="accent-teal-500 w-5 h-5 paymentMethod step-field" value="Bank Transfer" data-step="5">
+                                            <img src="<?= APP_URL ?>assets/img/bank.png" alt="Bank Transfer" class="w-8 h-8 flex-shrink-0">
+                                            <h3 class="font-semibold text-gray-800 leading-tight">Bank Transfer</h3>
                                         </label>
-                                        <div id="bankDetails" class="p-5 mt-3 space-y-3 bg-teal-50 rounded-2xl" style="display:none;">
+                                    <?php endif; ?>
+
+                                    <?php if (!empty(getSettings("upi_qr_code")) && plan("payment_upi")) : ?>
+                                        <label for="paymentUPI" class="flex items-center gap-3 p-4 bg-orange-50 rounded-xl cursor-pointer hover:bg-orange-100 transition border-2 border-transparent hover:border-orange-200">
+                                            <input type="radio" name="payment_method" id="paymentUPI" class="accent-orange-500 w-5 h-5 paymentMethod step-field" value="UPI" data-step="5">
+                                            <img src="<?= APP_URL ?>assets/img/upi.webp" alt="UPI" class="w-8 h-8 flex-shrink-0">
+                                            <h3 class="font-semibold text-gray-800 leading-tight">UPI (Scan QR / Pay to UPI ID)</h3>
+                                        </label>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- EXTRA PAYMENT DETAILS -->
+                                <div id="extraPaymentDetails" class="mt-4 space-y-4">
+
+                                    <?php if (!empty(getSettings("bank_details")) && plan("payment_bank")) : ?>
+                                        <div id="bankDetails" class="p-5 bg-teal-50 rounded-2xl border border-teal-200" style="display:none;">
                                             <?= nl2br(getSettings("bank_details")) ?>
-                                            <div class="mt-5 pt-5 border-t">
-                                                <i>Please send an email to <?= getSettings("email") ?> along with the scanned bank-in slip after completing all the required particulars once the payment is made.</i>
-                                                <br />
-                                                Order ID :<br />
-                                                Payment Method :<br />
-                                                Bank Name :<br />
-                                                Bank-in Date :<br />
-                                                Bank-in Amount :<br />
-                                                Contact Name :<br />
-                                                Contact Phone
+                                            <div class="mt-5 pt-4 border-t text-sm text-gray-700 leading-relaxed">
+                                                <i>Please email <?= getSettings("email") ?> with your bank slip once payment is made.</i>
                                             </div>
                                         </div>
                                     <?php endif; ?>
 
                                     <?php if (!empty(getSettings("upi_qr_code")) && plan("payment_upi")) : ?>
-                                        <label for="paymentUPI" class="flex items-center gap-3 p-4 bg-orange-50 rounded-2xl cursor-pointer hover:bg-orange-100 transition border-2 border-transparent hover:border-orange-200">
-                                            <input type="radio" name="payment_method" id="paymentUPI" class="accent-orange-500 w-4 h-4 paymentMethod step-field" value="UPI" data-step="5">
-                                            <div class="flex items-center gap-3">
-                                                <img src="<?= APP_URL ?>assets/img/upi.webp" alt="UPI" class="w-8 h-8">
-                                                <h3 class="font-semibold text-gray-800">UPI (Scan QR Code or Pay to UPI ID)</h3>
+                                        <div id="upiImg" class="p-5 sm:p-6 bg-orange-50 rounded-2xl border border-orange-200 shadow-sm" style="display:none;">
+                                            <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                                <i class='bx bx-credit-card text-orange-500 text-xl'></i> Pay via UPI
+                                            </h4>
+
+                                            <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
+                                                <div class="flex-1">
+                                                    <p class="text-sm text-gray-600 mb-2">Copy UPI ID and pay using any app</p>
+                                                    <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                                        <span class="text-base sm:text-lg font-semibold text-primary-600 flex-1 truncate"><?= getSettings("upi_id") ?></span>
+                                                        <button type="button"
+                                                            onclick="copyUPIID(this, '<?= getSettings("upi_id") ?>')"
+                                                            class="px-3 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition flex items-center gap-2">
+                                                            <i class='bx bx-copy text-sm'></i> Copy
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </label>
-                                        <div id="upiImg" class="p-5 mt-3 space-y-3 bg-orange-50 rounded-2xl" style="display:none;">
-                                            <span class="block mb-2">UPI ID: <b class="text-primary-500 cursor-pointer" onclick="navigator.clipboard.writeText('<?= getSettings("upi_id") ?>')"><?= getSettings("upi_id") ?></b></span>
-                                            <img src="<?= UPLOADS_URL . getSettings("upi_qr_code") ?>" alt="" class="max-w-full max-h-[400px]">
+
+                                            <div class="p-4 bg-white rounded-xl border border-orange-100 shadow-sm">
+                                                <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                                    <i class='bx bx-qr-scan text-orange-500 text-xl'></i> Scan QR Code
+                                                </h4>
+                                                <div class="flex flex-col lg:flex-row items-center gap-6">
+                                                    <div class="bg-white p-4 rounded-xl border-2 border-orange-200 shadow-md">
+                                                        <img src="<?= UPLOADS_URL . getSettings("upi_qr_code") ?>" alt="UPI QR Code" class="w-[260px] sm:w-[300px] h-auto rounded-lg">
+                                                    </div>
+
+                                                    <div class="flex-1 space-y-3">
+                                                        <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                                            <h5 class="font-semibold text-blue-800 mb-1">How to Pay</h5>
+                                                            <ul class="text-sm text-blue-700 space-y-1">
+                                                                <li>• Open any UPI app</li>
+                                                                <li>• Tap “Scan QR”</li>
+                                                                <li>• Point camera at the code</li>
+                                                                <li>• Enter amount and pay</li>
+                                                            </ul>
+                                                        </div>
+
+                                                        <div class="p-3 bg-green-50 rounded-lg border border-green-200">
+                                                            <h5 class="font-semibold text-green-800 mb-1">Supported Apps</h5>
+                                                            <div class="flex flex-wrap gap-2 mt-2">
+                                                                <span class="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-300">Google Pay</span>
+                                                                <span class="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-300">PhonePe</span>
+                                                                <span class="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-300">Paytm</span>
+                                                                <span class="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-300">BHIM</span>
+                                                                <span class="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-300">Any UPI App</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-4 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                                                <div class="flex items-start gap-3">
+                                                    <i class='bx bx-info-circle text-yellow-500 text-xl'></i>
+                                                    <p class="text-sm text-yellow-700">
+                                                        After making payment, keep the transaction ID ready. Your order will confirm automatically once payment is received.
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
                                     <?php endif; ?>
+
                                 </div>
                             </div>
                         </div>
+
+                        <!-- JS -->
+                        <script>
+                            document.querySelectorAll('.paymentMethod').forEach(radio => {
+                                radio.addEventListener('change', function() {
+                                    document.querySelectorAll('#upiImg, #bankDetails').forEach(el => el.style.display = 'none');
+                                    if (this.value === 'UPI') document.getElementById('upiImg').style.display = 'block';
+                                    if (this.value === 'Bank Transfer') document.getElementById('bankDetails').style.display = 'block';
+                                });
+                            });
+
+                            function copyUPIID(button, upiId) {
+                                navigator.clipboard.writeText(upiId).then(() => {
+                                    const original = button.innerHTML;
+                                    button.innerHTML = '<i class="bx bx-check"></i> Copied!';
+                                    button.classList.replace('bg-primary-500', 'bg-green-500');
+                                    setTimeout(() => {
+                                        button.innerHTML = original;
+                                        button.classList.replace('bg-green-500', 'bg-primary-500');
+                                    }, 2000);
+                                });
+                            }
+                        </script>
+
+
 
                         <!-- Step 6: Notes -->
                         <div class="flex gap-4 step-container" id="step-6">
