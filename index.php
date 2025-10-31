@@ -54,6 +54,35 @@
             }
         }
 
+        /*------------- Header Slide dot styling Db Color ------------- */
+        #dot>div {
+            background-color: white !important;
+            border: 2px solid var(--hover-color);
+            transition: border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #dot>div.active-dot {
+            background-color: white !important;
+            border-color: var(--hover-color);
+        }
+
+        .progress {
+            background-color: var(--primary-color) !important;
+            position: absolute;
+            top: 0;
+            left: 0 !important;
+            height: 100%;
+            width: 0%;
+        }
+
+        /* Only apply transition to active dot's progress */
+        #dot>div.active-dot .progress {
+            transition: width 4s linear !important;
+            width: 100%;
+        }
+
         /*------------- Video Commerce Section -------------*/
         @keyframes wave {
             0% {
@@ -197,6 +226,9 @@
 
     // Only render slider if there are banners
     if (!empty($banners)) :
+        $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+        $hover_color = getData("hover_color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ec4899';
+        $bannerCount = count($banners);
     ?>
         <header id="slider" class="relative w-[95%] mx-auto my-4 flex items-center justify-center">
             <?php
@@ -207,21 +239,32 @@
                 if (!empty($banner['link'])) {
                     echo '<a href="' . $banner['link'] . '" target="_blank" class="block w-full h-full flex items-center justify-center">';
                     echo '<img src="' . UPLOADS_URL . $banner['image'] . '" 
-                     class="max-w-full max-h-full w-auto h-auto rounded-2xl shadow-2xl" 
-                     alt="Slide ' . ($index + 1) . '">';
+                 class="max-w-full max-h-full w-auto h-auto rounded-2xl shadow-2xl" 
+                 alt="Slide ' . ($index + 1) . '">';
                     echo '</a>';
                 } else {
                     echo '<img src="' . UPLOADS_URL . $banner['image'] . '" 
-                     class="max-w-full max-h-full w-auto h-auto rounded-2xl shadow-2xl" 
-                     alt="Slide ' . ($index + 1) . '">';
+                 class="max-w-full max-h-full w-auto h-auto rounded-2xl shadow-2xl" 
+                 alt="Slide ' . ($index + 1) . '">';
                 }
                 echo '</div>';
             }
             ?>
-            <div id="dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
+
+            <!-- Dots with primary and hover colors - Only show if more than 1 banner -->
+            <?php if ($bannerCount > 1): ?>
+                <div id="dot" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+                    <?php foreach ($banners as $index => $banner): ?>
+                        <div class="w-3 h-3 rounded-full cursor-pointer relative overflow-hidden transition-all duration-300 <?= $index === 0 ? 'active-dot' : '' ?>"
+                            onclick="showSlide(<?= $index ?>)">
+                            <div class="progress" style="width: 0%"></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </header>
+
     <?php endif; ?>
-    <!-- Header slide End  -->
 
     <!-- Header slide End  -->
 
@@ -748,7 +791,94 @@
     </a>
 
 
+    <!--Js Code For Header Slide Dot-->
+    <script>
+        // ===============================
+        // SLIDER - No reset animation on old active dot
+        // ===============================
+        const slides = document.querySelectorAll(".slide");
+        const dots = document.querySelectorAll("#dot > div");
 
+        if (slides.length > 0 && dots.length > 0) {
+            let index = 0;
+            let slideInterval;
+            const duration = 4000;
+
+            function showSlide(i) {
+                // Update slides
+                slides.forEach((s, j) => {
+                    s.classList.toggle("opacity-100", j === i);
+                    s.classList.toggle("z-10", j === i);
+                    s.classList.toggle("opacity-0", j !== i);
+                });
+
+                // Update dots
+                dots.forEach((d, j) => {
+                    const progress = d.querySelector(".progress");
+
+                    if (j === i) {
+                        // Set as active dot and start animation
+                        d.classList.add("active-dot");
+
+                        if (progress) {
+                            // Start fresh animation
+                            progress.style.transition = 'width 4s linear';
+                            progress.style.width = '0%';
+                            void progress.offsetWidth; // Force reflow
+                            progress.style.width = '100%';
+                        }
+                    } else {
+                        // Remove active class and INSTANTLY reset
+                        d.classList.remove("active-dot");
+                        if (progress) {
+                            // Remove ALL transitions and instantly reset
+                            progress.style.transition = 'none';
+                            progress.style.width = '0%';
+                        }
+                    }
+                });
+
+                index = i;
+            }
+
+            function nextSlide() {
+                showSlide((index + 1) % slides.length);
+            }
+
+            function resetInterval() {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, duration);
+            }
+
+            // Add click events to dots
+            dots.forEach((dot, i) => {
+                dot.addEventListener("click", () => {
+                    showSlide(i);
+                    resetInterval();
+                });
+            });
+
+            // Initialize
+            showSlide(0);
+            resetInterval();
+
+            // Reset animation when tab becomes visible
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    const activeDot = dots[index];
+                    const activeProgress = activeDot?.querySelector('.progress');
+                    if (activeProgress) {
+                        // Restart the animation
+                        activeProgress.style.transition = 'none';
+                        activeProgress.style.width = '0%';
+                        void activeProgress.offsetWidth;
+                        activeProgress.style.transition = 'width 4s linear';
+                        activeProgress.style.width = '100%';
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

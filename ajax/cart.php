@@ -143,6 +143,53 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                 padding: 0;
             }
         }
+
+        /* Product name truncation */
+        .product-name-truncate {
+            display: -webkit-box;
+            display: -moz-box;
+            display: box;
+            -webkit-line-clamp: 2;
+            -moz-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            -moz-box-orient: vertical;
+            box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+            max-height: 2.8em;
+        }
+
+        /* Variation text truncation */
+        .variation-truncate {
+            display: -webkit-box;
+            display: -moz-box;
+            display: box;
+            -webkit-line-clamp: 1;
+            -moz-line-clamp: 1;
+            line-clamp: 1;
+            -webkit-box-orient: vertical;
+            -moz-box-orient: vertical;
+            box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.3;
+            max-height: 1.3em;
+        }
+
+        /* Fallback for browsers that don't support line-clamp */
+        @supports not (-webkit-line-clamp: 2) {
+            .product-name-truncate {
+                max-height: 2.8em;
+                line-height: 1.4em;
+            }
+
+            .variation-truncate {
+                max-height: 1.3em;
+                line-height: 1.3em;
+            }
+        }
     </style>
 
 
@@ -170,11 +217,13 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                                             <div class="flex-1 min-w-0">
                                                 <!-- Product Name and Variation -->
                                                 <div class="mb-2">
-                                                    <h3 class="text-base sm:text-lg font-semibold text-gray-800 mb-1">
-                                                        <?= htmlspecialchars($cart['product_name']) ?>
+                                                    <h3 class="text-base sm:text-lg font-semibold text-gray-800 mb-1 product-name-truncate" title="<?= htmlspecialchars($cart['product_name']) ?>">
+                                                        <?= htmlspecialchars(mb_strlen($cart['product_name']) > 50 ? mb_substr($cart['product_name'], 0, 50) . '...' : $cart['product_name']) ?>
                                                     </h3>
                                                     <?php if (!empty($cart['variation_text'])): ?>
-                                                        <p class="text-gray-500 text-xs sm:text-sm"><?= $cart['variation_text'] ?></p>
+                                                        <p class="text-gray-500 text-xs sm:text-sm variation-truncate" title="<?= htmlspecialchars($cart['variation_text']) ?>">
+                                                            <?= htmlspecialchars(mb_strlen($cart['variation_text']) > 40 ? mb_substr($cart['variation_text'], 0, 40) . '...' : $cart['variation_text']) ?>
+                                                        </p>
                                                     <?php endif; ?>
                                                 </div>
 
@@ -385,22 +434,29 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
 </div>
 
 <script>
-    // Custom toast function with smooth right-to-left animation
+    // Custom toast function with character limits for messages
     function showCustomToast(message, type) {
+        // For remove actions, show generic "Item removed" message
+        const displayMessage = message.toLowerCase().includes('removed') ? 'Item removed from cart' : message;
+
+        // Limit message length to prevent overflow
+        const maxLength = 80;
+        const finalMessage = displayMessage.length > maxLength ? displayMessage.substring(0, maxLength) + '...' : displayMessage;
+
         // Remove any existing toasts
         const existingToasts = document.querySelectorAll('.custom-cart-toast');
         existingToasts.forEach(toast => toast.remove());
 
         // Create toast element
         const toast = document.createElement('div');
-        toast.className = 'custom-cart-toast fixed top-4 right-4 z-50';
+        toast.className = 'custom-cart-toast fixed top-20 right-4 z-50 max-w-sm'; // Moved down to avoid heading overlap
         toast.innerHTML = `
-        <div style="background-color: var(--primary-color) !important; color: white !important; border-color: var(--primary-dark) !important;" 
-             class="px-4 py-3 rounded-lg shadow-lg border-l-4 flex items-center gap-3">
-            <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl'></i>
-            <span class="font-semibold">${message}</span>
-        </div>
-    `;
+    <div style="background-color: var(--primary-color) !important; color: white !important; border-color: var(--primary-dark) !important;" 
+         class="px-4 py-3 rounded-lg shadow-lg border-l-4 flex items-center gap-3 break-words">
+        <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl flex-shrink-0'></i>
+        <span class="font-semibold text-sm">${finalMessage}</span>
+    </div>
+`;
 
         // Add to page
         document.body.appendChild(toast);

@@ -157,17 +157,42 @@ function hexToRgba($hex, $opacity = 0.08)
 
     </div>
 
-    <!-- Disclaimer Section (Centered) -->
-    <div class="mt-8 px-6 text-center">
-        <h3 class="text-gray-800 font-semibold text-sm mb-2">Disclaimer:</h3>
-        <p class="text-gray-500 text-xs mx-auto">
-            <?php if (getData("disclaimer", "settings") && !$isCustomDomain): ?>
-                <?= getData("disclaimer", "settings") ?>
-            <?php else: ?>
-                Ztorespot.com, a brand of <?= $storeName ?>, is not liable for product sales. We provide a DIY platform connecting Merchants & Buyers. All transactions are the responsibility of respective parties. Exercise caution.
-            <?php endif; ?>
-        </p>
+    <!-- Copyright © Section -->
+    <?php
+    $primary = getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+    $hoverColor = getData('hover_color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? $primary;
+    ?>
+    <div class="relative z-20 w-full mt-6 mb-4">
+        <div class="w-full mx-auto">
+            <p
+                class="text-center font-medium py-2 sm:py-3 md:py-4 m-0 text-gray-800 text-xs sm:text-sm md:text-base leading-relaxed transition-all duration-300"
+                style="background-color: <?= hexToRgba($hoverColor, 0.1) ?>;">
+                Copyright © <?= date('Y') ?>, <?= htmlspecialchars($storeName) ?> All Rights Reserved.
+                <br class="block sm:hidden">
+                <span class="block sm:inline">
+                    Powered by
+                    <a
+                        href="https://ztorespot.com/?utm_campaign=poweredby&utm_medium=ztorespot&utm_source=onlinestore&utm_tag=<?= urlencode($storeName) ?>"
+                        target="_blank"
+                        class="text-primary-500 hover:underline transition">
+                        Ztorespot
+                    </a>
+                </span>
+            </p>
+        </div>
     </div>
+
+
+    <!-- Disclaimer Section (Centered) -->
+    <?php if (getData("disclaimer", "settings") && !$isCustomDomain): ?>
+        <div class="mt-8 px-6 text-center">
+            <h3 class="text-gray-800 font-semibold text-sm mb-2">Disclaimer :</h3>
+            <p class="text-gray-500 text-xs mx-auto">
+                <?= getData("disclaimer", "settings") ?>
+            </p>
+        </div>
+    <?php endif; ?>
+
 
     <!-- Decorative floating shapes -->
     <div class="absolute -top-10 -left-10 w-40 h-40 bg-pink-100 rounded-full blur-3xl pointer-events-none"></div>

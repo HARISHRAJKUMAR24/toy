@@ -216,10 +216,11 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
     <section class="py-12 bg-gray-100">
         <div class="max-w-7xl mx-auto px-4">
             <div class="bg-white rounded-2xl shadow-xl transform transition hover:shadow-2xl duration-300 p-6 lg:p-8">
-                <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Remove flex and use grid for better structure -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                     <!-- Images -->
-                    <div class="flex flex-col lg:flex-row gap-4 justify-center items-start flex-[0.55]">
+                    <div class="flex flex-col lg:flex-row gap-4 justify-center items-start">
                         <div id="thumbnailContainer" class="flex lg:flex-col gap-3 max-h-[360px] overflow-x-auto lg:overflow-y-auto order-2 lg:order-1">
                             <img src="<?= UPLOADS_URL . $image ?>" class="thumbnail w-16 h-16 object-cover rounded-lg cursor-pointer border-2 border-pink-500 transition" onclick="document.getElementById('mainProductImage').src=this.src">
                             <?php foreach ($additionalImages as $img): ?>
@@ -232,24 +233,34 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                     </div>
 
                     <!-- Info -->
-                    <div class="flex-1 flex flex-col flex-[0.45]">
-                        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2"><?= htmlspecialchars($name) ?></h1>
-                        <p id="variantName" class="text-base sm:text-lg md:text-xl text-gray-600 mb-4"><?= htmlspecialchars($variation) ?></p>
+                    <div class="space-y-4">
+                        <!-- Product Name with character limit -->
+                        <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-3 break-words leading-snug"
+                            title="<?= htmlspecialchars($name) ?>">
+                            <?= htmlspecialchars(mb_strlen($name) > 80 ? mb_substr($name, 0, 80) . '...' : $name) ?>
+                        </h1>
+
+                        <!-- Variant name with smaller text -->
+                        <p id="variantName" class="text-sm sm:text-base md:text-lg text-gray-600 mb-4 break-words leading-relaxed">
+                            <?= htmlspecialchars($variation) ?>
+                        </p>
+
 
                         <!-- Variant Buttons -->
                         <?php if ($basicVariants && $basicVariants->rowCount() > 0): ?>
                             <div class="flex flex-wrap gap-2 mb-4">
                                 <?php $basicVariants->execute(); ?>
                                 <!-- Main Product Button -->
-                                <button class="variant-btn px-3 py-1 border rounded-lg text-sm hover:bg-pink-100 <?= $initialVariantId === null ? 'ring-2 ring-pink-400' : '' ?>"
+                                <button class="variant-btn px-3 py-1 border rounded-lg text-sm hover:bg-pink-100 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] <?= $initialVariantId === null ? 'ring-2 ring-pink-400' : '' ?>"
                                     data-variant-id="main"
                                     data-variant-image="<?= UPLOADS_URL . $image ?>"
                                     data-variant-name="<?= htmlspecialchars(!empty($variation) ? $variation : $name) ?>"
                                     data-price="<?= $price ?>"
                                     data-mrp="<?= $mrp_price ?>"
                                     data-stock="<?= $mainStockDisplay ?>"
-                                    data-in-cart="<?= in_array('main', $cartVariants) ? 1 : 0 ?>">
-                                    <?= htmlspecialchars(!empty($variation) ? $variation : $name) ?>
+                                    data-in-cart="<?= in_array('main', $cartVariants) ? 1 : 0 ?>"
+                                    title="<?= htmlspecialchars(!empty($variation) ? $variation : $name) ?>">
+                                    <?= htmlspecialchars(mb_strlen(!empty($variation) ? $variation : $name) > 25 ? mb_substr(!empty($variation) ? $variation : $name, 0, 25) . '...' : (!empty($variation) ? $variation : $name)) ?>
                                 </button>
 
                                 <?php while ($bv = $basicVariants->fetch()): ?>
@@ -274,22 +285,25 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                         $colorCode = null; // No color for basic variant
                                     }
                                     ?>
-                                    <button class="variant-btn flex items-center gap-1 px-2 py-1 border rounded-lg hover:ring-2 hover:ring-pink-400 <?= $initialVariantId == $variantId ? 'ring-2 ring-pink-400' : '' ?>"
+                                    <button class="variant-btn flex items-center gap-1 px-2 py-1 border rounded-lg hover:ring-2 hover:ring-pink-400 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] <?= $initialVariantId == $variantId ? 'ring-2 ring-pink-400' : '' ?>"
                                         data-variant-id="<?= $variantId ?>"
                                         data-variant-image="<?= UPLOADS_URL . ($bv['image'] ?? $image) ?>"
                                         data-variant-name="<?= htmlspecialchars($variantLabel) ?>"
                                         data-price="<?= $bv['price'] ?>"
                                         data-mrp="<?= $bv['mrp_price'] ?>"
                                         data-stock="<?= $vStock ?>"
-                                        data-in-cart="<?= $isInCart ? 1 : 0 ?>">
+                                        data-in-cart="<?= $isInCart ? 1 : 0 ?>"
+                                        title="<?= htmlspecialchars($variantLabel) ?>">
 
                                         <?php if ($colorCode): ?>
                                             <!-- Color square -->
-                                            <span class="w-4 h-4 rounded border" style="background-color: <?= $colorCode ?>;"></span>
+                                            <span class="w-4 h-4 rounded border flex-shrink-0" style="background-color: <?= $colorCode ?>;"></span>
                                         <?php endif; ?>
 
                                         <?php if ($variantLabel): ?>
-                                            <span class="text-sm"><?= htmlspecialchars($variantLabel) ?></span>
+                                            <span class="text-sm truncate">
+                                                <?= htmlspecialchars(mb_strlen($variantLabel) > 20 ? mb_substr($variantLabel, 0, 20) . '...' : $variantLabel) ?>
+                                            </span>
                                         <?php endif; ?>
                                     </button>
                                 <?php endwhile; ?>
@@ -331,11 +345,11 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                             Viewed <?= (int)$visitors ?> times
                         </p>
 
-                        <!-- Product Description - ADD THIS SECTION -->
+                        <!-- Product Description - Full width, no flex issues -->
                         <?php if (!empty($description)): ?>
                             <div class="mt-6 mb-6">
                                 <h3 class="text-lg font-semibold text-gray-800 mb-3">Product Description</h3>
-                                <div class="space-y-3 text-base text-gray-600 leading-relaxed">
+                                <div class="text-base text-gray-600 leading-relaxed break-words">
                                     <?= $description ?>
                                 </div>
                             </div>
@@ -375,20 +389,20 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                 $title   = $inWishlist ? "Remove from Wishlist" : "Add to Wishlist";
 
                                 echo '<button 
-        id="wishlistBtn" 
-        data-id="' . $id . '" 
-        data-variant="' . $variantId . '" 
-        class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 handleWishlist ' . $btnBg . '" 
-        title="' . $title . '">
-        <i class="fa-solid fa-heart text-sm sm:text-base ' . $btnText . '"></i>
-    </button>';
+    id="wishlistBtn" 
+    data-id="' . $id . '" 
+    data-variant="' . $variantId . '" 
+    class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 handleWishlist ' . $btnBg . '" 
+    title="' . $title . '">
+    <i class="fa-solid fa-heart text-sm sm:text-base ' . $btnText . '"></i>
+</button>';
                             } else {
                                 // Not logged in → redirect to login
                                 echo '<a href="' . $storeUrl . 'wishlists" 
-       class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 bg-gray-200" 
-       title="Login to add wishlist">
-       <i class="fa-solid fa-heart text-sm sm:text-base text-gray-500"></i>
-    </a>';
+   class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 bg-gray-200" 
+   title="Login to add wishlist">
+   <i class="fa-solid fa-heart text-sm sm:text-base text-gray-500"></i>
+</a>';
                             }
                             ?>
 
@@ -400,16 +414,15 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
 
                         <?php
                         $seller_id = $product['seller_id'];
-                        $store_id  = $product['store_id']; // assuming your product array has store_id
+                        $store_id  = $product['store_id'];
 
                         // Fetch 3 random products from the same seller and store
                         $randomProducts = getRandomProductsBySeller($seller_id, $store_id, 3);
 
-
                         if ($randomProducts && count($randomProducts) > 0) {
                             echo '<div class="mt-6 border-t pt-4 md:mt-8 md:border-t-0 md:pt-0 md:bg-gradient-to-br md:from-purple-50 md:via-pink-50 md:to-blue-50 md:rounded-2xl md:shadow-lg md:p-6 md:border md:border-gray-200">
-            <h3 class="mt-2 text-lg font-semibold text-gray-800 mb-3 md:text-xl md:mb-4">Customers Also Bought</h3>
-            <div class="grid grid-cols-3 gap-3">';
+        <h3 class="mt-2 text-lg font-semibold text-gray-800 mb-3 md:text-xl md:mb-4">Customers Also Bought</h3>
+        <div class="grid grid-cols-3 gap-4">';
 
                             // Array of background colors
                             $bgColors = ['bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100'];
@@ -417,23 +430,36 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                             foreach ($randomProducts as $index => $rp) {
                                 $img = UPLOADS_URL . $rp['image'];
                                 $slug = $rp['slug'];
+                                $name = $rp['name'];
+                                $price = $rp['price'];
+                                $mrp_price = $rp['mrp_price'];
 
                                 // Pick a color from the array (cycle if more products than colors)
                                 $bgClass = $bgColors[$index % count($bgColors)];
 
-                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition ' . $bgClass . ' p-2 flex items-center justify-center">  
-                <img src="' . $img . '" alt="' . htmlspecialchars($rp['name']) . '" class="w-full h-24 object-cover rounded-xl"> 
-              </a>';
+                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition transform hover:scale-105 ' . $bgClass . ' p-3 flex flex-col items-center justify-center">  
+            <img src="' . $img . '" alt="' . htmlspecialchars($name) . '" class="w-full h-20 object-cover rounded-lg mb-2"> 
+            <div class="text-center w-full">
+                <h4 class="text-xs font-semibold text-gray-800 mb-1 line-clamp-2 leading-tight" title="' . htmlspecialchars($name) . '">
+                    ' . htmlspecialchars(mb_strlen($name) > 30 ? mb_substr($name, 0, 30) . '...' : $name) . '
+                </h4>
+                <div class="flex items-center justify-center gap-1">
+                    <span class="text-sm font-bold text-green-600">' . currencyToSymbol($storeCurrency) . $price . '</span>';
+
+                                if ($mrp_price && $mrp_price > $price) {
+                                    echo '<span class="text-xs text-gray-400 line-through">' . currencyToSymbol($storeCurrency) . $mrp_price . '</span>';
+                                }
+
+                                echo '</div>
+            </div>
+        </a>';
                             }
 
                             echo '</div></div>';
                         }
-
                         ?>
-
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -480,7 +506,7 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
             <div class="text-center mb-8">
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1">New Collections</h2>
                 <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                   Fresh collections just in explore new arrivals designed
+                    Fresh collections just in explore new arrivals designed
                 </p>
             </div>
 

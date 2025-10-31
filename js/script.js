@@ -81,16 +81,16 @@ document.addEventListener("DOMContentLoaded", () => {
         mobileNavLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 // Don't close for dropdown toggles
-                if (link.parentElement.classList.contains('mobile-dropdown') || 
+                if (link.parentElement.classList.contains('mobile-dropdown') ||
                     link.classList.contains('shop-toggle')) {
                     return;
                 }
-                
+
                 // Don't close for search buttons
                 if (link.classList.contains('searchBtn2')) {
                     return;
                 }
-                
+
                 // Close mobile menu for regular navigation links
                 setTimeout(closeMobileMenu, 100);
             });
@@ -121,56 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (icon) icon.classList.toggle("rotate-180"); // ✅ icon rotates in sidebar too
             });
         });
-    }
-
-    // ===============================
-    // SLIDER
-    // ===============================
-    const slides = document.querySelectorAll(".slide");
-    const dotsContainer = document.getElementById("dots");
-    if (slides.length > 0 && dotsContainer) {
-        let index = 0;
-        let slideInterval;
-        const duration = 4000;
-
-        slides.forEach((_, i) => {
-            const dot = document.createElement("div");
-            dot.className = "w-3 h-3 rounded-full bg-white/60 cursor-pointer relative overflow-hidden";
-            dot.innerHTML = "<div class='progress absolute bottom-0 left-0 h-full w-0 bg-white'></div>";
-            dot.addEventListener("click", () => {
-                showSlide(i);
-                resetInterval();
-            });
-            dotsContainer.appendChild(dot);
-        });
-        const dots = document.querySelectorAll("#dots .w-3");
-
-        function showSlide(i) {
-            slides.forEach((s, j) => {
-                s.classList.toggle("opacity-100", j === i);
-                s.classList.toggle("z-10", j === i);
-                s.classList.toggle("opacity-0", j !== i);
-            });
-            dots.forEach((d, j) => {
-                d.classList.toggle("bg-pink-500", j === i);
-                const progress = d.querySelector(".progress");
-                progress.style.width = j === i ? "100%" : "0";
-                progress.style.transitionDuration = j === i ? duration + "ms" : "0ms";
-            });
-            index = i;
-        }
-
-        function nextSlide() {
-            showSlide((index + 1) % slides.length);
-        }
-
-        function resetInterval() {
-            clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, duration);
-        }
-
-        showSlide(0);
-        resetInterval();
     }
 
     // ===============================
@@ -453,7 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Close search overlay when clicking outside
-        searchOverlay.addEventListener('click', function(e) {
+        searchOverlay.addEventListener('click', function (e) {
             if (e.target === this) {
                 searchOverlay.classList.add("-translate-y-full");
                 setTimeout(() => {

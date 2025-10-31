@@ -176,6 +176,7 @@ function getProductHtml($id)
 
         // ALWAYS show main product option in dropdown, even for advanced variants
         $mainStock = getData("unlimited_stock", "seller_products", "id='$id'") ? "Unlimited" : $totalStocks;
+        $mainLabel = !empty($variation) ? $variation : $name;
         $html .= '<option value="main" 
                 data-image="' . UPLOADS_URL . $image . '" 
                 data-price="' . $price . '" 
@@ -183,8 +184,9 @@ function getProductHtml($id)
                 data-stock="' . $mainStock . '" 
                 data-unlimited="' . (getData("unlimited_stock", "seller_products", "id='$id'") ?? 0) . '" 
                 data-variant-type="main"
-                data-is-main="true">
-                ' . htmlspecialchars(!empty($variation) ? $variation : $name) . '
+                data-is-main="true"
+                title="' . htmlspecialchars($mainLabel) . '">
+                ' . htmlspecialchars(mb_strlen($mainLabel) > 25 ? mb_substr($mainLabel, 0, 25) . '...' : $mainLabel) . '
             </option>';
 
         // Add basic variants
@@ -192,6 +194,7 @@ function getProductHtml($id)
             $basicVariants = readData("*", "seller_product_variants", "product_id='$product_id'");
             while ($bv = $basicVariants->fetch(PDO::FETCH_ASSOC)) {
                 $stock = ($bv['unlimited_stock'] ?? 0) == 1 ? "Unlimited" : (int)($bv['stock'] ?? 0);
+                $variantLabel = $bv['variation'] ?? $bv['name'] ?? "Variant";
                 $html .= '<option value="' . $bv['id'] . '" 
                 data-image="' . UPLOADS_URL . ($bv['image'] ?? $image) . '" 
                 data-price="' . $bv['price'] . '" 
@@ -199,8 +202,9 @@ function getProductHtml($id)
                 data-stock="' . $stock . '" 
                 data-unlimited="' . ($bv['unlimited_stock'] ?? 0) . '" 
                 data-variant-type="basic"
-                data-is-main="false">
-                ' . htmlspecialchars($bv['variation'] ?? $bv['name'] ?? "Variant") . '
+                data-is-main="false"
+                title="' . htmlspecialchars($variantLabel) . '">
+                ' . htmlspecialchars(mb_strlen($variantLabel) > 25 ? mb_substr($variantLabel, 0, 25) . '...' : $variantLabel) . '
             </option>';
             }
         }
@@ -228,8 +232,9 @@ function getProductHtml($id)
                 data-stock="' . $stock . '" 
                 data-unlimited="' . ($av['unlimited_stock'] ?? 0) . '" 
                 data-variant-type="advanced"
-                data-is-main="false">
-                ' . htmlspecialchars($variantLabel) . '
+                data-is-main="false"
+                title="' . htmlspecialchars($variantLabel) . '">
+                ' . htmlspecialchars(mb_strlen($variantLabel) > 25 ? mb_substr($variantLabel, 0, 25) . '...' : $variantLabel) . '
             </option>';
             }
         }
