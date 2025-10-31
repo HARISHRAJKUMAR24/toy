@@ -1,26 +1,18 @@
 <?php include_once __DIR__ . "/includes/files_includes.php"; ?>
 <?php
 // -------------------------
-// Get Random Products image Function
+// Get Random Products For Customer Also Bought
 // -------------------------
-function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
+
+function getRandomProducts($limit = 3)
 {
-    global $db;
-    $limit = (int)$limit; // ensure it's an integer
+    // Your database query to get random products
+    $stmt = getProducts();
+    $allProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $db->prepare("
-        SELECT * 
-        FROM seller_products 
-        WHERE seller_id = ? AND store_id = ?
-        ORDER BY RAND() 
-        LIMIT $limit
-    ");
-
-    $stmt->execute([$seller_id, $store_id]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    shuffle($allProducts);
+    return array_slice($allProducts, 0, $limit);
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -388,21 +380,10 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                 $btnText = $inWishlist ? "text-rose-500" : "text-white";
                                 $title   = $inWishlist ? "Remove from Wishlist" : "Add to Wishlist";
 
-                                echo '<button 
-    id="wishlistBtn" 
-    data-id="' . $id . '" 
-    data-variant="' . $variantId . '" 
-    class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 handleWishlist ' . $btnBg . '" 
-    title="' . $title . '">
-    <i class="fa-solid fa-heart text-sm sm:text-base ' . $btnText . '"></i>
-</button>';
+                                echo '<button id="wishlistBtn" data-id="' . $id . '" data-variant="' . $variantId . '" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 handleWishlist ' . $btnBg . '"  title="' . $title . '"> <i class="fa-solid fa-heart text-sm sm:text-base ' . $btnText . '"></i> </button>';
                             } else {
                                 // Not logged in → redirect to login
-                                echo '<a href="' . $storeUrl . 'wishlists" 
-   class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 bg-gray-200" 
-   title="Login to add wishlist">
-   <i class="fa-solid fa-heart text-sm sm:text-base text-gray-500"></i>
-</a>';
+                                echo '<a href="' . $storeUrl . 'wishlists" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg shadow-md transition transform hover:scale-110 bg-gray-200" title="Login to add wishlist"> <i class="fa-solid fa-heart text-sm sm:text-base text-gray-500"></i> </a>';
                             }
                             ?>
 
@@ -413,16 +394,11 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                         </div>
 
                         <?php
-                        $seller_id = $product['seller_id'];
-                        $store_id  = $product['store_id'];
-
-                        // Fetch 3 random products from the same seller and store
-                        $randomProducts = getRandomProductsBySeller($seller_id, $store_id, 3);
+                        // Get 3 random products for ONE "Customers Also Bought" section
+                        $randomProducts = getRandomProducts(3);
 
                         if ($randomProducts && count($randomProducts) > 0) {
-                            echo '<div class="mt-6 border-t pt-4 md:mt-8 md:border-t-0 md:pt-0 md:bg-gradient-to-br md:from-purple-50 md:via-pink-50 md:to-blue-50 md:rounded-2xl md:shadow-lg md:p-6 md:border md:border-gray-200">
-        <h3 class="mt-2 text-lg font-semibold text-gray-800 mb-3 md:text-xl md:mb-4">Customers Also Bought</h3>
-        <div class="grid grid-cols-3 gap-4">';
+                            echo '<div class="mt-6 border-t pt-4 md:mt-8 md:border-t-0 md:pt-0 md:bg-gradient-to-br md:from-purple-50 md:via-pink-50 md:to-blue-50 md:rounded-2xl md:shadow-lg md:p-6 md:border md:border-gray-200"><h3 class="mt-2 text-lg font-semibold text-gray-800 mb-3 md:text-xl md:mb-4">Customers Also Bought</h3><div class="grid grid-cols-3 gap-4">';
 
                             // Array of background colors
                             $bgColors = ['bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100'];
