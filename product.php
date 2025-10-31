@@ -400,26 +400,52 @@ function getRandomProducts($limit = 3)
                         if ($randomProducts && count($randomProducts) > 0) {
                             echo '<div class="mt-6 border-t pt-4 md:mt-8 md:border-t-0 md:pt-0 md:bg-gradient-to-br md:from-purple-50 md:via-pink-50 md:to-blue-50 md:rounded-2xl md:shadow-lg md:p-6 md:border md:border-gray-200"><h3 class="mt-2 text-lg font-semibold text-gray-800 mb-3 md:text-xl md:mb-4">Customers Also Bought</h3><div class="grid grid-cols-3 gap-4">';
 
-                            // Array of background colors
-                            $bgColors = ['bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100'];
-
                             foreach ($randomProducts as $index => $rp) {
                                 $img = UPLOADS_URL . $rp['image'];
                                 $slug = $rp['slug'];
                                 $name = $rp['name'];
                                 $price = $rp['price'];
                                 $mrp_price = $rp['mrp_price'];
+                                $totalStocks = $rp['total_stocks'] ?? 0;
+                                $unlimited_stock = $rp['unlimited_stock'] ?? 0;
 
-                                // Pick a color from the array (cycle if more products than colors)
-                                $bgClass = $bgColors[$index % count($bgColors)];
+                                // Check if product is out of stock
+                                $isOutOfStock = (!$totalStocks && !$unlimited_stock);
 
-                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition transform hover:scale-105 ' . $bgClass . ' p-3 flex flex-col items-center justify-center"> <img src="' . $img . '" alt="' . htmlspecialchars($name) . '" class="w-full h-20 object-cover rounded-lg mb-2"> <div class="text-center w-full"> <h4 class="text-xs font-semibold text-gray-800 mb-1 line-clamp-2 leading-tight" title="' . htmlspecialchars($name) . '"> ' . htmlspecialchars(mb_strlen($name) > 30 ? mb_substr($name, 0, 30) . '...' : $name) . '</h4> <div class="flex items-center justify-center gap-1"> <span class="text-sm font-bold text-green-600">' . currencyToSymbol($storeCurrency) . $price . '</span>';
+                                // Use mild gray background for out of stock, otherwise random colors
+                                $bgClass = $isOutOfStock ? 'bg-gray-100' : ['bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100'][$index % 5];
+
+                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105 ' . $bgClass . ' p-3 flex flex-col items-center justify-center relative">';
+
+                                // Image container with overlay for out of stock
+                                echo '<div class="relative w-full">';
+                                echo '<img src="' . $img . '" alt="' . htmlspecialchars($name) . '" class="w-full h-20 object-cover rounded-lg mb-2' . ($isOutOfStock ? ' opacity-80 grayscale' : '') . '">';
+
+                                // Sold Out Overlay - Attractive "Oops! Sold Out" label
+                                if ($isOutOfStock) {
+                                    echo '<div class="absolute inset-0 bg-white bg-opacity-40 rounded-lg flex items-center justify-center p-2">';
+                                    echo '<div class="bg-red-500 bg-opacity-20 backdrop-blur-sm text-red-700 px-3 py-2 rounded-xl shadow-lg border-2 border-red-300 border-opacity-50 transform -rotate-6 hover:rotate-0 transition-transform duration-300">';
+                                    echo '<div class="text-center">';
+                                    echo '<span class="text-[10px] font-black uppercase tracking-wider block leading-tight">Oops!</span>';
+                                    echo '<span class="text-[9px] font-bold uppercase tracking-wider block leading-tight mt-1">Sold Out</span>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                }
+                                echo '</div>';
+
+                                echo '<div class="text-center w-full">';
+                                echo '<h4 class="text-xs font-semibold text-gray-800 mb-1 line-clamp-2 leading-tight' . ($isOutOfStock ? ' text-gray-500' : '') . '" title="' . htmlspecialchars($name) . '">' . htmlspecialchars(mb_strlen($name) > 30 ? mb_substr($name, 0, 30) . '...' : $name) . '</h4>';
+                                echo '<div class="flex items-center justify-center gap-1">';
+                                echo '<span class="text-sm font-bold ' . ($isOutOfStock ? 'text-gray-400' : 'text-green-600') . '">' . currencyToSymbol($storeCurrency) . $price . '</span>';
 
                                 if ($mrp_price && $mrp_price > $price) {
-                                    echo '<span class="text-xs text-gray-400 line-through">' . currencyToSymbol($storeCurrency) . $mrp_price . '</span>';
+                                    echo '<span class="text-xs ' . ($isOutOfStock ? 'text-gray-300' : 'text-gray-400') . ' line-through">' . currencyToSymbol($storeCurrency) . $mrp_price . '</span>';
                                 }
 
-                                echo '</div> </div> </a>';
+                                echo '</div>';
+                                echo '</div>';
+                                echo '</a>';
                             }
 
                             echo '</div></div>';
