@@ -400,6 +400,61 @@ function getRandomProducts($limit = 3)
                         if ($randomProducts && count($randomProducts) > 0) {
                             echo '<div class="mt-6 border-t pt-4 md:mt-8 md:border-t-0 md:pt-0 md:bg-gradient-to-br md:from-purple-50 md:via-pink-50 md:to-blue-50 md:rounded-2xl md:shadow-lg md:p-6 md:border md:border-gray-200"><h3 class="mt-2 text-lg font-semibold text-gray-800 mb-3 md:text-xl md:mb-4">Customers Also Bought</h3><div class="grid grid-cols-3 gap-4">';
 
+                            // Array of 40+ background colors for unsold products
+                            $bgColors = [
+                                'bg-pink-100',
+                                'bg-pink-200',
+                                'bg-rose-100',
+                                'bg-rose-200',
+                                'bg-red-100',
+                                'bg-red-200',
+                                'bg-orange-100',
+                                'bg-orange-200',
+                                'bg-amber-100',
+                                'bg-amber-200',
+                                'bg-yellow-100',
+                                'bg-yellow-200',
+                                'bg-lime-100',
+                                'bg-lime-200',
+                                'bg-green-100',
+                                'bg-green-200',
+                                'bg-emerald-100',
+                                'bg-emerald-200',
+                                'bg-teal-100',
+                                'bg-teal-200',
+                                'bg-cyan-100',
+                                'bg-cyan-200',
+                                'bg-sky-100',
+                                'bg-sky-200',
+                                'bg-blue-100',
+                                'bg-blue-200',
+                                'bg-indigo-100',
+                                'bg-indigo-200',
+                                'bg-violet-100',
+                                'bg-violet-200',
+                                'bg-purple-100',
+                                'bg-purple-200',
+                                'bg-fuchsia-100',
+                                'bg-fuchsia-200',
+                                'bg-rose-50',
+                                'bg-pink-50',
+                                'bg-amber-50',
+                                'bg-yellow-50',
+                                'bg-lime-50',
+                                'bg-green-50',
+                                'bg-emerald-50',
+                                'bg-teal-50',
+                                'bg-cyan-50',
+                                'bg-sky-50',
+                                'bg-blue-50',
+                                'bg-indigo-50',
+                                'bg-violet-50',
+                                'bg-purple-50'
+                            ];
+
+                            // Shuffle colors to get random distribution
+                            shuffle($bgColors);
+
                             foreach ($randomProducts as $index => $rp) {
                                 $img = UPLOADS_URL . $rp['image'];
                                 $slug = $rp['slug'];
@@ -412,14 +467,14 @@ function getRandomProducts($limit = 3)
                                 // Check if product is out of stock
                                 $isOutOfStock = (!$totalStocks && !$unlimited_stock);
 
-                                // Use mild gray background for out of stock, otherwise random colors
-                                $bgClass = $isOutOfStock ? 'bg-gray-100' : ['bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100'][$index % 5];
+                                // Use mild gray background for out of stock, otherwise random color from 40+ options
+                                $bgClass = $isOutOfStock ? 'bg-gray-100' : $bgColors[$index % count($bgColors)];
 
-                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105 ' . $bgClass . ' p-3 flex flex-col items-center justify-center relative">';
+                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm ' . ($isOutOfStock ? '' : 'hover:shadow-md transition-all duration-300 transform hover:scale-105') . ' ' . $bgClass . ' p-3 flex flex-col items-center justify-center relative">';
 
                                 // Image container with overlay for out of stock
                                 echo '<div class="relative w-full">';
-                                echo '<img src="' . $img . '" alt="' . htmlspecialchars($name) . '" class="w-full h-20 object-cover rounded-lg mb-2' . ($isOutOfStock ? ' opacity-80 grayscale' : '') . '">';
+                                echo '<img src="' . $img . '" alt="' . htmlspecialchars($name) . '" class="w-full h-20 object-cover rounded-lg' . ($isOutOfStock ? ' opacity-80 grayscale' : ' mb-2') . '">';
 
                                 // Sold Out Overlay - Attractive "Oops! Sold Out" label
                                 if ($isOutOfStock) {
