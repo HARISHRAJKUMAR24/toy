@@ -477,6 +477,7 @@
         </section>
     <?php endif; ?>
     <!-- Special Offer Section End -->
+     
     <!-- Random Product Section Start-->
 
     <section class="py-16 bg-gray-50 md:px-4">

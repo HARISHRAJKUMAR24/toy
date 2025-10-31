@@ -437,22 +437,13 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
                                 // Pick a color from the array (cycle if more products than colors)
                                 $bgClass = $bgColors[$index % count($bgColors)];
 
-                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition transform hover:scale-105 ' . $bgClass . ' p-3 flex flex-col items-center justify-center">  
-            <img src="' . $img . '" alt="' . htmlspecialchars($name) . '" class="w-full h-20 object-cover rounded-lg mb-2"> 
-            <div class="text-center w-full">
-                <h4 class="text-xs font-semibold text-gray-800 mb-1 line-clamp-2 leading-tight" title="' . htmlspecialchars($name) . '">
-                    ' . htmlspecialchars(mb_strlen($name) > 30 ? mb_substr($name, 0, 30) . '...' : $name) . '
-                </h4>
-                <div class="flex items-center justify-center gap-1">
-                    <span class="text-sm font-bold text-green-600">' . currencyToSymbol($storeCurrency) . $price . '</span>';
+                                echo '<a href="' . $storeUrl . 'product/' . $slug . '" class="block rounded-lg shadow-sm hover:shadow-md transition transform hover:scale-105 ' . $bgClass . ' p-3 flex flex-col items-center justify-center"> <img src="' . $img . '" alt="' . htmlspecialchars($name) . '" class="w-full h-20 object-cover rounded-lg mb-2"> <div class="text-center w-full"> <h4 class="text-xs font-semibold text-gray-800 mb-1 line-clamp-2 leading-tight" title="' . htmlspecialchars($name) . '"> ' . htmlspecialchars(mb_strlen($name) > 30 ? mb_substr($name, 0, 30) . '...' : $name) . '</h4> <div class="flex items-center justify-center gap-1"> <span class="text-sm font-bold text-green-600">' . currencyToSymbol($storeCurrency) . $price . '</span>';
 
                                 if ($mrp_price && $mrp_price > $price) {
                                     echo '<span class="text-xs text-gray-400 line-through">' . currencyToSymbol($storeCurrency) . $mrp_price . '</span>';
                                 }
 
-                                echo '</div>
-            </div>
-        </a>';
+                                echo '</div> </div> </a>';
                             }
 
                             echo '</div></div>';
@@ -513,12 +504,19 @@ function getRandomProductsBySeller($seller_id, $store_id, $limit = 3)
             <!-- Product Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10 items-stretch">
                 <?php
-                $products = getProducts(); // Fetch all products
-                $counter = 0;
+                // Random products - Limit to 10
+                $productsStmt = getProducts();   // This is PDOStatement
+                $products = $productsStmt->fetchAll(PDO::FETCH_ASSOC); // Convert to array
 
+                shuffle($products); // Randomize the array
+
+                $counter = 0;
                 foreach ($products as $product) {
                     if ($counter >= 10) break; // Stop after 10 products
-                    echo getProductHtml($product["id"], "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col");
+                    echo getProductHtml(
+                        $product["id"],
+                        "group relative bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 flex flex-col"
+                    );
                     $counter++;
                 }
                 ?>
