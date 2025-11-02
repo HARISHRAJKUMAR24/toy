@@ -181,6 +181,185 @@
             }
         }
 
+        /*<----------- Style For Gif Images Preview -------------->*/
+        /* Image Upload Styles */
+        .image-upload-item {
+            transition: all 0.3s ease;
+        }
+
+        .image-upload-item.fade-out {
+            opacity: 0;
+            transform: translateY(-10px);
+            height: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* Uploaded Images Preview Container - No flex, no grid */
+        #uploadedImagesPreview {
+            min-height: 100px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 2px dashed #e2e8f0;
+            overflow: hidden;
+            width: 100%;
+            display: block;
+        }
+
+        /* Clearfix for floated elements */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        /* Uploaded image items - floated with fixed width */
+        .uploaded-image-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            float: left;
+            margin: 0 8px 8px 0;
+        }
+
+        .uploaded-image-item:hover {
+            transform: scale(1.05);
+            border-color: #ec4899;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
+        }
+
+        .uploaded-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-uploaded-image {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            border: 2px solid white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .uploaded-image-item:hover .remove-uploaded-image {
+            opacity: 1;
+        }
+
+        .upload-count {
+            background: #ec4899;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Success message styling */
+        .success-message {
+            background: #10b981;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: fadeIn 0.5s ease;
+            clear: both;
+        }
+
+        .success-message.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Empty state styling */
+        #uploadedImagesPreview:empty::before {
+            content: "No images uploaded yet";
+            color: #94a3b8;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100px;
+            font-style: italic;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            #uploadedImagesPreview {
+                min-height: 90px;
+                padding: 10px;
+            }
+
+            .uploaded-image-item {
+                width: 70px;
+                height: 70px;
+                margin: 0 6px 6px 0;
+            }
+
+            .remove-uploaded-image {
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+                top: -5px;
+                right: -5px;
+            }
+
+            .success-message {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+        }
+
+        /* Touch device improvements */
+        @media (hover: none) {
+            .uploaded-image-item .remove-uploaded-image {
+                opacity: 1;
+                background: rgba(239, 68, 68, 0.9);
+            }
+
+            .uploaded-image-item:hover {
+                transform: none;
+            }
+        }
+
         /* Custom toastr colors to match theme */
         .toast-success {
             background-color: <?= htmlspecialchars(getData('color', 'seller_settings', "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f') ?> !important;
@@ -545,17 +724,6 @@
                             }
                         </script>
 
-
-
-                        <!-- Step 6: Notes -->
-                        <div class="flex gap-4 step-container" id="step-6">
-                            <div class="step-number">06</div>
-                            <div class="step-content p-4 sm:p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100">
-                                <label for="notes" class="block mb-3 font-semibold text-gray-700">Additional Notes</label>
-                                <textarea name="notes" id="notes" rows="4" class="bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 focus:border-primary-500 focus:bg-white transition step-field" placeholder="Any special instructions for your order..." data-step="6"></textarea>
-                            </div>
-                        </div>
-
                         <!-- Step 7: Customized Gift (if enabled) -->
                         <?php if (getSettings("customized_gift")) : ?>
                             <div class="flex gap-4 step-container" id="step-7">
@@ -564,9 +732,28 @@
                                     <h4 class="text-xl font-semibold text-gray-800 mb-4">Customized Gift <sup class="text-gray-500">(optional)</sup></h4>
                                     <div class="grid gap-4">
                                         <div>
-                                            <label for="customized_gift_images" class="block mb-2 font-medium text-gray-700">Images</label>
-                                            <input type="file" name="customized_gift_images[]" id="customized_gift_images" class="bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 step-field" accept="image/*" max="3" multiple data-step="7">
-                                            <small class="text-gray-500 block mt-2">You can only select a maximum of 3 images.</small>
+                                            <label class="block mb-2 font-medium text-gray-700">
+                                                Gift Images
+                                                <span id="uploadCount" class="upload-count">0/8</span>
+                                            </label>
+
+                                            <!-- Uploaded Images Preview - No flex, no grid, controlled layout -->
+                                            <div id="uploadedImagesPreview" class="mb-4 py-2 clearfix">
+                                                <!-- Uploaded images will appear here -->
+                                            </div>
+
+                                            <!-- Hidden file input for form submission -->
+                                            <input type="file" name="customized_gift_images[]" id="customized_gift_images" class="hidden" accept="image/*" multiple>
+
+                                            <div id="imageUploadContainer">
+                                                <!-- Only ONE input shown initially -->
+                                                <div class="image-upload-item mb-3">
+                                                    <input type="file" name="temp_images[]"
+                                                        class="image-upload-input bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 step-field"
+                                                        accept="image/*" multiple data-step="7">
+                                                </div>
+                                            </div>
+                                            <small class="text-gray-500 block mt-2">You can upload up to 8 images. Each image should be less than 10MB.</small>
                                         </div>
                                         <div>
                                             <label for="customized_gift_notes" class="block mb-2 font-medium text-gray-700">Details</label>
@@ -576,6 +763,16 @@
                                 </div>
                             </div>
                         <?php endif ?>
+
+
+                        <!-- Step 7: Notes -->
+                        <div class="flex gap-4 step-container" id="step-6">
+                            <div class="step-number">07</div>
+                            <div class="step-content p-4 sm:p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100">
+                                <label for="notes" class="block mb-3 font-semibold text-gray-700">Additional Notes</label>
+                                <textarea name="notes" id="notes" rows="4" class="bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 focus:border-primary-500 focus:bg-white transition step-field" placeholder="Any special instructions for your order..." data-step="6"></textarea>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Right Column - Order Summary -->
@@ -1142,7 +1339,199 @@
                 });
             }
         });
+
+        // <---------- Js For Gift Section ------------>
+
+        // Dynamic Image Upload Functionality for Step 7
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('imageUploadContainer');
+            const previewContainer = document.getElementById('uploadedImagesPreview');
+            const mainFileInput = document.getElementById('customized_gift_images');
+
+            if (!container || !previewContainer || !mainFileInput) return;
+
+            const maxImages = 8;
+            let uploadedImages = 0;
+            let uploadedFiles = [];
+
+            // Create success message element
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message hidden';
+            successMessage.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>All 8 images uploaded successfully!</span>
+            `;
+            container.parentNode.insertBefore(successMessage, container.nextSibling);
+
+            // Function to create new file input
+            function createFileInput() {
+                if (uploadedImages >= maxImages) return;
+
+                const newItem = document.createElement('div');
+                newItem.className = 'image-upload-item mb-3';
+                newItem.innerHTML = `
+                    <input type="file" name="temp_images[]" 
+                           class="image-upload-input bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 step-field" 
+                           accept="image/*" multiple data-step="7">
+                `;
+
+                container.appendChild(newItem);
+
+                const newInput = newItem.querySelector('.image-upload-input');
+                newInput.addEventListener('change', handleImageUpload);
+
+                return newInput;
+            }
+
+            // Handle image upload
+            function handleImageUpload(event) {
+                const input = event.target;
+                const item = input.closest('.image-upload-item');
+                const files = input.files;
+
+                if (files && files.length > 0) {
+                    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/svg+xml', 'image/webp'];
+                    const maxSize = 10 * 1024 * 1024;
+
+                    // Process each selected file
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+
+                        if (!validTypes.includes(file.type)) {
+                            var msg = new SpeechSynthesisUtterance('Invalid file type. Please upload an image file.');
+                            window.speechSynthesis.speak(msg);
+                            toastr.error('Invalid file type. Please upload an image file.');
+                            continue;
+                        }
+
+                        if (file.size > maxSize) {
+                            var msg = new SpeechSynthesisUtterance('File size too large. Maximum size is 10MB.');
+                            window.speechSynthesis.speak(msg);
+                            toastr.error('File size too large. Maximum size is 10MB.');
+                            continue;
+                        }
+
+                        if (uploadedImages >= maxImages) {
+                            var msg = new SpeechSynthesisUtterance('You can only select a maximum of 8 images.');
+                            window.speechSynthesis.speak(msg);
+                            toastr.error('You can only select a maximum of 8 images.');
+                            break;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            uploadedFiles.push(file);
+                            updateMainFileInput();
+                            addImageToPreview(e.target.result, uploadedFiles.length - 1);
+
+                            uploadedImages++;
+                            updateUploadCount();
+
+                            // Show success message when all 8 images are uploaded
+                            if (uploadedImages === maxImages) {
+                                successMessage.classList.remove('hidden');
+                                // Hide the input container
+                                container.style.display = 'none';
+                            }
+
+                            var msg = new SpeechSynthesisUtterance(`Image ${uploadedImages} uploaded successfully!`);
+                            window.speechSynthesis.speak(msg);
+                            toastr.success(`Image ${uploadedImages} uploaded successfully!`);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+
+                    // Disable input and fade out after processing all files
+                    input.disabled = true;
+                    input.style.opacity = '0.5';
+
+                    setTimeout(() => {
+                        item.classList.add('fade-out');
+                        setTimeout(() => {
+                            if (uploadedImages < maxImages) {
+                                createFileInput();
+                            }
+                            item.remove();
+                        }, 300);
+                    }, 1000);
+                }
+            }
+
+            // Update main file input with all uploaded files
+            function updateMainFileInput() {
+                const dataTransfer = new DataTransfer();
+                uploadedFiles.forEach(file => {
+                    dataTransfer.items.add(file);
+                });
+                mainFileInput.files = dataTransfer.files;
+            }
+
+            // Add image to preview container
+            function addImageToPreview(imageSrc, index) {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'uploaded-image-item';
+                previewItem.innerHTML = `
+                    <img src="${imageSrc}" alt="Uploaded image ${index + 1}">
+                    <span class="remove-uploaded-image" onclick="removeUploadedImage(${index})">×</span>
+                `;
+                previewContainer.appendChild(previewItem);
+            }
+
+            // Remove uploaded image function (global)
+            window.removeUploadedImage = function(index) {
+                uploadedFiles.splice(index, 1);
+                uploadedImages--;
+                updateMainFileInput();
+                updatePreviewContainer();
+                updateUploadCount();
+
+                // Hide success message and show input container if not at max
+                if (uploadedImages < maxImages) {
+                    successMessage.classList.add('hidden');
+                    container.style.display = 'block';
+                }
+
+                var msg = new SpeechSynthesisUtterance('Image removed successfully!');
+                window.speechSynthesis.speak(msg);
+                toastr.info('Image removed successfully!');
+
+                const activeInputs = container.querySelectorAll('.image-upload-input:not([disabled])');
+                if (activeInputs.length === 0 && uploadedImages < maxImages) {
+                    createFileInput();
+                }
+            }
+
+            // Update preview container after removal
+            function updatePreviewContainer() {
+                previewContainer.innerHTML = '';
+                uploadedFiles.forEach((fileData, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        addImageToPreview(e.target.result, index);
+                    };
+                    reader.readAsDataURL(fileData);
+                });
+            }
+
+            // Update upload count display
+            function updateUploadCount() {
+                const countDisplay = document.getElementById('uploadCount');
+                if (countDisplay) {
+                    countDisplay.textContent = `${uploadedImages}/${maxImages}`;
+                }
+            }
+
+            // Initialize
+            const firstInput = container.querySelector('.image-upload-input');
+            if (firstInput) {
+                firstInput.addEventListener('change', handleImageUpload);
+                updateUploadCount();
+            }
+        });
     </script>
+
     <script>
         const phoneInputField = document.querySelector("#phone");
         const phoneInput = window.intlTelInput(phoneInputField, {
