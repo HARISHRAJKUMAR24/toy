@@ -401,7 +401,7 @@ foreach ($cartItems as $key => $cart) { // NO & reference here
                     <?php
                     $minimumOrder = (int)getSettings("minimum_order_amount");
                     ?>
-                    <?php if (!empty($minimumOrder) && $subTotalWithTax < $minimumOrder): ?>
+                    <?php if (!empty($minimumOrder) && $subTotal < $minimumOrder): ?>
                         <!-- Stylish Marketing-Themed Minimum Order Message -->
                         <div class="py-2 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl text-center bg-gradient-to-r from-pink-50 to-pink-100 border border-pink-200 shadow-sm">
                             <p class="text-hover font-semibold text-xs sm:text-sm">
