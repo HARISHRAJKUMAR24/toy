@@ -703,29 +703,25 @@
 
                         <!-- JS -->
                         <script>
-                            document.querySelectorAll('.paymentMethod').forEach(radio => {
-                                radio.addEventListener('change', function() {
-                                    document.querySelectorAll('#upiImg, #bankDetails').forEach(el => el.style.display = 'none');
-                                    if (this.value === 'UPI') document.getElementById('upiImg').style.display = 'block';
-                                    if (this.value === 'Bank Transfer') document.getElementById('bankDetails').style.display = 'block';
-                                });
-                            });
 
-                            function copyUPIID(button, upiId) {
-                                navigator.clipboard.writeText(upiId).then(() => {
-                                    const original = button.innerHTML;
-                                    button.innerHTML = '<i class="bx bx-check"></i> Copied!';
-                                    button.classList.replace('bg-primary-500', 'bg-green-500');
-                                    setTimeout(() => {
-                                        button.innerHTML = original;
-                                        button.classList.replace('bg-green-500', 'bg-primary-500');
-                                    }, 2000);
-                                });
-                            }
                         </script>
+
+
+                        <!-- Step 6: Notes -->
+                        <div class="flex gap-4 step-container" id="step-6">
+                            <div class="step-number">06</div>
+                            <div class="step-content p-4 sm:p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100">
+                                <label for="notes" class="block mb-3 font-semibold text-gray-700">Additional Notes</label>
+                                <textarea name="notes" id="notes" rows="4" class="bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 focus:border-primary-500 focus:bg-white transition step-field" placeholder="Any special instructions for your order..." data-step="6"></textarea>
+                            </div>
+                        </div>
+
 
                         <!-- Step 7: Customized Gift (if enabled) -->
                         <?php if (getSettings("customized_gift")) : ?>
+                            <?php
+                            $primary_color = getData("color", "seller_settings", "(seller_id='$sellerId' AND store_id='$storeId')") ?? '#ff007f';
+                            ?>
                             <div class="flex gap-4 step-container" id="step-7">
                                 <div class="step-number">07</div>
                                 <div class="step-content p-4 sm:p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100">
@@ -734,7 +730,7 @@
                                         <div>
                                             <label class="block mb-2 font-medium text-gray-700">
                                                 Gift Images
-                                                <span id="uploadCount" class="upload-count">0/8</span>
+                                                <span id="uploadCount" class="upload-count" style="background: <?= htmlspecialchars($primary_color) ?>">0/8</span>
                                             </label>
 
                                             <!-- Uploaded Images Preview - No flex, no grid, controlled layout -->
@@ -764,15 +760,6 @@
                             </div>
                         <?php endif ?>
 
-
-                        <!-- Step 7: Notes -->
-                        <div class="flex gap-4 step-container" id="step-6">
-                            <div class="step-number">07</div>
-                            <div class="step-content p-4 sm:p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100">
-                                <label for="notes" class="block mb-3 font-semibold text-gray-700">Additional Notes</label>
-                                <textarea name="notes" id="notes" rows="4" class="bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 focus:border-primary-500 focus:bg-white transition step-field" placeholder="Any special instructions for your order..." data-step="6"></textarea>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Right Column - Order Summary -->
@@ -1340,8 +1327,30 @@
             }
         });
 
+        // <-----------> js code for auto click  <----------->
+        document.querySelectorAll('.paymentMethod').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('#upiImg, #bankDetails').forEach(el => el.style.display = 'none');
+                if (this.value === 'UPI') document.getElementById('upiImg').style.display = 'block';
+                if (this.value === 'Bank Transfer') document.getElementById('bankDetails').style.display = 'block';
+            });
+        });
+
+        function copyUPIID(button, upiId) {
+            navigator.clipboard.writeText(upiId).then(() => {
+                const original = button.innerHTML;
+                button.innerHTML = '<i class="bx bx-check"></i> Copied!';
+                button.classList.replace('bg-primary-500', 'bg-green-500');
+                setTimeout(() => {
+                    button.innerHTML = original;
+                    button.classList.replace('bg-green-500', 'bg-primary-500');
+                }, 2000);
+            });
+        }
+
         // <---------- Js For Gift Section ------------>
 
+        // <---------- Js For Gift Section ------------>
         // Dynamic Image Upload Functionality for Step 7
         document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('imageUploadContainer');
@@ -1358,11 +1367,11 @@
             const successMessage = document.createElement('div');
             successMessage.className = 'success-message hidden';
             successMessage.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                <span>All 8 images uploaded successfully!</span>
-            `;
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        <span>All 8 images uploaded successfully!</span>
+    `;
             container.parentNode.insertBefore(successMessage, container.nextSibling);
 
             // Function to create new file input
@@ -1372,10 +1381,10 @@
                 const newItem = document.createElement('div');
                 newItem.className = 'image-upload-item mb-3';
                 newItem.innerHTML = `
-                    <input type="file" name="temp_images[]" 
-                           class="image-upload-input bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 step-field" 
-                           accept="image/*" multiple data-step="7">
-                `;
+            <input type="file" name="temp_images[]" 
+                   class="image-upload-input bg-gray-50 rounded-xl p-4 w-full font-medium border-2 border-gray-200 step-field" 
+                   accept="image/*" multiple data-step="7">
+        `;
 
                 container.appendChild(newItem);
 
@@ -1395,14 +1404,21 @@
                     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/svg+xml', 'image/webp'];
                     const maxSize = 10 * 1024 * 1024;
 
-                    // Process each selected file
-                    for (let i = 0; i < files.length; i++) {
+                    // Calculate how many more images we can upload
+                    const remainingSlots = maxImages - uploadedImages;
+                    const filesToProcess = Math.min(files.length, remainingSlots);
+
+                    let processedFiles = 0;
+                    let validFiles = [];
+
+                    // First, validate all files
+                    for (let i = 0; i < filesToProcess; i++) {
                         const file = files[i];
 
                         if (!validTypes.includes(file.type)) {
-                            var msg = new SpeechSynthesisUtterance('Invalid file type. Please upload an image file.');
+                            var msg = new SpeechSynthesisUtterance('Invalid file type. Please upload only image files.');
                             window.speechSynthesis.speak(msg);
-                            toastr.error('Invalid file type. Please upload an image file.');
+                            toastr.error('Invalid file type. Please upload only image files.');
                             continue;
                         }
 
@@ -1413,34 +1429,53 @@
                             continue;
                         }
 
-                        if (uploadedImages >= maxImages) {
-                            var msg = new SpeechSynthesisUtterance('You can only select a maximum of 8 images.');
-                            window.speechSynthesis.speak(msg);
-                            toastr.error('You can only select a maximum of 8 images.');
-                            break;
-                        }
+                        validFiles.push(file);
+                        processedFiles++;
+                    }
 
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            uploadedFiles.push(file);
-                            updateMainFileInput();
-                            addImageToPreview(e.target.result, uploadedFiles.length - 1);
+                    // Process valid files
+                    if (validFiles.length > 0) {
+                        let filesProcessed = 0;
 
-                            uploadedImages++;
-                            updateUploadCount();
+                        validFiles.forEach((file) => {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                uploadedFiles.push(file);
+                                updateMainFileInput();
+                                addImageToPreview(e.target.result, uploadedFiles.length - 1);
 
-                            // Show success message when all 8 images are uploaded
-                            if (uploadedImages === maxImages) {
-                                successMessage.classList.remove('hidden');
-                                // Hide the input container
-                                container.style.display = 'none';
-                            }
+                                uploadedImages++;
+                                updateUploadCount();
 
-                            var msg = new SpeechSynthesisUtterance(`Image ${uploadedImages} uploaded successfully!`);
-                            window.speechSynthesis.speak(msg);
-                            toastr.success(`Image ${uploadedImages} uploaded successfully!`);
-                        };
-                        reader.readAsDataURL(file);
+                                filesProcessed++;
+
+                                // Show batch success message when all files from this batch are processed
+                                if (filesProcessed === validFiles.length) {
+                                    // Show success message when all 8 images are uploaded
+                                    if (uploadedImages === maxImages) {
+                                        successMessage.classList.remove('hidden');
+                                        container.style.display = 'none';
+
+                                        var msg = new SpeechSynthesisUtterance('All 8 images uploaded successfully!');
+                                        window.speechSynthesis.speak(msg);
+                                        toastr.success('All 8 images uploaded successfully!');
+                                    } else {
+                                        // Show batch upload message
+                                        var msg = new SpeechSynthesisUtterance(`${validFiles.length} images uploaded successfully! Total: ${uploadedImages}/8`);
+                                        window.speechSynthesis.speak(msg);
+                                        toastr.success(`${validFiles.length} images uploaded successfully! Totaly: ${uploadedImages} images`);
+                                    }
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    }
+
+                    // Show warning if user tried to upload more than remaining slots
+                    if (files.length > remainingSlots) {
+                        var msg = new SpeechSynthesisUtterance(`You can only upload ${remainingSlots} more images. ${files.length - remainingSlots} images were skipped.`);
+                        window.speechSynthesis.speak(msg);
+                        toastr.warning(`You can only upload ${remainingSlots} more images. ${files.length - remainingSlots} images were skipped.`);
                     }
 
                     // Disable input and fade out after processing all files
@@ -1473,9 +1508,9 @@
                 const previewItem = document.createElement('div');
                 previewItem.className = 'uploaded-image-item';
                 previewItem.innerHTML = `
-                    <img src="${imageSrc}" alt="Uploaded image ${index + 1}">
-                    <span class="remove-uploaded-image" onclick="removeUploadedImage(${index})">×</span>
-                `;
+            <img src="${imageSrc}" alt="Uploaded image ${index + 1}">
+            <span class="remove-uploaded-image" onclick="removeUploadedImage(${index})">×</span>
+        `;
                 previewContainer.appendChild(previewItem);
             }
 
