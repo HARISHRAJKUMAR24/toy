@@ -94,7 +94,7 @@
     <?php include_once __DIR__ . "/includes/navbar.php"; ?>
 
     <?php
-    $products_stmt = getProducts(["limit" => 40]);
+    $products_stmt = getProducts(["limit" => 24]);
     $products = $products_stmt->fetchAll(PDO::FETCH_ASSOC);
     $products_count = count($products);
 

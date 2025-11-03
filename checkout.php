@@ -1461,9 +1461,9 @@
                                         toastr.success('All 8 images uploaded successfully!');
                                     } else {
                                         // Show batch upload message
-                                        var msg = new SpeechSynthesisUtterance(`${validFiles.length} images uploaded successfully! Total: ${uploadedImages}/8`);
+                                        var msg = new SpeechSynthesisUtterance(`${validFiles.length} images uploaded successfully! Totally: ${uploadedImages} images`);
                                         window.speechSynthesis.speak(msg);
-                                        toastr.success(`${validFiles.length} images uploaded successfully! Totaly: ${uploadedImages} images`);
+                                        toastr.success(`${validFiles.length} images uploaded successfully! Totally: ${uploadedImages} images`);
                                     }
                                 }
                             };
